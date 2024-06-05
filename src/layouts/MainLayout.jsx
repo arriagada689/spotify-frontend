@@ -5,11 +5,14 @@ import SideBar from '../components/SideBar'
 
 const MainLayout = () => {
     return (
-        <>
+        <div className='h-screen md:p-1'>
             <SideBar />
-            <Navbar />
-            <Outlet />
-        </>
+            
+            <div className='md:ml-[375px]'>
+                <Navbar />
+                <Outlet />
+            </div>
+        </div>
     )
 }
 
