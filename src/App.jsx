@@ -8,13 +8,14 @@ import Home from './pages/Home.jsx'
 import MainLayout from './layouts/MainLayout.jsx'
 import { AuthProvider } from './contexts/AuthContext.jsx'
 import Login from './pages/Login.jsx'
+import SignUp from './pages/SignUp.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<MainLayout />}>
       <Route index element={<Home />}/>
       <Route path='/login' element={<Login />}/>
-      <Route path='/signup' element={<Login />}/>
+      <Route path='/signup' element={<SignUp />}/>
     </Route>
   )
 )

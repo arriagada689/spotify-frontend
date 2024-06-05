@@ -10,12 +10,22 @@ const Navbar = () => {
     
     const navigate = useNavigate();
 
+    useEffect(() => {
+        setIsLoggedIn(userInfo ? true : false)
+    }, [localStorage.getItem('userInfo')])
+
+    const logoutHandler = (e) => {
+        e.preventDefault()
+        logoutUser()
+        navigate('/')
+    }
+
     return (
         <div className='border'>
             {isLoggedIn ? 
                 <div className='space-x-3'>
                     <Link to='/profile'>Profile</Link>
-                    <Link to='/profile'>Log Out</Link>
+                    <Link onClick={(e) => logoutHandler(e)}>Log Out</Link>
                 </div> :
                 <div className='space-x-3'>
                     <Link to='/login'>Log In</Link>
