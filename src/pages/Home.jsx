@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react'
+import ArtistCard from '../components/ArtistCard'
+import AlbumCard from '../components/AlbumCard'
+import PlaylistCard from '../components/PlaylistCard'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
     const [popularArtists, setPopularArtists] = useState(null)  
@@ -25,22 +29,22 @@ const Home = () => {
 
     return (
       <div>
-        <div className='underline'>Popular Artists</div>
+        <Link to='/popular_artists' className='underline'>Popular artists</Link>
         {popularArtists && 
           popularArtists.map((artist, index) => {
-            return <div>{artist.name}</div>
+            return <ArtistCard key={index} name={artist.name} image={artist.image} id={artist.id}/>
           })
         }
-        <div className='underline'>Popular Albums</div>
+        <Link to='/popular_albums' className='underline'>Popular albums</Link>
         {popularAlbums && 
           popularAlbums.map((album, index) => {
-            return <div>{album.name}</div>
+            return <AlbumCard key={index} name={album.name} artist={album.artist} image={album.image} id={album.id}/>
           })
         }
-        <div className='underline'>Featured Playlists</div>
+        <Link to='/featured_playlists' className='underline'>Featured playlists</Link>
         {featuredPlaylists && 
           featuredPlaylists.map((playlist, index) => {
-            return <div>{playlist.name}</div>
+            return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id} />
           })
         }
       </div>
