@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 
 const TrackPage = () => {
     const { id } = useParams()
@@ -29,6 +29,7 @@ const TrackPage = () => {
         <div>
             {track && 
                 <div>
+                    {/* <img src={track.album.images[0].url} alt={track.name} /> */}
                     <div>Song</div>
                     <div>{track.name}</div>
                     <div>{track.artists[0].name}</div>
@@ -43,7 +44,7 @@ const TrackPage = () => {
                 <div>
                     <div className="text-xl">Popular tracks by <span className='text-green-500'>{track ? track.artists[0].name : ''}</span></div>
                     {popularTracks.map((popular_track, index) => {
-                        return <div key={index}>{popular_track.name}</div>
+                        return <Link to={`/track/${popular_track.id}`} key={index}>{popular_track.name}</Link>
                     })}
                 </div>
             }

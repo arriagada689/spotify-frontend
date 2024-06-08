@@ -14,6 +14,11 @@ import PopularAlbums from './pages/PopularAlbums.jsx'
 import FeaturedPlaylists from './pages/FeaturedPlaylists.jsx'
 import Search from './pages/Search.jsx'
 import TrackPage from './pages/TrackPage.jsx'
+import ArtistPage from './pages/ArtistPage.jsx'
+import AlbumPage from './pages/AlbumPage.jsx'
+import PlaylistPage from './pages/PlaylistPage.jsx'
+import AudiobookPage from './pages/AudiobookPage.jsx'
+import UserPage from './pages/UserPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +32,11 @@ const router = createBrowserRouter(
       <Route path='/featured_playlists' element={<FeaturedPlaylists />}/>
       <Route path='/search' element={<Search />}/>
       <Route path='/track/:id' element={<TrackPage />}/>
+      <Route path='/artist/:id' element={<ArtistPage />}/>
+      <Route path='/album/:id' element={<AlbumPage />}/>
+      <Route path='/playlist/:id' element={<PlaylistPage />}/>
+      <Route path='/audiobook/:id' element={<AudiobookPage />}/>
+      <Route path='/user/:id' element={<UserPage />}/>
     </Route>
   )
 )
