@@ -8,10 +8,12 @@ const ArtistPage = () => {
     const [artist, setArtist] = useState(null)
     const [popularTracks, setPopularTracks] = useState(null)
     const [relatedArtists, setRelatedArtists] = useState(null)
+    const [following, setFollowing] = useState(null)
+
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
     useEffect(() => {
         const getArtistData = async () => {
-            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
             const response = await fetch(`${apiBaseUrl}/spotify/get_artist/${id}`, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -19,14 +21,82 @@ const ArtistPage = () => {
             })
             if(response.ok) {
                 const data = await response.json()
-                
+                // console.log(data)
                 setArtist(data.artist_data)
                 setPopularTracks(data.popular_tracks)
                 setRelatedArtists(data.related_artists)
             }
         }
         getArtistData()
+
+        //Check user's following status if logged in
+        if(localStorage.getItem('userInfo')){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getFavoriteStatus = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/follow_status/artist/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    if(data.message === 'following'){
+                        setFollowing(true)
+                    } else {
+                        setFollowing(false)
+                    }
+                }
+            }
+            getFavoriteStatus()
+        }
     }, [])
+
+    const handleFollowButton = async (command) => {
+        if(command === 'follow'){
+            //set up fetch to follow item endpoint
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const response = await fetch(`${apiBaseUrl}/profile/follow_item`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: artist.name,
+                    id: artist.id,
+                    image: artist.images[0].url,
+                    type: 'Artist'
+                })
+            })
+            if(response.ok) {
+                setFollowing(true)
+            } else {
+                const error = await response.json()
+                console.error(error)
+            }
+        } else {
+            //set up fetch to unfollow item endpoint
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const response = await fetch(`${apiBaseUrl}/profile/unfollow_item`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id: artist.id,
+                    type: 'Artist'
+                })
+            })
+            if(response.ok) {
+                setFollowing(false)
+            } else {
+                const error = await response.json()
+                console.error(error)
+            }
+        }
+    }
     
     return (
         <div>
@@ -45,6 +115,10 @@ const ArtistPage = () => {
             }
 
             {/* conditional to check if user is logged in */}
+            {!localStorage.getItem('userInfo') && <div className='bg-blue-500'>Not logged in</div>}
+            {localStorage.getItem('userInfo') && following ? 
+                <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button> : 
+                <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
 
             {popularTracks && 
                 <div>

@@ -6,13 +6,14 @@ const PlaylistPage = () => {
     const { id } = useParams()
     const [playlist, setPlaylist] = useState(null)
     const [playlistTracks, setPlaylistTracks] = useState(null)
+    const [following, setFollowing] = useState(null)
     
-    const offset = searchParams.get('offset') ? searchParams.get('offset') : 0
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+    const offset = Number(searchParams.get('offset')) ? Number(searchParams.get('offset')) : 0
 
     useEffect(() => {
         if(offset) {
             const getPlaylistData = async () => {
-                const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
                 const response = await fetch(`${apiBaseUrl}/spotify/get_playlist/${id}?offset=${offset}`, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -43,13 +44,80 @@ const PlaylistPage = () => {
             }
             getPlaylistData()
         }
-        
+
+        //Check user's following status if logged in
+        if(localStorage.getItem('userInfo')){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getFavoriteStatus = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/follow_status/playlist/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    if(data.message === 'following'){
+                        setFollowing(true)
+                    } else {
+                        setFollowing(false)
+                    }
+                }
+            }
+            getFavoriteStatus()
+        }
     }, [searchParams])
 
     const handleShowMore = () => {
         const newParams = new URLSearchParams(searchParams);
         newParams.set('offset', offset + 100)
         setSearchParams(newParams);
+    }
+
+    const handleFollowButton = async (command) => {
+        if(command === 'follow') {
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const response = await fetch(`${apiBaseUrl}/profile/follow_item`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: playlist.name,
+                    id: playlist.id,
+                    image: playlist.images[0].url,
+                    creator: playlist.owner.id,
+                    description: playlist.description,
+                    type: 'Playlist'
+                })
+            })
+            if(response.ok) {
+                setFollowing(true)
+            } else {
+                const error = await response.json()
+                console.error(error)
+            }
+        } else {
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const response = await fetch(`${apiBaseUrl}/profile/unfollow_item`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id: playlist.id,
+                    type: 'Playlist'
+                })
+            })
+            if(response.ok) {
+                setFollowing(false)
+            } else {
+                const error = await response.json()
+                console.error(error)
+            }
+        }
     }
 
     return (
@@ -66,11 +134,17 @@ const PlaylistPage = () => {
             }
 
             {/* conditional to check if user is logged in */}
+            {!localStorage.getItem('userInfo') && <div className='bg-blue-500'>Not logged in</div>}
+            {localStorage.getItem('userInfo') && following ? 
+                <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button> : 
+                <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
 
             {playlistTracks && 
                 <div>
                     {playlistTracks.map((track, index) => {
-                        return <Link to={`/track/${track.track.id}`} key={index}>{track.track.name}</Link>
+                        if(track.track.id && track.track.type){
+                            return <Link to={`/track/${track.track.id}`} key={index}>{track.track.name}</Link>
+                        }
                     })}
                 </div>
             }

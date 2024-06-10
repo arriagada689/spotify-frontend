@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import CategoryCard from '../components/CategoryCard.jsx'
 import { useSearchParams, Link } from 'react-router-dom';
 import ArtistCard from '../components/ArtistCard.jsx';
@@ -138,112 +138,64 @@ const staticCategories = [
 
 const Search = () => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [categories, setCategories] = useState(staticCategories)
+    const query = searchParams.get('query')
+    const type = searchParams.get('type')
+    const offset = Number(searchParams.get('offset')) || 0;
+
+    const [categories, setCategories] = useState(!query ? staticCategories : null)
     const [input, setInput] = useState('')
+
     const [trackData, setTrackData] = useState(null)
     const [artistData, setArtistData] = useState(null)
     const [albumData, setAlbumData] = useState(null)
     const [playlistData, setPlaylistData] = useState(null)
     const [audiobookData, setAudiobookData] = useState(null)
 
-    const query = searchParams.get('query')
-    const type = searchParams.get('type')
-    const offset = searchParams.get('offset')
+    
     
     useEffect(() => {
-        
         const searchRequest = async () => {
-            const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-            if(query && type && offset) {
-                const response = await fetch(`${apiBaseUrl}/spotify/search?query=${query}&type=${type}&offset=${offset}`, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                if(response.ok) {
-                    const data = await response.json()
-                    if(type === 'artist') {
-                        setArtistData(data.artists)
-                        setCategories(null)
-                    } else if(type === 'album') {
-                        setAlbumData(data.albums)
-                        setCategories(null)
-                    } else if(type === 'track') {
-                        setTrackData(data.tracks)
-                        setCategories(null)
-                    } else if(type === 'playlist') {
-                        setPlaylistData(data.playlists)
-                        setCategories(null)
-                    } else if(type === 'audiobook') {
-                        setAudiobookData(data.audiobooks)
-                        setCategories(null)
-                    } 
+            if(query) {
+                let url = `${import.meta.env.VITE_API_BASE_URL}/spotify/search`;
+                
+                //attach query params
+                if(query && type && offset){
+                    url += `?query=${query}&type=${type}&offset=${offset}`
                 }
-            } else if(query && type){
-                const response = await fetch(`${apiBaseUrl}/spotify/search?query=${query}&type=${type}`, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                if(response.ok) {
-                    const data = await response.json()
-                    if(type === 'artist') {
-                        setArtistData(data.artists)
-                        setCategories(null)
-                    } else if(type === 'album') {
-                        setAlbumData(data.albums)
-                        setCategories(null)
-                    } else if(type === 'track') {
-                        setTrackData(data.tracks)
-                        setCategories(null)
-                    } else if(type === 'playlist') {
-                        setPlaylistData(data.playlists)
-                        setCategories(null)
-                    } else if(type === 'audiobook') {
-                        setAudiobookData(data.audiobooks)
-                        setCategories(null)
-                    } 
+                else if(query && type){
+                    url += `?query=${query}&type=${type}`
                 }
-            } else if(query) {
-                const response = await fetch(`${apiBaseUrl}/spotify/search?query=${query}`, {
-                    headers: {
-                        'Content-Type': 'application/json'
+                else if(query) {
+                    url += `?query=${query}`
+                }
+
+                const response = await fetch(url, {
+                    headers: { 
+                        'Content-Type': 'application/json' 
                     }
                 })
                 if(response.ok) {
-                    const data = await response.json()
-                    setCategories(null)
-                    setArtistData(data.artists)
-                    setAlbumData(data.albums)
-                    setTrackData(data.tracks)
-                    setPlaylistData(data.playlists)
-                    setAudiobookData(data.audiobooks)
+                    const data = await response.json();
+                    
+                    setCategories(null);
+                    setArtistData(data.artists);
+                    setAlbumData(data.albums);
+                    setTrackData(data.tracks);
+                    setPlaylistData(data.playlists);
+                    setAudiobookData(data.audiobooks);
                 }
             }
         }
         searchRequest()
-        
-    }, [searchParams])
+    }, [query])
 
     const handleSearch = (event) => {
         event.preventDefault(); 
         setSearchParams({ query: input });
     };
-
-    const handleTypeButton = (type) => {
-        
-        const newParams = new URLSearchParams(searchParams);
-        if (type) {
-            newParams.set('type', type);
-        } else {
-            newParams.delete('type');
-        }
-        setSearchParams(newParams);
-    }
     
     return (
         <div>
-            {/* search bar here */}
             <form onSubmit={handleSearch}>
                 <input
                     type="text"
@@ -253,17 +205,7 @@ const Search = () => {
                 />
                 <button type="submit"><FaSearch /></button>
             </form>
-            {!categories && 
-                <div className='flex space-x-2'>
-                    <button className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} onClick={() => handleTypeButton('')} >All</button>
-                    <button className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} onClick={() => handleTypeButton('artist')}>Artists</button>
-                    <button className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} onClick={() => handleTypeButton('album')}>Albums</button>
-                    <button className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} onClick={() => handleTypeButton('track')}>Songs</button>
-                    <button className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} onClick={() => handleTypeButton('playlist')}>Playlists</button>
-                    <button className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} onClick={() => handleTypeButton('audiobook')}>Audiobooks</button>
-                </div>
-            }
-            
+
             {categories && 
                 <div>
                     <div className='text-xl'>Browse all</div>
@@ -272,53 +214,83 @@ const Search = () => {
                     })}
                 </div>
             }
+
+            {!categories && 
+                <div className='flex space-x-2'>
+                    <a href={`/search/?query=${query}`} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >All</a>
+                    <a href={`/search/?query=${query}&type=artist`} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Artists</a>
+                    <a href={`/search/?query=${query}&type=album`} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Albums</a>
+                    <a href={`/search/?query=${query}&type=track`} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Songs</a>
+                    <a href={`/search/?query=${query}&type=playlist`} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Playlists</a>
+                    <a href={`/search/?query=${query}&type=audiobook`} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Audiobooks</a>
+                </div>
+            }
             
             {trackData && !categories && (type === 'track' || !type ) &&
                 <div>
                     <div className="text-xl">Tracks</div>
-                    {trackData.map((track, index) => {
+                    {trackData.items.map((track, index) => {
                         return <Link to={`/track/${track.id}`} key={index}>{track.name}</Link>
                     })}
+
+                    {!categories && type === 'track' && trackData.total > (offset + 50) &&
+                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                    }
                 </div>
             }
             
             {artistData && !categories && (type === 'artist' || !type ) &&
                 <div>
                     <div className="text-xl">Artists</div>
-                    {artistData.map((artist, index) => {
+                    {artistData.items.map((artist, index) => {
                         return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
                     })}
+
+                    {!categories && type === 'artist' && artistData.total > (offset + 50) &&
+                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                    }
                 </div>
             }
             
             {albumData && !categories && (type === 'album' || !type ) &&
                 <div>
                     <div className="text-xl">Albums</div>
-                    {albumData.map((album, index) => {
+                    {albumData.items.map((album, index) => {
                         return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id}/>
                     })}
+
+                    {!categories && type === 'album' && albumData.total > (offset + 50) &&
+                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                    }
                 </div>
-                
             }
             
             {playlistData && !categories && (type === 'playlist' || !type ) &&
                 <div>
                     <div className="text-xl">Playlists</div>
-                    {playlistData.map((playlist, index) => {
-                        return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/> 
+                    {playlistData.items.map((playlist, index) => {
+                        if(playlist.owner) {
+                            return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
+                        } 
                     })}
+                    
+                    {!categories && type === 'playlist' && playlistData.total > (offset + 50) &&
+                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                    }
                 </div>
-                
             }
             
             {audiobookData && !categories && (type === 'audiobook' || !type ) &&
                 <div>
                     <div className="text-xl">Audiobooks</div>
-                    {audiobookData.map((audiobook, index) => {
+                    {audiobookData.items.map((audiobook, index) => {
                         return <AudiobookCard key={index} name={audiobook.name} author={audiobook.authors[0].name} image={audiobook.images[0].url} id={audiobook.id} />
                     })}
+
+                    {!categories && type === 'audiobook' && audiobookData.total > (offset + 50) &&
+                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                    }
                 </div>
-                
             }
         </div>
     )
