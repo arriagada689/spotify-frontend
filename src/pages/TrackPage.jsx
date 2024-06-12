@@ -10,7 +10,6 @@ const TrackPage = () => {
     const [userList, setUserList] = useState(null)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-    const token = JSON.parse(localStorage.getItem('userInfo')).token
 
     useEffect(() => {
         const getTrackData = async () => {
@@ -31,6 +30,7 @@ const TrackPage = () => {
 
     useEffect(() => {
         //if logged in, grab all the user's playlists for adding to playlist functionality
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
         if(localStorage.getItem('userInfo')){
             const getUserList = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/user_list/track/${id}`, {
@@ -49,8 +49,41 @@ const TrackPage = () => {
         
     }, [update])
 
+    useEffect(() => {
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        if(localStorage.getItem('userInfo') && track){
+            const addToRecentlyViewed = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/add_recently_viewed`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: track.name,
+                        id: track.id,
+                        image: track.album.images[0].url,
+                        artist: track.artists[0].name,
+                        album: track.album.name,
+                        duration: track.duration_ms,
+                        type: 'Track'
+                    })
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    // console.log(data)
+                } else {
+                    const error = await response.json()
+                    console.log(error)
+                }
+            }
+            addToRecentlyViewed()
+        }
+    }, [track])
+
     const handlePlaylistFunctionality = async (user_playlist_id, command) => {
         //handle update state variable
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
         if(command === 'add') {
             const response = await fetch(`${apiBaseUrl}/profile/add_item`, {
                 method: 'POST',

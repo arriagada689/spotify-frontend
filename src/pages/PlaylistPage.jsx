@@ -45,8 +45,11 @@ const PlaylistPage = () => {
             getPlaylistData()
         }
 
+    }, [searchParams])
+
+    useEffect(() => {
         //Check user's following status if logged in
-        if(localStorage.getItem('userInfo')){
+        if(localStorage.getItem('userInfo') && playlist){
             const token = JSON.parse(localStorage.getItem('userInfo')).token
             const getFavoriteStatus = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/follow_status/playlist/${id}`, {
@@ -65,8 +68,34 @@ const PlaylistPage = () => {
                 }
             }
             getFavoriteStatus()
+
+            const addToRecentlyViewed = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/add_recently_viewed`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: playlist.name,
+                        id: playlist.id,
+                        image: playlist.images[0].url,
+                        creator: playlist.owner.id,
+                        description: playlist.description,
+                        type: 'Playlist'
+                    })
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    // console.log(data)
+                } else {
+                    const error = await response.json()
+                    console.log(error)
+                }
+            }
+            addToRecentlyViewed()
         }
-    }, [searchParams])
+    }, [playlist])
 
     const handleShowMore = () => {
         const newParams = new URLSearchParams(searchParams);

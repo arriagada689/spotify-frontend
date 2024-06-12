@@ -28,10 +28,14 @@ const ArtistPage = () => {
             }
         }
         getArtistData()
+        
+    }, [])
 
+    useEffect(() => {
         //Check user's following status if logged in
-        if(localStorage.getItem('userInfo')){
-            const token = JSON.parse(localStorage.getItem('userInfo')).token
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+
+        if(localStorage.getItem('userInfo') && artist){
             const getFavoriteStatus = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/follow_status/artist/${id}`, {
                     headers: {
@@ -49,8 +53,32 @@ const ArtistPage = () => {
                 }
             }
             getFavoriteStatus()
+
+            const addToRecentlyViewed = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/add_recently_viewed`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: artist.name,
+                        id: artist.id,
+                        image: artist.images.length > 0 ? artist.images[0].url : 'default',
+                        type: 'Artist'
+                    })
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    // console.log(data)
+                } else {
+                    const error = await response.json()
+                    console.log(error)
+                }
+            }
+            addToRecentlyViewed()
         }
-    }, [])
+    }, [artist])
 
     const handleFollowButton = async (command) => {
         if(command === 'follow'){
@@ -65,7 +93,7 @@ const ArtistPage = () => {
                 body: JSON.stringify({
                     name: artist.name,
                     id: artist.id,
-                    image: artist.images[0].url,
+                    image: artist.images.length > 0 ? artist.images[0].url : 'default',
                     type: 'Artist'
                 })
             })
@@ -120,7 +148,7 @@ const ArtistPage = () => {
                 <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button> : 
                 <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
 
-            {popularTracks && 
+            {popularTracks && popularTracks.length > 0 &&
                 <div>
                     <div className="text-xl"><span className='text-green-500'>{artist ? artist.name : ''}</span>'s top tracks</div>
                     {popularTracks && 
@@ -131,12 +159,12 @@ const ArtistPage = () => {
                 </div>
             }
 
-            {relatedArtists && 
+            {relatedArtists && relatedArtists.length > 0 &&
                 <div>
                     <div className="text-xl">Related artists</div>
                     {relatedArtists && 
                         relatedArtists.map((artist, index) => {
-                            return <ArtistCard key={index} name={artist.name} image={artist.images[0].url} id={artist.id}/>
+                            return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
                         })
                     }
                 </div>

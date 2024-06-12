@@ -23,8 +23,12 @@ const AlbumPage = () => {
         }
         getAlbumData()
 
+        
+    }, [])
+
+    useEffect(() => {
         //Check user's following status if logged in
-        if(localStorage.getItem('userInfo')) {
+        if(localStorage.getItem('userInfo') && album) {
             const token = JSON.parse(localStorage.getItem('userInfo')).token
             const getFavoriteStatus = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/follow_status/album/${id}`, {
@@ -46,8 +50,33 @@ const AlbumPage = () => {
                 }
             }
             getFavoriteStatus()
+
+            const addToRecentlyViewed = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/add_recently_viewed`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        name: album.name,
+                        id: album.id,
+                        image: album.images[0].url,
+                        artist: album.artists[0].name,
+                        type: 'Album'
+                    })
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    // console.log(data)
+                } else {
+                    const error = await response.json()
+                    console.log(error)
+                }
+            }
+            addToRecentlyViewed()
         }
-    }, [])
+    }, [album])
 
     const handleFollowButton = async (command) => {
         if(command === 'follow') {

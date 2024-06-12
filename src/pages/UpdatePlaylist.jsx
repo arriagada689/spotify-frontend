@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import { Form, useNavigate, useParams } from 'react-router-dom'
 
 const UpdatePlaylist = () => {
@@ -10,10 +9,10 @@ const UpdatePlaylist = () => {
 
     const navigate = useNavigate();
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-    const token = JSON.parse(localStorage.getItem('userInfo')).token
 
     useEffect(() => {
         const getUserPlaylistData = async () => {
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
             const response = await fetch(`${apiBaseUrl}/profile/get_user_playlist/${id}`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -31,7 +30,7 @@ const UpdatePlaylist = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault()
-        
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
         try {
             const response = await fetch(`${apiBaseUrl}/profile/update_user_playlist`, {
                 method: 'PUT',

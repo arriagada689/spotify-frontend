@@ -23,6 +23,10 @@ import CreatePlaylist from './pages/CreatePlaylist.jsx'
 import UserPlaylistPage from './pages/UserPlaylistPage.jsx'
 import UpdatePlaylist from './pages/UpdatePlaylist.jsx'
 import ConfirmPlaylistDelete from './pages/ConfirmPlaylistDelete.jsx'
+import RecentSearchesPage from './pages/RecentSearchesPage.jsx'
+import Profile from './pages/Profile.jsx'
+import UpdateProfile from './pages/UpdateProfile.jsx'
+import ConfirmProfileDelete from './pages/ConfirmProfileDelete.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,6 +49,10 @@ const router = createBrowserRouter(
       <Route path='/update_playlist/:id' element={<UpdatePlaylist />}/>
       <Route path='/user_playlist/:id' element={<UserPlaylistPage />}/>
       <Route path='/confirm_playlist_delete/:id' element={<ConfirmPlaylistDelete />}/>
+      <Route path='/recent_searches' element={<RecentSearchesPage />}/>
+      <Route path='/profile' element={<Profile />}/>
+      <Route path='/update_profile' element={<UpdateProfile />}/>
+      <Route path='/confirm_delete_profile' element={<ConfirmProfileDelete />}/>
     </Route>
   )
 )

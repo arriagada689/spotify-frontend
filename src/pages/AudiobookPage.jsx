@@ -11,7 +11,6 @@ const AudiobookPage = () => {
     const [userList, setUserList] = useState(null)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
-    const token = JSON.parse(localStorage.getItem('userInfo')).token
 
     useEffect(() => {
         const getAudiobookData = async () => {
@@ -30,8 +29,31 @@ const AudiobookPage = () => {
         }
         getAudiobookData()
 
-        //Check user's following status if logged in
+    }, [])
+
+    useEffect(() => {
+        //if logged in, grab all the user's playlists for adding to playlist functionality
         if(localStorage.getItem('userInfo')){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getUserList = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/user_list/audiobook/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    setUserList(data.user_list)
+                }
+            }
+            getUserList()
+        }
+    }, [update])
+
+    useEffect(() => {
+        //Check user's following status if logged in
+        if(localStorage.getItem('userInfo') && audiobook){
             const token = JSON.parse(localStorage.getItem('userInfo')).token
             const getFavoriteStatus = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/follow_status/audiobook/${id}`, {
@@ -50,27 +72,34 @@ const AudiobookPage = () => {
                 }
             }
             getFavoriteStatus()
-        }
-    }, [])
 
-    useEffect(() => {
-        //if logged in, grab all the user's playlists for adding to playlist functionality
-        if(localStorage.getItem('userInfo')){
-            const getUserList = async () => {
-                const response = await fetch(`${apiBaseUrl}/profile/user_list/audiobook/${id}`, {
+            const addToRecentlyViewed = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/add_recently_viewed`, {
+                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
-                    }
+                    },
+                    body: JSON.stringify({
+                        name: audiobook.name,
+                        id: audiobook.id,
+                        image: audiobook.images[0].url,
+                        author: audiobook.authors[0].name,
+                        duration: duration,
+                        type: 'Audiobook'
+                    })
                 })
                 if(response.ok) {
                     const data = await response.json()
-                    setUserList(data.user_list)
+                    // console.log(data)
+                } else {
+                    const error = await response.json()
+                    console.log(error)
                 }
             }
-            getUserList()
+            addToRecentlyViewed()
         }
-    }, [update])
+    }, [audiobook])
 
     const handleFollowButton = async (command) => {
         if(command === 'follow'){

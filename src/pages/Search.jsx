@@ -144,6 +144,8 @@ const Search = () => {
 
     const [categories, setCategories] = useState(!query ? staticCategories : null)
     const [input, setInput] = useState('')
+    const [update, setUpdate] = useState(0)
+    const [recentlyViewed, setRecentlyViewed] = useState(null)
 
     const [trackData, setTrackData] = useState(null)
     const [artistData, setArtistData] = useState(null)
@@ -151,7 +153,7 @@ const Search = () => {
     const [playlistData, setPlaylistData] = useState(null)
     const [audiobookData, setAudiobookData] = useState(null)
 
-    
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     
     useEffect(() => {
         const searchRequest = async () => {
@@ -189,6 +191,30 @@ const Search = () => {
         searchRequest()
     }, [query])
 
+    useEffect(() => {
+        //if user is logged in, display recently viewed
+        if(localStorage.getItem('userInfo')){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getRecentlyViewed = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/get_recently_viewed`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    // console.log(data)
+                    setRecentlyViewed(data)
+                } else {
+                    const error = await response.json()
+                    console.error(error)
+                }
+            }
+            getRecentlyViewed()
+        }
+    }, [update])
+
     const handleSearch = (event) => {
         event.preventDefault(); 
         setSearchParams({ query: input });
@@ -196,6 +222,7 @@ const Search = () => {
     
     return (
         <div>
+            {/* search bar */}
             <form onSubmit={handleSearch}>
                 <input
                     type="text"
@@ -206,6 +233,30 @@ const Search = () => {
                 <button type="submit"><FaSearch /></button>
             </form>
 
+            {/* recently viewed section */}
+            {recentlyViewed && 
+                <div>
+                    {recentlyViewed && recentlyViewed.length > 5 && <Link to='/recent_searches' className='underline text-xl'>Recent searches</Link>}
+                    {recentlyViewed && recentlyViewed.length <= 5 && recentlyViewed.length > 0 && <div className="text-xl">Recent searches</div>}
+                    
+                    {recentlyViewed.map((item, index) => {
+                        // console.log(item)
+                        if(item.type === 'Artist'){
+                            return <ArtistCard key={index} name={item.name} id={item.id} image={item.image}/>
+                        } else if(item.type === 'Album'){
+                            return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
+                        } else if(item.type === 'Playlist'){
+                            return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.owner}/>
+                        } else if(item.type === 'Audiobook'){
+                            return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
+                        } else if(item.type === 'Track'){
+                            return <Link to={`/track/${item.id}`} key={index}>{item.name}</Link>
+                        }
+                    })}
+                </div>
+            }
+
+            {/* category section */}
             {categories && 
                 <div>
                     <div className='text-xl'>Browse all</div>
@@ -215,6 +266,7 @@ const Search = () => {
                 </div>
             }
 
+            {/* results section */}
             {!categories && 
                 <div className='flex space-x-2'>
                     <a href={`/search/?query=${query}`} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >All</a>

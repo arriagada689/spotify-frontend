@@ -44,7 +44,7 @@ const SideBar = () => {
                         } else if(item.type === 'Album'){
                             return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
                         } else if(item.type === 'Playlist'){
-                            return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.owner}/>
+                            return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
                         } else if(item.type === 'Audiobook'){
                             return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
                         } else if(item.type === 'UserPlaylist'){
