@@ -178,7 +178,6 @@ const Search = () => {
                 })
                 if(response.ok) {
                     const data = await response.json();
-                    
                     setCategories(null);
                     setArtistData(data.artists);
                     setAlbumData(data.albums);

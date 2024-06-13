@@ -49,6 +49,7 @@ const UpdateProfile = () => {
                         required
                         className='border border-gray-400 p-1 w-64 md:w-[450px]'
                     />
+                    <div className='text-xs'>Username must be 150 characters or fewer and contain only letters, digits and @/./+/-/_.</div>
                 </div>
                 <button type="submit" className='bg-blue-700 w-fit text-white py-2 px-3 rounded mb-4'>Update</button>
             </Form>

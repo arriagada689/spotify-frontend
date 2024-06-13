@@ -151,6 +151,7 @@ const AudiobookPage = () => {
 
     const handlePlaylistFunctionality = async (user_playlist_id, command) => {
         //handle update state variable
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
         if(command === 'add') {
             const response = await fetch(`${apiBaseUrl}/profile/add_item`, {
                 method: 'POST',

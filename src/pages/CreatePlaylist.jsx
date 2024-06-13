@@ -54,7 +54,10 @@ const CreatePlaylist = () => {
                         required
                         className='border border-gray-400 p-1 w-64 md:w-[450px]'
                     />
+                    <div className='text-xs'>50 character limit</div>
                 </div>
+                
+
                 <div className='flex flex-col space-y-2 mb-4'>
                     <label htmlFor="password">Description:</label>
                     <input
@@ -62,10 +65,11 @@ const CreatePlaylist = () => {
                         id="description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
-                        required
                         className='border border-gray-400 p-1 w-64 md:w-[450px]'
                     />
+                    <div className='text-xs'>(Optional)</div>
                 </div>
+                
                 <button type="submit" className='bg-blue-700 w-fit text-white py-2 px-3 rounded mb-4'>Create</button>
             </Form>
         </div>
