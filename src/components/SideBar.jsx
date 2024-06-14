@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Link } from 'react-router-dom'
 import ArtistCard from './ArtistCard'
 import AlbumCard from './AlbumCard'
 import PlaylistCard from './PlaylistCard'
 import AudiobookCard from './AudiobookCard'
 import { IoMdClose } from "react-icons/io";
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const SideBar = () => {
     const [arr, setArr] = useState(null)
     const [type, setType] = useState('All')
+    const { sidebarUpdate } = useContext(AuthContext);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     
     useEffect(() => {
@@ -23,13 +25,16 @@ const SideBar = () => {
                 })
                 if(response.ok) {
                     const data = await response.json()
+                    // console.log(data)
                     setArr(data)
                 }
             }
             getSidebarData()
+        } else {
+            setArr(null)
         }
         
-    }, [type])
+    }, [type, sidebarUpdate, localStorage.getItem('userInfo')])
 
     const handleTypeClick = (type) => {
         setType(type)

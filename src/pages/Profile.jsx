@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import spotifyImage from '../assets/spotify_default2.jpg';
 import PlaylistCard from '../components/PlaylistCard';
+import ArtistCard from '../components/ArtistCard';
+import AlbumCard from '../components/AlbumCard';
+import AudiobookCard from '../components/AudiobookCard';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState(null)
@@ -36,9 +39,13 @@ const Profile = () => {
             <Link to='/update_profile' className='bg-green-400'>Update profile</Link>
             <Link to='/confirm_delete_profile' className='bg-red-400'>Delete profile</Link>
 
+            {/* Saved Playlists section */}
             {profileData && profileData.saved_playlists.length > 0 &&
                 <div>
-                    <div className="text-xl">Saved playlists</div>
+                    {profileData.saved_playlists.length >= 4 ? 
+                        <Link to='/saved_playlists' className='text-xl hover:underline'>Saved playlists</Link> :
+                        <div className='text-xl'>Saved playlists</div>
+                    }
 
                     {profileData.saved_playlists.map((item, index) => {
                         if(item.type === 'Playlist'){
@@ -49,6 +56,46 @@ const Profile = () => {
                     })}
                 </div>
             }
+
+            {/* Followed artists section */}
+            {profileData && profileData.followed_artists.length > 0 &&
+                <div>
+                    {profileData.followed_artists.length >= 4 ? 
+                        <Link to='/followed_artists' className='text-xl hover:underline'>Followed artists</Link> :
+                        <div className='text-xl'>Followed artists</div>
+                    }
+                    {profileData.followed_artists.map((item, index) => {
+                        return <ArtistCard key={index} name={item.name} id={item.id} image={item.image}/>
+                    })}
+                </div>
+            }
+
+            {/* Followed albums section */}
+            {profileData && profileData.followed_albums.length > 0 &&
+                <div>
+                    {profileData.followed_albums.length >= 4 ? 
+                        <Link to='/followed_albums' className='text-xl hover:underline'>Followed albums</Link> :
+                        <div className='text-xl'>Followed albums</div>
+                    }
+                    {profileData.followed_albums.map((item, index) => {
+                        return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
+                    })}
+                </div>
+            }
+
+            {/* Followed audiobooks section */}
+            {profileData && profileData.followed_audiobooks.length > 0 &&
+                <div>
+                    {profileData.followed_audiobooks.length >= 4 ? 
+                        <Link to='/followed_audiobooks' className='text-xl hover:underline'>Followed audiobooks</Link> :
+                        <div className='text-xl'>Followed audiobooks</div>
+                    }
+                    {profileData.followed_audiobooks.map((item, index) => {
+                        return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
+                    })}
+                </div>
+            }
+
         </div>
     )
 }

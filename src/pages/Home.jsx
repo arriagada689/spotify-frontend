@@ -7,11 +7,13 @@ import { Link } from 'react-router-dom'
 const Home = () => {
     const [popularArtists, setPopularArtists] = useState(null)  
     const [popularAlbums, setPopularAlbums] = useState(null)  
-    const [featuredPlaylists, setFeaturedPlaylists] = useState(null)  
+    const [featuredPlaylists, setFeaturedPlaylists] = useState(null)
+    const [savedPlaylists, setSavedPlaylists] = useState(null)
 
     useEffect(() => {
-      const getHomeData = async () => {
-        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
+      const getHomeData = async () => {  
         const response = await fetch(`${apiBaseUrl}/spotify/home`, {
           headers: {
             'Content-Type': 'application/json'
@@ -25,10 +27,43 @@ const Home = () => {
         }
       }
       getHomeData()
+
+      if(localStorage.getItem('userInfo')){
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        const getData = async () => {
+          const response = await fetch(`${apiBaseUrl}/profile/get_sub_profile_data`, {
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`
+              }
+          })
+          if(response.ok) {
+              const data = await response.json()
+              setSavedPlaylists(data.saved_playlists)
+          }
+        }
+        getData()
+      }
     }, [])
 
     return (
       <div>
+
+        {/* Saved playlists section */}
+        {savedPlaylists && savedPlaylists.length >= 4 && 
+          <div>
+            <Link to='/saved_playlists' className='text-xl hover:underline'>Saved playlists</Link>
+          
+            {savedPlaylists.map((item, index) => {
+              if(item.type === 'Playlist' && index < 8){
+                return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
+              } else if(item.type === 'UserPlaylist' && index < 8){
+                return <PlaylistCard key={index} name={item.name} id={item.id} image={'default'} owner={item.creator}/>
+              }
+            })}
+          </div>
+        }
+
         <Link to='/popular_artists' className='underline'>Popular artists</Link>
         {popularArtists && 
           popularArtists.map((artist, index) => {

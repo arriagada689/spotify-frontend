@@ -179,6 +179,7 @@ const Search = () => {
                 })
                 if(response.ok) {
                     const data = await response.json();
+                    // console.log(data)
                     setCategories(null);
                     setArtistData(data.artists);
                     setAlbumData(data.albums);
@@ -249,8 +250,8 @@ const Search = () => {
             </form>
 
             {/* recently viewed section */}
-            {recentlyViewed && 
-                <div>
+            {recentlyViewed && categories &&
+                <div className='flex flex-col'>
                     {recentlyViewed && recentlyViewed.length > 5 && <Link to='/recent_searches' className='underline text-xl'>Recent searches</Link>}
                     {recentlyViewed && recentlyViewed.length <= 5 && recentlyViewed.length > 0 && <div className="text-xl">Recent searches</div>}
                     
@@ -290,12 +291,6 @@ const Search = () => {
                     <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Songs</button>
                     <button onClick={() => handleTypeClick('playlist')} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Playlists</button>
                     <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Audiobooks</button>
-                    {/* <a href={`/search/?query=${query}`} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >All</a>
-                    <a href={`/search/?query=${query}&type=artist`} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Artists</a>
-                    <a href={`/search/?query=${query}&type=album`} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Albums</a>
-                    <a href={`/search/?query=${query}&type=track`} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Songs</a>
-                    <a href={`/search/?query=${query}&type=playlist`} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Playlists</a>
-                    <a href={`/search/?query=${query}&type=audiobook`} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Audiobooks</a> */}
                 </div>
             }
             
@@ -303,11 +298,12 @@ const Search = () => {
                 <div>
                     <div className="text-xl">Tracks</div>
                     {trackData.items.map((track, index) => {
-                        return <Link to={`/track/${track.id}`} key={index}>{track.name}</Link>
+                        if(track){
+                            return <Link to={`/track/${track.id}`} key={index}>{track.name}</Link>
+                        }
                     })}
 
                     {!categories && type === 'track' && trackData.total > (offset + 50) &&
-                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
                         <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
                     }
                 </div>
@@ -317,7 +313,9 @@ const Search = () => {
                 <div>
                     <div className="text-xl">Artists</div>
                     {artistData.items.map((artist, index) => {
-                        return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
+                        if(artist){
+                            return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
+                        }
                     })}
 
                     {!categories && type === 'artist' && artistData.total > (offset + 50) &&
@@ -331,7 +329,9 @@ const Search = () => {
                 <div>
                     <div className="text-xl">Albums</div>
                     {albumData.items.map((album, index) => {
-                        return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id}/>
+                        if(album){
+                            return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id}/>
+                        }
                     })}
 
                     {!categories && type === 'album' && albumData.total > (offset + 50) &&
@@ -345,7 +345,7 @@ const Search = () => {
                 <div>
                     <div className="text-xl">Playlists</div>
                     {playlistData.items.map((playlist, index) => {
-                        if(playlist.owner) {
+                        if(playlist && playlist.owner) {
                             return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
                         } 
                     })}
@@ -361,7 +361,9 @@ const Search = () => {
                 <div>
                     <div className="text-xl">Audiobooks</div>
                     {audiobookData.items.map((audiobook, index) => {
-                        return <AudiobookCard key={index} name={audiobook.name} author={audiobook.authors[0].name} image={audiobook.images[0].url} id={audiobook.id} />
+                        if(audiobook && audiobook.name && audiobook.authors.length > 0){
+                            return <AudiobookCard key={index} name={audiobook.name} author={audiobook.authors[0].name} image={audiobook.images[0].url} id={audiobook.id} />
+                        }
                     })}
 
                     {!categories && type === 'audiobook' && audiobookData.total > (offset + 50) &&

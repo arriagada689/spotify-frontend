@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import ArtistCard from '../components/ArtistCard.jsx'
 import spotifyImage from '../assets/spotify_default2.jpg';
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const ArtistPage = () => {
     const { id } = useParams()
@@ -9,6 +10,7 @@ const ArtistPage = () => {
     const [popularTracks, setPopularTracks] = useState(null)
     const [relatedArtists, setRelatedArtists] = useState(null)
     const [following, setFollowing] = useState(null)
+    const { updateSidebar } = useContext(AuthContext)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -99,6 +101,7 @@ const ArtistPage = () => {
             })
             if(response.ok) {
                 setFollowing(true)
+                updateSidebar()
             } else {
                 const error = await response.json()
                 console.error(error)
@@ -119,6 +122,7 @@ const ArtistPage = () => {
             })
             if(response.ok) {
                 setFollowing(false)
+                updateSidebar()
             } else {
                 const error = await response.json()
                 console.error(error)

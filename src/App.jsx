@@ -29,6 +29,10 @@ import UpdateProfile from './pages/UpdateProfile.jsx'
 import ConfirmProfileDelete from './pages/ConfirmProfileDelete.jsx'
 import RequireAuth from './components/RequireAuth.jsx'
 import NotFound from './pages/NotFound.jsx'
+import SavedPlaylistsPage from './pages/SavedPlaylistsPage.jsx'
+import FollowedArtists from './pages/FollowedArtists.jsx'
+import FollowedAlbums from './pages/FollowedAlbums.jsx'
+import FollowedAudiobooks from './pages/FollowedAudiobooks.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -54,6 +58,10 @@ const router = createBrowserRouter(
       <Route path='/profile' element={<RequireAuth> <Profile /> </RequireAuth>}/>
       <Route path='/update_profile' element={<RequireAuth> <UpdateProfile /> </RequireAuth>}/>
       <Route path='/confirm_delete_profile' element={<RequireAuth> <ConfirmProfileDelete /> </RequireAuth>}/>
+      <Route path='/saved_playlists' element={<RequireAuth> <SavedPlaylistsPage /> </RequireAuth>}/>
+      <Route path='/followed_artists' element={<RequireAuth> <FollowedArtists /> </RequireAuth>}/>
+      <Route path='/followed_albums' element={<RequireAuth> <FollowedAlbums /> </RequireAuth>}/>
+      <Route path='/followed_audiobooks' element={<RequireAuth> <FollowedAudiobooks /> </RequireAuth>}/>
       <Route path='*' element={<NotFound />}/>
     </Route>
   )

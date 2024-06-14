@@ -5,6 +5,7 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState({});
+    const [sidebarUpdate, setSidebarUpdate] = useState(0);
 
     //Check local storage for userInfo and set isLoggedIn
     useEffect(() => {
@@ -15,6 +16,10 @@ export const AuthProvider = ({ children }) => {
             setIsLoggedIn(true);
         }
     }, []);
+
+    const updateSidebar = () => {
+        setSidebarUpdate(prev => prev + 1)
+    }
 
     const loginUser = (data) => {
         localStorage.setItem('userInfo', JSON.stringify(data));
@@ -41,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, userData, loginUser, logoutUser, registerUser, deleteProfile }}>
+        <AuthContext.Provider value={{ isLoggedIn, userData, loginUser, logoutUser, registerUser, deleteProfile, updateSidebar, sidebarUpdate }}>
             {children}
         </AuthContext.Provider>
     );

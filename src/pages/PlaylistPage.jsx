@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const PlaylistPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -7,6 +8,7 @@ const PlaylistPage = () => {
     const [playlist, setPlaylist] = useState(null)
     const [playlistTracks, setPlaylistTracks] = useState(null)
     const [following, setFollowing] = useState(null)
+    const { updateSidebar } = useContext(AuthContext)
     
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     const offset = Number(searchParams.get('offset')) ? Number(searchParams.get('offset')) : 0
@@ -123,6 +125,7 @@ const PlaylistPage = () => {
             })
             if(response.ok) {
                 setFollowing(true)
+                updateSidebar()
             } else {
                 const error = await response.json()
                 console.error(error)
@@ -142,6 +145,7 @@ const PlaylistPage = () => {
             })
             if(response.ok) {
                 setFollowing(false)
+                updateSidebar()
             } else {
                 const error = await response.json()
                 console.error(error)

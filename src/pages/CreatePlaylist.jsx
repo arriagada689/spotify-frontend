@@ -1,11 +1,13 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Form, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const CreatePlaylist = () => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const { updateSidebar } = useContext(AuthContext)
 
     const navigate = useNavigate();
 
@@ -28,6 +30,7 @@ const CreatePlaylist = () => {
             })
             if(response.ok) {
                 const data = await response.json()
+                updateSidebar()
                 navigate(`/user_playlist/${data.user_playlist._id}`)
             } else {
                 const error = await response.json()

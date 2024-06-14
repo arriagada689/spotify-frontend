@@ -1,10 +1,13 @@
 import React from 'react'
+import { useContext } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const ConfirmPlaylistDelete = () => {
     const { id } = useParams()
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     const token = JSON.parse(localStorage.getItem('userInfo')).token
+    const { updateSidebar } = useContext(AuthContext)
 
     const navigate = useNavigate();
 
@@ -18,6 +21,8 @@ const ConfirmPlaylistDelete = () => {
             }
         })
         if(response.ok) {
+            const data = await response.json()
+            updateSidebar()
             navigate('/')
         } else {
             const error = await response.json()

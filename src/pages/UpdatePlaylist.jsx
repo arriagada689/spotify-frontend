@@ -21,8 +21,8 @@ const UpdatePlaylist = () => {
             })
             if(response.ok) {
                 const data = await response.json()
-                setName(data.name)
-                setDescription(data.description)
+                setName(data.user_playlist.name)
+                setDescription(data.user_playlist.description)
             }
         }
         getUserPlaylistData()
