@@ -27,13 +27,14 @@ import RecentSearchesPage from './pages/RecentSearchesPage.jsx'
 import Profile from './pages/Profile.jsx'
 import UpdateProfile from './pages/UpdateProfile.jsx'
 import ConfirmProfileDelete from './pages/ConfirmProfileDelete.jsx'
+import RequireAuth from './components/RequireAuth.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<MainLayout />}>
       <Route index element={<Home />}/>
       <Route path='/login' element={<Login />}/>
-      <Route path='/signup' element={<SignUp />}/>
       <Route path='/signup' element={<SignUp />}/>
       <Route path='/popular_artists' element={<PopularArtists />}/>
       <Route path='/popular_albums' element={<PopularAlbums />}/>
@@ -45,14 +46,15 @@ const router = createBrowserRouter(
       <Route path='/playlist/:id' element={<PlaylistPage />}/>
       <Route path='/audiobook/:id' element={<AudiobookPage />}/>
       <Route path='/user/:id' element={<UserPage />}/>
-      <Route path='/create_playlist' element={<CreatePlaylist />}/>
-      <Route path='/update_playlist/:id' element={<UpdatePlaylist />}/>
-      <Route path='/user_playlist/:id' element={<UserPlaylistPage />}/>
-      <Route path='/confirm_playlist_delete/:id' element={<ConfirmPlaylistDelete />}/>
-      <Route path='/recent_searches' element={<RecentSearchesPage />}/>
-      <Route path='/profile' element={<Profile />}/>
-      <Route path='/update_profile' element={<UpdateProfile />}/>
-      <Route path='/confirm_delete_profile' element={<ConfirmProfileDelete />}/>
+      <Route path='/create_playlist' element={<RequireAuth> <CreatePlaylist /> </RequireAuth>}/>
+      <Route path='/update_playlist/:id' element={<RequireAuth> <UpdatePlaylist /> </RequireAuth>}/>
+      <Route path='/user_playlist/:id' element={<RequireAuth> <UserPlaylistPage /> </RequireAuth>}/>
+      <Route path='/confirm_playlist_delete/:id' element={<RequireAuth> <ConfirmPlaylistDelete /> </RequireAuth>}/>
+      <Route path='/recent_searches' element={<RequireAuth> <RecentSearchesPage /> </RequireAuth>}/>
+      <Route path='/profile' element={<RequireAuth> <Profile /> </RequireAuth>}/>
+      <Route path='/update_profile' element={<RequireAuth> <UpdateProfile /> </RequireAuth>}/>
+      <Route path='/confirm_delete_profile' element={<RequireAuth> <ConfirmProfileDelete /> </RequireAuth>}/>
+      <Route path='*' element={<NotFound />}/>
     </Route>
   )
 )

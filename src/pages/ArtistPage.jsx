@@ -33,9 +33,9 @@ const ArtistPage = () => {
 
     useEffect(() => {
         //Check user's following status if logged in
-        const token = JSON.parse(localStorage.getItem('userInfo')).token
 
         if(localStorage.getItem('userInfo') && artist){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
             const getFavoriteStatus = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/follow_status/artist/${id}`, {
                     headers: {
@@ -144,9 +144,8 @@ const ArtistPage = () => {
 
             {/* conditional to check if user is logged in */}
             {!localStorage.getItem('userInfo') && <div className='bg-blue-500'>Not logged in</div>}
-            {localStorage.getItem('userInfo') && following ? 
-                <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button> : 
-                <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
+            {localStorage.getItem('userInfo') && following && <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button>}
+            {localStorage.getItem('userInfo') && !following && <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
 
             {popularTracks && popularTracks.length > 0 &&
                 <div>

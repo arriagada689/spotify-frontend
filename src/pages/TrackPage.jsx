@@ -30,8 +30,9 @@ const TrackPage = () => {
 
     useEffect(() => {
         //if logged in, grab all the user's playlists for adding to playlist functionality
-        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        
         if(localStorage.getItem('userInfo')){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
             const getUserList = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/user_list/track/${id}`, {
                     headers: {
@@ -50,8 +51,9 @@ const TrackPage = () => {
     }, [update])
 
     useEffect(() => {
-        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        
         if(localStorage.getItem('userInfo') && track){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
             const addToRecentlyViewed = async () => {
                 const response = await fetch(`${apiBaseUrl}/profile/add_recently_viewed`, {
                     method: 'POST',

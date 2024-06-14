@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link, useSearchParams } from 'react-router-dom'
+import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { FaSearch } from "react-icons/fa";
 
 const UserPlaylistPage = () => {
@@ -13,6 +13,7 @@ const UserPlaylistPage = () => {
     const [results, setResults] = useState(false)
     const [total, setTotal] = useState(null)
     const [update, setUpdate] = useState(0)
+    const navigate = useNavigate();
 
     const { id } = useParams()
     const [userPlaylist, setUserPlaylist] = useState(null)
@@ -152,7 +153,21 @@ const UserPlaylistPage = () => {
             const error = await response.json()
             console.error(error)
         }
+    }
 
+    const handleTypeClick = (type) => {
+        if(type === 'track'){
+            navigate(`/user_playlist/${id}?query=${query}&type=track`)
+            setUpdate(prev => prev + 1)
+        } else {
+            navigate(`/user_playlist/${id}?query=${query}&type=audiobook`)
+            setUpdate(prev => prev + 1)
+        }
+    }
+
+    const handleShowMore = () => {
+        navigate(`/user_playlist/${id}?query=${query}&type=${type}&offset=${offset + 10}`)
+        setUpdate(prev => prev + 1)
     }
   
     return (
@@ -186,8 +201,10 @@ const UserPlaylistPage = () => {
             {/* filter buttons */}
             {results &&
             <div className='space-x-3'>
-                <a href={`/user_playlist/${id}?query=${query}&type=track`} className={`${type === 'track' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Songs</a>
-                <a href={`/user_playlist/${id}?query=${query}&type=audiobook`} className={`${type === 'audiobook' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Audiobooks</a>
+                <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Songs</button>
+                <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Audiobooks</button>
+                {/* <a href={`/user_playlist/${id}?query=${query}&type=track`} className={`${type === 'track' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Songs</a> */}
+                {/* <a href={`/user_playlist/${id}?query=${query}&type=audiobook`} className={`${type === 'audiobook' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Audiobooks</a> */}
             </div>}
 
             {trackData && trackData.length > 0 &&
@@ -219,7 +236,8 @@ const UserPlaylistPage = () => {
             }
 
             {results && (total > (offset ? offset : 0) + 10) &&
-                <a href={`/user_playlist/${id}?query=${query}&type=${type}&offset=${offset + 10}`} className='bg-green-400'>Show more</a>
+                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                // <a href={`/user_playlist/${id}?query=${query}&type=${type}&offset=${offset + 10}`} className='bg-green-400'>Show more</a>
             }
         </div>
     )

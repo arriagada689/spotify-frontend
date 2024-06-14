@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import CategoryCard from '../components/CategoryCard.jsx'
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import ArtistCard from '../components/ArtistCard.jsx';
 import { FaSearch } from "react-icons/fa";
 import AlbumCard from '../components/AlbumCard.jsx';
@@ -141,6 +141,7 @@ const Search = () => {
     const query = searchParams.get('query')
     const type = searchParams.get('type')
     const offset = Number(searchParams.get('offset')) || 0;
+    const navigate = useNavigate();
 
     const [categories, setCategories] = useState(!query ? staticCategories : null)
     const [input, setInput] = useState('')
@@ -188,7 +189,7 @@ const Search = () => {
             }
         }
         searchRequest()
-    }, [query])
+    }, [query, update])
 
     useEffect(() => {
         //if user is logged in, display recently viewed
@@ -212,12 +213,27 @@ const Search = () => {
             }
             getRecentlyViewed()
         }
-    }, [update])
+    }, [])
 
     const handleSearch = (event) => {
         event.preventDefault(); 
         setSearchParams({ query: input });
     };
+
+    const handleTypeClick = (type) => {
+        if(type === 'all') {
+            navigate(`/search/?query=${query}`)
+            setUpdate(prev => prev + 1)
+        } else {
+            navigate(`/search/?query=${query}&type=${type}`)
+            setUpdate(prev => prev + 1)
+        }
+    }
+
+    const handleShowMore = () => {
+        navigate(`/search/?query=${query}&type=${type}&offset=${offset + 50}`)
+        setUpdate(prev => prev + 1)
+    }
     
     return (
         <div>
@@ -268,12 +284,18 @@ const Search = () => {
             {/* results section */}
             {!categories && 
                 <div className='flex space-x-2'>
-                    <a href={`/search/?query=${query}`} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >All</a>
+                    <button onClick={() => handleTypeClick('all')} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>All</button>
+                    <button onClick={() => handleTypeClick('artist')} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Artists</button>
+                    <button onClick={() => handleTypeClick('album')} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Albums</button>
+                    <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Songs</button>
+                    <button onClick={() => handleTypeClick('playlist')} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Playlists</button>
+                    <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Audiobooks</button>
+                    {/* <a href={`/search/?query=${query}`} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >All</a>
                     <a href={`/search/?query=${query}&type=artist`} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Artists</a>
                     <a href={`/search/?query=${query}&type=album`} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Albums</a>
                     <a href={`/search/?query=${query}&type=track`} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Songs</a>
                     <a href={`/search/?query=${query}&type=playlist`} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Playlists</a>
-                    <a href={`/search/?query=${query}&type=audiobook`} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Audiobooks</a>
+                    <a href={`/search/?query=${query}&type=audiobook`} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`} >Audiobooks</a> */}
                 </div>
             }
             
@@ -285,7 +307,8 @@ const Search = () => {
                     })}
 
                     {!categories && type === 'track' && trackData.total > (offset + 50) &&
-                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
                     }
                 </div>
             }
@@ -298,7 +321,8 @@ const Search = () => {
                     })}
 
                     {!categories && type === 'artist' && artistData.total > (offset + 50) &&
-                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
                     }
                 </div>
             }
@@ -311,7 +335,8 @@ const Search = () => {
                     })}
 
                     {!categories && type === 'album' && albumData.total > (offset + 50) &&
-                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
                     }
                 </div>
             }
@@ -326,7 +351,8 @@ const Search = () => {
                     })}
                     
                     {!categories && type === 'playlist' && playlistData.total > (offset + 50) &&
-                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
                     }
                 </div>
             }
@@ -339,7 +365,8 @@ const Search = () => {
                     })}
 
                     {!categories && type === 'audiobook' && audiobookData.total > (offset + 50) &&
-                        <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
+                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
                     }
                 </div>
             }

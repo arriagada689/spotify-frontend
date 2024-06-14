@@ -210,9 +210,9 @@ const AudiobookPage = () => {
 
             {/* Conditional for CRUD */}
             {!localStorage.getItem('userInfo') && <div className='bg-blue-500'>Not logged in</div>}
-            {localStorage.getItem('userInfo') && following ? 
-                <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button> : 
-                <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
+            {localStorage.getItem('userInfo') && following && <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button>}
+            {localStorage.getItem('userInfo') && !following && <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
+            
             {localStorage.getItem('userInfo') && userList &&
                 <div className='border flex flex-col'>
                     <div className='text-xl'>Add to playlist</div>
