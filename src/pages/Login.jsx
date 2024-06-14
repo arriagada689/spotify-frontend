@@ -3,18 +3,20 @@ import { useState } from 'react';
 import { Form, Link, useNavigate } from 'react-router-dom'
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext.jsx';
+import { Oval } from 'react-loader-spinner'
 
 const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const [loading, setLoading] = useState(false)
     const { loginUser } = useContext(AuthContext)
 
     const navigate = useNavigate();
 
     const submitHandler = async (e) => {
       e.preventDefault()
-      // setLoading(true)
+      setLoading(true)
       try {
         
         const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -43,12 +45,13 @@ const Login = () => {
         console.error('Error:', error);
         setErrorMessage(error.message)
       }
-      // setLoading(false)
+      setLoading(false)
     }
     
     return (
       <div>
-        <div>
+        {!loading ? 
+          <div>
           <div>Log In</div>
           {errorMessage && <div className='border-2 border-red-800 bg-red-300 p-1 px-2 w-fit text-red-600'>{errorMessage}</div>}
           <Form onSubmit={ submitHandler }>
@@ -81,6 +84,20 @@ const Login = () => {
             <div>Don't have an account? <Link to='/signup' className='text-blue-500 underline' >Register</Link> </div>
           </Form>
         </div>
+          :
+          <div>
+            <Oval
+            visible={true}
+            height="80"
+            width="80"
+            color="#4fa94d"
+            ariaLabel="oval-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            />
+          </div>
+        }
+        
       </div>
     )
 }

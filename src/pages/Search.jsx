@@ -6,6 +6,7 @@ import { FaSearch } from "react-icons/fa";
 import AlbumCard from '../components/AlbumCard.jsx';
 import PlaylistCard from '../components/PlaylistCard.jsx';
 import AudiobookCard from '../components/AudiobookCard.jsx';
+import { Oval } from 'react-loader-spinner'
 
 const staticCategories = [
     "acoustic",
@@ -147,6 +148,7 @@ const Search = () => {
     const [input, setInput] = useState('')
     const [update, setUpdate] = useState(0)
     const [recentlyViewed, setRecentlyViewed] = useState(null)
+    const [awake, setAwake] = useState(false)
 
     const [trackData, setTrackData] = useState(null)
     const [artistData, setArtistData] = useState(null)
@@ -180,6 +182,7 @@ const Search = () => {
                 if(response.ok) {
                     const data = await response.json();
                     // console.log(data)
+                    
                     setCategories(null);
                     setArtistData(data.artists);
                     setAlbumData(data.albums);
@@ -193,6 +196,20 @@ const Search = () => {
     }, [query, update])
 
     useEffect(() => {
+        //Check if server is awake
+        const awakeStatus = async () => {
+            const response = await fetch(`${apiBaseUrl}/users/awake`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            if(response.ok){
+                const data = await response.json()
+                setAwake(data.status)
+            }
+        }
+        awakeStatus()
+
         //if user is logged in, display recently viewed
         if(localStorage.getItem('userInfo')){
             const token = JSON.parse(localStorage.getItem('userInfo')).token
@@ -237,141 +254,159 @@ const Search = () => {
     }
     
     return (
+        
         <div>
-            {/* search bar */}
-            <form onSubmit={handleSearch}>
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
+            {!awake ? 
+            <div>
+                <Oval
+                visible={true}
+                height="80"
+                width="80"
+                color="#4fa94d"
+                ariaLabel="oval-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
                 />
-                <button type="submit"><FaSearch /></button>
-            </form>
+            </div>
+            :
+            <div>
+                {/* search bar */}
+                <form onSubmit={handleSearch}>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                    />
+                    <button type="submit"><FaSearch /></button>
+                </form>
 
-            {/* recently viewed section */}
-            {recentlyViewed && categories &&
-                <div className='flex flex-col'>
-                    {recentlyViewed && recentlyViewed.length > 5 && <Link to='/recent_searches' className='underline text-xl'>Recent searches</Link>}
-                    {recentlyViewed && recentlyViewed.length <= 5 && recentlyViewed.length > 0 && <div className="text-xl">Recent searches</div>}
+                {/* recently viewed section */}
+                {!recentlyViewed && localStorage.getItem('userInfo') && <div className="text-xl">Recent searches</div>}
+                {recentlyViewed && recentlyViewed.length > 5 && localStorage.getItem('userInfo') && <Link to='/recent_searches' className='underline text-xl'>Recent searches</Link>}
+                {recentlyViewed && recentlyViewed.length <= 5 && recentlyViewed.length > 0 && localStorage.getItem('userInfo') && <div className="text-xl">Recent searches</div>}
+                {recentlyViewed && categories &&
+                    <div className='flex flex-col'>
+                        
+                        {recentlyViewed.map((item, index) => {
+                            // console.log(item)
+                            if(item.type === 'Artist'){
+                                return <ArtistCard key={index} name={item.name} id={item.id} image={item.image}/>
+                            } else if(item.type === 'Album'){
+                                return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
+                            } else if(item.type === 'Playlist'){
+                                return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.owner}/>
+                            } else if(item.type === 'Audiobook'){
+                                return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
+                            } else if(item.type === 'Track'){
+                                return <Link to={`/track/${item.id}`} key={index}>{item.name}</Link>
+                            }
+                        })}
+                    </div>
+                }
+
+                {/* category section */}
+                {categories && 
+                    <div>
+                        <div className='text-xl'>Browse all</div>
+                        {categories.map((category, index) => {
+                            return <CategoryCard key={index} name={category}/>
+                        })}
+                    </div>
+                }
+
+                {/* results section */}
+                <div>
+                    {!categories && 
+                        <div className='flex space-x-2'>
+                            <button onClick={() => handleTypeClick('all')} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>All</button>
+                            <button onClick={() => handleTypeClick('artist')} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Artists</button>
+                            <button onClick={() => handleTypeClick('album')} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Albums</button>
+                            <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Songs</button>
+                            <button onClick={() => handleTypeClick('playlist')} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Playlists</button>
+                            <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Audiobooks</button>
+                        </div>
+                    }
                     
-                    {recentlyViewed.map((item, index) => {
-                        // console.log(item)
-                        if(item.type === 'Artist'){
-                            return <ArtistCard key={index} name={item.name} id={item.id} image={item.image}/>
-                        } else if(item.type === 'Album'){
-                            return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
-                        } else if(item.type === 'Playlist'){
-                            return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.owner}/>
-                        } else if(item.type === 'Audiobook'){
-                            return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
-                        } else if(item.type === 'Track'){
-                            return <Link to={`/track/${item.id}`} key={index}>{item.name}</Link>
-                        }
-                    })}
-                </div>
-            }
+                    {trackData && !categories && (type === 'track' || !type ) &&
+                        <div>
+                            <div className="text-xl">Tracks</div>
+                            {trackData.items.map((track, index) => {
+                                if(track){
+                                    return <Link to={`/track/${track.id}`} key={index}>{track.name}</Link>
+                                }
+                            })}
 
-            {/* category section */}
-            {categories && 
-                <div>
-                    <div className='text-xl'>Browse all</div>
-                    {categories.map((category, index) => {
-                        return <CategoryCard key={index} name={category}/>
-                    })}
-                </div>
-            }
-
-            {/* results section */}
-            {!categories && 
-                <div className='flex space-x-2'>
-                    <button onClick={() => handleTypeClick('all')} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>All</button>
-                    <button onClick={() => handleTypeClick('artist')} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Artists</button>
-                    <button onClick={() => handleTypeClick('album')} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Albums</button>
-                    <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Songs</button>
-                    <button onClick={() => handleTypeClick('playlist')} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Playlists</button>
-                    <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Audiobooks</button>
-                </div>
-            }
-            
-            {trackData && !categories && (type === 'track' || !type ) &&
-                <div>
-                    <div className="text-xl">Tracks</div>
-                    {trackData.items.map((track, index) => {
-                        if(track){
-                            return <Link to={`/track/${track.id}`} key={index}>{track.name}</Link>
-                        }
-                    })}
-
-                    {!categories && type === 'track' && trackData.total > (offset + 50) &&
-                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                            {!categories && type === 'track' && trackData.total > (offset + 50) &&
+                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                            }
+                        </div>
                     }
-                </div>
-            }
-            
-            {artistData && !categories && (type === 'artist' || !type ) &&
-                <div>
-                    <div className="text-xl">Artists</div>
-                    {artistData.items.map((artist, index) => {
-                        if(artist){
-                            return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
-                        }
-                    })}
-
-                    {!categories && type === 'artist' && artistData.total > (offset + 50) &&
-                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
-                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
-                    }
-                </div>
-            }
-            
-            {albumData && !categories && (type === 'album' || !type ) &&
-                <div>
-                    <div className="text-xl">Albums</div>
-                    {albumData.items.map((album, index) => {
-                        if(album){
-                            return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id}/>
-                        }
-                    })}
-
-                    {!categories && type === 'album' && albumData.total > (offset + 50) &&
-                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
-                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
-                    }
-                </div>
-            }
-            
-            {playlistData && !categories && (type === 'playlist' || !type ) &&
-                <div>
-                    <div className="text-xl">Playlists</div>
-                    {playlistData.items.map((playlist, index) => {
-                        if(playlist && playlist.owner) {
-                            return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
-                        } 
-                    })}
                     
-                    {!categories && type === 'playlist' && playlistData.total > (offset + 50) &&
-                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
-                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
-                    }
-                </div>
-            }
-            
-            {audiobookData && !categories && (type === 'audiobook' || !type ) &&
-                <div>
-                    <div className="text-xl">Audiobooks</div>
-                    {audiobookData.items.map((audiobook, index) => {
-                        if(audiobook && audiobook.name && audiobook.authors.length > 0){
-                            return <AudiobookCard key={index} name={audiobook.name} author={audiobook.authors[0].name} image={audiobook.images[0].url} id={audiobook.id} />
-                        }
-                    })}
+                    {artistData && !categories && (type === 'artist' || !type ) &&
+                        <div>
+                            <div className="text-xl">Artists</div>
+                            {artistData.items.map((artist, index) => {
+                                if(artist){
+                                    return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
+                                }
+                            })}
 
-                    {!categories && type === 'audiobook' && audiobookData.total > (offset + 50) &&
-                        // <a href={`/search/?query=${query}&type=${type}&offset=${offset + 50}`} className='bg-green-400'>Show more</a>
-                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                            {!categories && type === 'artist' && artistData.total > (offset + 50) &&
+                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                            }
+                        </div>
+                    }
+                    
+                    {albumData && !categories && (type === 'album' || !type ) &&
+                        <div>
+                            <div className="text-xl">Albums</div>
+                            {albumData.items.map((album, index) => {
+                                if(album){
+                                    return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id}/>
+                                }
+                            })}
+
+                            {!categories && type === 'album' && albumData.total > (offset + 50) &&
+                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                            }
+                        </div>
+                    }
+                    
+                    {playlistData && !categories && (type === 'playlist' || !type ) &&
+                        <div>
+                            <div className="text-xl">Playlists</div>
+                            {playlistData.items.map((playlist, index) => {
+                                if(playlist && playlist.owner) {
+                                    return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
+                                } 
+                            })}
+                            
+                            {!categories && type === 'playlist' && playlistData.total > (offset + 50) &&
+                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                            }
+                        </div>
+                    }
+                    
+                    {audiobookData && !categories && (type === 'audiobook' || !type ) &&
+                        <div>
+                            <div className="text-xl">Audiobooks</div>
+                            {audiobookData.items.map((audiobook, index) => {
+                                if(audiobook && audiobook.name && audiobook.authors.length > 0){
+                                    return <AudiobookCard key={index} name={audiobook.name} author={audiobook.authors[0].name} image={audiobook.images[0].url} id={audiobook.id} />
+                                }
+                            })}
+
+                            {!categories && type === 'audiobook' && audiobookData.total > (offset + 50) &&
+                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                            }
+                        </div>
                     }
                 </div>
+            </div>
             }
+
+             
         </div>
     )
 }
