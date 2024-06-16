@@ -25,7 +25,7 @@ const AlbumPage = () => {
         }
         getAlbumData()
         
-    }, [])
+    }, [id])
 
     useEffect(() => {
         //Check user's following status if logged in

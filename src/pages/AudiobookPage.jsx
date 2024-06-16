@@ -31,7 +31,7 @@ const AudiobookPage = () => {
         }
         getAudiobookData()
 
-    }, [])
+    }, [id])
 
     useEffect(() => {
         //if logged in, grab all the user's playlists for adding to playlist functionality

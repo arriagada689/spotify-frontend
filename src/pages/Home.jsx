@@ -70,7 +70,7 @@ const Home = () => {
               if(item.type === 'Playlist' && index < 8){
                 return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
               } else if(item.type === 'UserPlaylist' && index < 8){
-                return <PlaylistCard key={index} name={item.name} id={item.id} image={'default'} owner={item.creator}/>
+                return <PlaylistCard key={index} name={item.name} id={item._id} image={'default'} owner={item.creator}/>
               }
             })}
           </div>

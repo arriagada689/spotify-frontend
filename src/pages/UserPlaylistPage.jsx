@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { FaSearch } from "react-icons/fa";
+import { Oval } from 'react-loader-spinner'
 
 const UserPlaylistPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -13,6 +14,7 @@ const UserPlaylistPage = () => {
     const [results, setResults] = useState(false)
     const [total, setTotal] = useState(null)
     const [update, setUpdate] = useState(0)
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
 
     const { id } = useParams()
@@ -41,11 +43,12 @@ const UserPlaylistPage = () => {
             }
         }
         getUserPlaylistData()
-    }, [])
+    }, [id])
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('userInfo')).token
         if(query){
+            setLoading(true)
             const searchQuery = async () => {
                 let url = `${import.meta.env.VITE_API_BASE_URL}/profile/sub_search`;
                 //attach query params
@@ -67,6 +70,7 @@ const UserPlaylistPage = () => {
                 })
                 if(response.ok) {
                     const data = await response.json();
+                    setLoading(false)
                     setResults(true)
                     setTotal(data.total)
                     // console.log(data)
@@ -177,7 +181,6 @@ const UserPlaylistPage = () => {
                     <div>Playlist</div>
                     <div>{userPlaylist.name}</div>
                     <div>{userPlaylist.description}</div>
-                    {/* <div>{userPlaylist.playlist_items.length}</div> */}
                     {trackCount && audiobookCount && 
                         <div>{trackCount} song(s) {audiobookCount} audiobook(s)</div>
                     }
@@ -198,47 +201,61 @@ const UserPlaylistPage = () => {
                 <button type="submit"><FaSearch /></button>
             </form>
 
-            {/* filter buttons */}
-            {results &&
-            <div className='space-x-3'>
-                <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Songs</button>
-                <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Audiobooks</button>
-                {/* <a href={`/user_playlist/${id}?query=${query}&type=track`} className={`${type === 'track' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Songs</a> */}
-                {/* <a href={`/user_playlist/${id}?query=${query}&type=audiobook`} className={`${type === 'audiobook' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Audiobooks</a> */}
-            </div>}
+            {loading ? 
+                <div>
+                    <Oval
+                    visible={true}
+                    height="80"
+                    width="80"
+                    color="#4fa94d"
+                    ariaLabel="oval-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    />
+                </div>
+                :
+                <div>
+                    {/* filter buttons */}
+                    {results &&
+                    <div className='space-x-3'>
+                        <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Songs</button>
+                        <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Audiobooks</button>
+                    </div>}
 
-            {trackData && trackData.length > 0 &&
-                <div className='flex flex-col'>
-                    {trackData.map((item, index) => {
-                        return <div className='space-x-3' key={index}>
-                                <Link to={`/track/${item[1].id}`} >{item[1].name}</Link>
-                                {item[0] ? 
-                                    <button onClick={() => removeFromPlaylist(item[1])}>Remove</button> :
-                                    <button onClick={() => addToPlaylist(item[1], null)}>Add</button>
-                                }
-                                </div> 
-                    })}
+                    {trackData && trackData.length > 0 &&
+                        <div className='flex flex-col'>
+                            {trackData.map((item, index) => {
+                                return <div className='space-x-3' key={index}>
+                                        <Link to={`/track/${item[1].id}`} >{item[1].name}</Link>
+                                        {item[0] ? 
+                                            <button onClick={() => removeFromPlaylist(item[1])}>Remove</button> :
+                                            <button onClick={() => addToPlaylist(item[1], null)}>Add</button>
+                                        }
+                                        </div> 
+                            })}
+                        </div>
+                    }
+
+                    {audiobookData && audiobookData.length > 0 &&
+                        <div className='flex flex-col'>
+                            {audiobookData.map((item, index) => {
+                                return <div className='space-x-3' key={index}>
+                                            <Link to={`/audiobook/${item[1].id}`}>{item[1].name}</Link>
+                                            {item[0] ? 
+                                                <button onClick={() => removeFromPlaylist(item[1])}>Remove</button> : 
+                                                <button onClick={() => addToPlaylist(item[1], item[2])}>Add</button>
+                                            }
+                                        </div>
+                            })}
+                        </div>
+                    }
+
+                    {results && (total > (offset ? offset : 0) + 10) &&
+                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                    }
                 </div>
             }
-
-            {audiobookData && audiobookData.length > 0 &&
-                <div className='flex flex-col'>
-                    {audiobookData.map((item, index) => {
-                        return <div className='space-x-3' key={index}>
-                                    <Link to={`/audiobook/${item[1].id}`}>{item[1].name}</Link>
-                                    {item[0] ? 
-                                        <button onClick={() => removeFromPlaylist(item[1])}>Remove</button> : 
-                                        <button onClick={() => addToPlaylist(item[1], item[2])}>Add</button>
-                                    }
-                                </div>
-                    })}
-                </div>
-            }
-
-            {results && (total > (offset ? offset : 0) + 10) &&
-                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
-                // <a href={`/user_playlist/${id}?query=${query}&type=${type}&offset=${offset + 10}`} className='bg-green-400'>Show more</a>
-            }
+            
         </div>
     )
 }

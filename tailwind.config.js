@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#121212',
+        grayText: '#b3b3b3',
+        grayBox: '#2F2E2E',
+        dark: '#121212',
+        hoverGray: '#292828',
+        spotifyGreen: '#1db954',
+        blackTint: 'rgba(0, 0, 0, 0.5)',
+      }
+    },
     screens: {
       'sm': '640px',
       'md': '768px',

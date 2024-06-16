@@ -47,7 +47,7 @@ const PlaylistPage = () => {
             getPlaylistData()
         }
 
-    }, [searchParams])
+    }, [searchParams, id])
 
     useEffect(() => {
         //Check user's following status if logged in
@@ -82,7 +82,7 @@ const PlaylistPage = () => {
                         name: playlist.name,
                         id: playlist.id,
                         image: playlist.images[0].url,
-                        creator: playlist.owner.id,
+                        creator: playlist.owner.display_name,
                         description: playlist.description,
                         type: 'Playlist'
                     })
@@ -118,7 +118,7 @@ const PlaylistPage = () => {
                     name: playlist.name,
                     id: playlist.id,
                     image: playlist.images[0].url,
-                    creator: playlist.owner.id,
+                    creator: playlist.owner.display_name,
                     description: playlist.description,
                     type: 'Playlist'
                 })

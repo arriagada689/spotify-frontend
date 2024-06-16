@@ -31,7 +31,7 @@ const ArtistPage = () => {
         }
         getArtistData()
         
-    }, [])
+    }, [id])
 
     useEffect(() => {
         //Check user's following status if logged in
