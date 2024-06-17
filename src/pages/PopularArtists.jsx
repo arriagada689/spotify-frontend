@@ -21,13 +21,15 @@ const PopularArtists = () => {
     }, [])
 
     return (
-        <div>
-            <div className='underline'>Popular artists</div>
-            {popularArtists && 
-                popularArtists.map((artist, index) => {
-                    return <ArtistCard key={index} name={artist.name} image={artist.image} id={artist.id}/>
-                })
-            }
+        <div className='bg-primary px-5 pb-16 md:pb-0 w-full pt-3 md:pt-0'>
+            <div className='text-2xl text-white font-bold mb-2'>Popular artists</div>
+            <div className='flex flex-wrap justify-center md:justify-start gap-y-4'>
+                {popularArtists && 
+                    popularArtists.map((artist, index) => {
+                        return <ArtistCard key={index} name={artist.name} image={artist.image} id={artist.id}/>
+                    })
+                }
+            </div>
         </div>
     )
 }

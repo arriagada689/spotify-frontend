@@ -62,9 +62,9 @@ const SideBar = () => {
     }
     
     return (
-        <div className='flex flex-row md:flex-col fixed h-[60px] w-screen bottom-0 md:top-0 md:left-0 md:h-screen md:w-[375px] md:m-1 md:space-y-1'>
+        <div className='flex flex-row md:flex-col fixed h-[60px] w-full bottom-0 md:top-0 md:left-0 md:h-screen md:w-[375px] md:m-1 md:space-y-1'>
             
-                <div className='flex flex-row justify-between md:justify-start md:flex-col w-full bg-primary text-grayText md:rounded-lg px-6 py-4 md:space-y-4'>
+                <div className='flex flex-row justify-between md:justify-start md:flex-col w-full bg-black md:bg-primary text-grayText md:rounded-lg px-6 py-4 md:space-y-4'>
                     <div onClick={() => setSelected('Home')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'Home' ? 'text-white' : ''}`}>
                         <FaHouse size={22}/><Link className='text-lg' to='/'>Home</Link>
                     </div>
@@ -125,10 +125,10 @@ const SideBar = () => {
                         </div>
                     }
                     {localStorage.getItem('userInfo') && arr && 
-                        <div className='px-2'>
+                        <div className='px-2 w-full'>
                             <SidebarFilterButtons arr={arr} handleTypeClick={handleTypeClick} type={type}/>
 
-                            <div className='mt-3 max-h-[72vh] overflow-y-auto custom-scrollbar'>
+                            <div className='mt-3 max-h-[72vh] w-full overflow-y-auto overflow-x-hidden custom-scrollbar'>
                                 {arr && 
                                     arr.map((item, index) => {
                                         // console.log(item)

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ArtistCard from '../components/ArtistCard'
 import AlbumCard from '../components/AlbumCard'
 import PlaylistCard from '../components/PlaylistCard'
+import MiniCard from '../components/MiniCard'
 import { Link } from 'react-router-dom'
 import { Oval } from 'react-loader-spinner'
 
@@ -57,81 +58,113 @@ const Home = () => {
     }, [])
 
     return (
-      <div className='flex flex-col'>
+      <div className='flex flex-col bg-primary px-5 space-y-5 pb-16 md:pb-0'>
 
         {/* Saved playlists section */}
-        {savedPlaylists && savedPlaylists.length >= 4 &&
-          <Link to='/saved_playlists' className='text-xl hover:underline'>Saved playlists</Link>
-        }
-        {savedPlaylists && savedPlaylists.length >= 4 && 
-          <div>
-          
-            {savedPlaylists.map((item, index) => {
-              if(item.type === 'Playlist' && index < 8){
-                return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
-              } else if(item.type === 'UserPlaylist' && index < 8){
-                return <PlaylistCard key={index} name={item.name} id={item._id} image={'default'} owner={item.creator}/>
-              }
-            })}
-          </div>
-        }
+        <div className='mt-3 md:mt-0'>
+          {savedPlaylists && savedPlaylists.length >= 4 &&
+            <div className='flex justify-between items-baseline mb-2'>
+              <Link to='/saved_playlists' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Saved playlists</Link>
+              <Link to='/saved_playlists' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
+            </div>
+            
+          }
+          {savedPlaylists && savedPlaylists.length >= 4 && 
+            <div className='grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4'>
+              {savedPlaylists.map((item, index) => {
+                if(item.type === 'Playlist' && index < 8){
+                  return <MiniCard key={index} name={item.name} id={item.id} image={item.image} type={item.type}/>
+                } else if(item.type === 'UserPlaylist' && index < 8){
+                  return <MiniCard key={index} name={item.name} id={item._id} image={'default'} type={item.type}/>
+                }
+              })}
+            </div>
+          }
+        </div>
 
         {/* Popular artists section */}
-        <Link to='/popular_artists' className='underline'>Popular artists</Link>
-        {popularArtists && 
-          popularArtists.map((artist, index) => {
-            return <ArtistCard key={index} name={artist.name} image={artist.image} id={artist.id}/>
-          })
-        }
-        {!popularArtists && 
-          <Oval
-          visible={true}
-          height="80"
-          width="80"
-          color="#4fa94d"
-          ariaLabel="oval-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-          />
-        }
+        <div className='w-full'>
+          <div className='flex justify-between items-baseline mb-2'>
+            <Link to='/popular_artists' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Popular artists</Link>
+            <Link to='/popular_artists' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
+          </div>
+          <div className='flex w-full overflow-x-auto md:overflow-hidden'>
+            {popularArtists && 
+              popularArtists.map((artist, index) => {
+                return <ArtistCard key={index} name={artist.name} image={artist.image} id={artist.id}/>
+              })
+            }
+            {!popularArtists && 
+              <div className='flex mx-auto'>
+                <Oval
+                visible={true}
+                height="220"
+                width="180"
+                color="#4fa94d"
+                ariaLabel="oval-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+                />
+              </div>
+            }
+          </div>
+        </div>
 
         {/* Popular albums section */}
-        <Link to='/popular_albums' className='underline'>Popular albums</Link>
-        {popularAlbums && 
-          popularAlbums.map((album, index) => {
-            return <AlbumCard key={index} name={album.name} artist={album.artist} image={album.image} id={album.id}/>
-          })
-        }
-        {!popularAlbums && 
-          <Oval
-          visible={true}
-          height="80"
-          width="80"
-          color="#4fa94d"
-          ariaLabel="oval-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-        />
-        }
+        <div className='w-full'>
+          <div className='flex justify-between items-baseline mb-2'>
+            <Link to='/popular_albums' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Popular albums</Link>
+            <Link to='/popular_albums' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
+          </div>
+          <div className='flex w-full overflow-x-auto md:overflow-hidden'>
+            {popularAlbums && 
+              popularAlbums.map((album, index) => {
+                return <AlbumCard key={index} name={album.name} artist={album.artist} image={album.image} id={album.id}/>
+              })
+            }
+            {!popularAlbums && 
+              <div className='flex mx-auto'>
+                <Oval
+                visible={true}
+                height="220"
+                width="180"
+                color="#4fa94d"
+                ariaLabel="oval-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+                />
+              </div>
+            }
+          </div>
+        </div>
 
-        {/* Popular artists section */}
-        <Link to='/featured_playlists' className='underline'>Featured playlists</Link>
-        {featuredPlaylists && 
-          featuredPlaylists.map((playlist, index) => {
-            return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id} />
-          })
-        }
-        {!featuredPlaylists && 
-        <Oval
-          visible={true}
-          height="80"
-          width="80"
-          color="#4fa94d"
-          ariaLabel="oval-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-        />
-        }
+        {/* Featured artists section */}
+        <div className='w-full '>
+          <div className='flex justify-between items-baseline mb-2'>
+            <Link to='/featured_playlists' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Featured playlists</Link>
+            <Link to='/featured_playlists' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
+          </div>
+          <div className='flex w-full overflow-x-auto md:overflow-hidden'>
+            {featuredPlaylists && 
+              featuredPlaylists.map((playlist, index) => {
+                return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id} type={'Playlist'}/>
+              })
+            }
+            {!featuredPlaylists && 
+            <div className='flex mx-auto'>
+              <Oval
+              visible={true}
+              height="220"
+              width="180"
+              color="#4fa94d"
+              ariaLabel="oval-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              />
+            </div>
+            }
+          </div>
+        </div>
       </div>
     )
 }

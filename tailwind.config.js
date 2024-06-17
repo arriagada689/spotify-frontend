@@ -14,6 +14,7 @@ export default {
         hoverGray: '#292828',
         spotifyGreen: '#1db954',
         blackTint: 'rgba(0, 0, 0, 0.5)',
+        miniHover: '#535353'
       }
     },
     screens: {

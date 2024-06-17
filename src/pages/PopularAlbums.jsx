@@ -22,13 +22,15 @@ const PopularAlbums = () => {
 
     
     return (
-        <div>
-            <div className='underline'>Popular albums</div>
-            {popularAlbums && 
-                popularAlbums.map((albums, index) => {
-                    return <AlbumCard key={index} name={albums.name} image={albums.image} id={albums.id}/>
-                })
-            }
+        <div className='bg-primary px-5 pb-16 md:pb-0 w-full pt-3 md:pt-0'>
+            <div className='text-2xl text-white font-bold mb-2'>Popular albums</div>
+            <div className='flex flex-wrap justify-center md:justify-start gap-y-4'>
+                {popularAlbums && 
+                    popularAlbums.map((album, index) => {
+                        return <AlbumCard key={index} name={album.name} artist={album.artist} image={album.image} id={album.id}/>
+                    })
+                }
+            </div>
         </div>
     )
 }

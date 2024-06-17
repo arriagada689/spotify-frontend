@@ -5,10 +5,10 @@ import SideBar from '../components/SideBar'
 
 const MainLayout = () => {
     return (
-        <div className='h-screen md:p-1 '>
+        <div className='h-screen md:p-1'>
             <SideBar />
             
-            <div className='md:ml-[379px] flex flex-col h-full '>
+            <div className='md:ml-[379px] flex flex-col h-full'>
                 <Navbar />
                 <Outlet />
             </div>
