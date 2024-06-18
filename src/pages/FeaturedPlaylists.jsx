@@ -21,13 +21,15 @@ const FeaturedPlaylists = () => {
     }, [])
     
     return (
-        <div>
-            <div>Featured playlists</div>
-            {featuredPlaylists && 
-                featuredPlaylists.map((playlist, index) => {
-                    return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
-                })
-            }
+        <div className={`bg-primary px-5 pb-16 md:pb-2 h-dvh w-full pt-3 md:pt-0 md:rounded-b-md`}>
+            <div className='text-2xl text-white font-bold mb-2'>Featured playlists</div>
+            <div className='flex flex-wrap justify-center md:justify-start gap-y-4'>
+                {featuredPlaylists && 
+                    featuredPlaylists.map((playlist, index) => {
+                        return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
+                    })
+                }
+            </div>
         </div>
     )
 }

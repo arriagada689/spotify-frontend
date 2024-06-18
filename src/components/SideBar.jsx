@@ -132,16 +132,18 @@ const SideBar = () => {
                                 {arr && 
                                     arr.map((item, index) => {
                                         // console.log(item)
-                                        if(item.type === 'Artist'){
-                                            return <SidebarArtist key={index} name={item.name} type={item.type} id={item.id} image={item.image}/>
-                                        } else if(item.type === 'Album'){
-                                            return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.artist} image={item.image}/>
-                                        } else if(item.type === 'Playlist'){
-                                            return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.creator} image={item.image}/>
-                                        } else if(item.type === 'Audiobook'){
-                                            return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.author} image={item.image}/>
-                                        } else if(item.type === 'UserPlaylist'){
-                                            return <SidebarCard key={index} name={item.name} type={item.type} id={item._id} subname={item.creator} image={'default'}/>
+                                        if(item){
+                                            if(item.type === 'Artist'){
+                                                return <SidebarArtist key={index} name={item.name} type={item.type} id={item.id} image={item.image}/>
+                                            } else if(item.type === 'Album'){
+                                                return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.artist} image={item.image}/>
+                                            } else if(item.type === 'Playlist'){
+                                                return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.creator} image={item.image}/>
+                                            } else if(item.type === 'Audiobook'){
+                                                return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.author} image={item.image}/>
+                                            } else if(item.type === 'UserPlaylist'){
+                                                return <SidebarCard key={index} name={item.name} type={item.type} id={item._id} subname={item.creator} image={'default'}/>
+                                            }
                                         }
                                     }) 
                                 }

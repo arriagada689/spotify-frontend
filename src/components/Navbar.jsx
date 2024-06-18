@@ -32,7 +32,7 @@ const Navbar = () => {
     }
 
     return (
-        <div className='bg-primary flex justify-between p-3 rounded-t-lg'>
+        <div className='bg-primary flex justify-between p-3  md:rounded-t-lg'>
             <div className='flex items-center text-white space-x-2'>
                 <button onClick={goBack} className='bg-black rounded-full h-[40px] w-[40px] flex items-center justify-center'><FaChevronLeft size={20}/></button>
                 <button onClick={goForwards} className='bg-black rounded-full h-[40px] w-[40px] flex items-center justify-center'><FaChevronRight size={20}/></button>

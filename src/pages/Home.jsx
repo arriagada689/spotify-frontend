@@ -69,13 +69,20 @@ const Home = () => {
             </div>
             
           }
-          {savedPlaylists && savedPlaylists.length >= 4 && 
+          {savedPlaylists && savedPlaylists.length < 4 &&
+            <div className='flex justify-between items-baseline mb-2'>
+              <div className='text-2xl text-white font-bold'>Saved playlists</div>
+            </div>
+          }
+          {savedPlaylists &&  
             <div className='grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4'>
               {savedPlaylists.map((item, index) => {
-                if(item.type === 'Playlist' && index < 8){
-                  return <MiniCard key={index} name={item.name} id={item.id} image={item.image} type={item.type}/>
-                } else if(item.type === 'UserPlaylist' && index < 8){
-                  return <MiniCard key={index} name={item.name} id={item._id} image={'default'} type={item.type}/>
+                if(item){
+                  if(item.type === 'Playlist' && index < 8){
+                    return <MiniCard key={index} name={item.name} id={item.id} image={item.image} type={item.type}/>
+                  } else if(item.type === 'UserPlaylist' && index < 8){
+                    return <MiniCard key={index} name={item.name} id={item._id} image={'default'} type={item.type}/>
+                  }
                 }
               })}
             </div>

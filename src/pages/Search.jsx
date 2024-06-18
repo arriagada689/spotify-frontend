@@ -7,135 +7,9 @@ import AlbumCard from '../components/AlbumCard.jsx';
 import PlaylistCard from '../components/PlaylistCard.jsx';
 import AudiobookCard from '../components/AudiobookCard.jsx';
 import { Oval } from 'react-loader-spinner'
-
-const staticCategories = [
-    "acoustic",
-    "afrobeat",
-    "alt-rock",
-    "alternative",
-    "ambient",
-    "anime",
-    "black-metal",
-    "bluegrass",
-    "blues",
-    "bossanova",
-    "brazil",
-    "breakbeat",
-    "british",
-    "cantopop",
-    "chicago-house",
-    "children",
-    "chill",
-    "classical",
-    "club",
-    "comedy",
-    "country",
-    "dance",
-    "dancehall",
-    "death-metal",
-    "deep-house",
-    "detroit-techno",
-    "disco",
-    "disney",
-    "drum-and-bass",
-    "dub",
-    "dubstep",
-    "edm",
-    "electro",
-    "electronic",
-    "emo",
-    "folk",
-    "forro",
-    "french",
-    "funk",
-    "garage",
-    "german",
-    "gospel",
-    "goth",
-    "grindcore",
-    "groove",
-    "grunge",
-    "guitar",
-    "happy",
-    "hard-rock",
-    "hardcore",
-    "hardstyle",
-    "heavy-metal",
-    "hip-hop",
-    "holidays",
-    "honky-tonk",
-    "house",
-    "idm",
-    "indian",
-    "indie",
-    "indie-pop",
-    "industrial",
-    "iranian",
-    "j-dance",
-    "j-idol",
-    "j-pop",
-    "j-rock",
-    "jazz",
-    "k-pop",
-    "kids",
-    "latin",
-    "latino",
-    "malay",
-    "mandopop",
-    "metal",
-    "metal-misc",
-    "metalcore",
-    "minimal-techno",
-    "movies",
-    "mpb",
-    "new-age",
-    "new-release",
-    "opera",
-    "pagode",
-    "party",
-    "philippines-opm",
-    "piano",
-    "pop",
-    "pop-film",
-    "post-dubstep",
-    "power-pop",
-    "progressive-house",
-    "psych-rock",
-    "punk",
-    "punk-rock",
-    "r-n-b",
-    "rainy-day",
-    "reggae",
-    "reggaeton",
-    "road-trip",
-    "rock",
-    "rock-n-roll",
-    "rockabilly",
-    "romance",
-    "sad",
-    "salsa",
-    "samba",
-    "sertanejo",
-    "show-tunes",
-    "singer-songwriter",
-    "ska",
-    "sleep",
-    "songwriter",
-    "soul",
-    "soundtracks",
-    "spanish",
-    "study",
-    "summer",
-    "swedish",
-    "synth-pop",
-    "tango",
-    "techno",
-    "trance",
-    "trip-hop",
-    "turkish",
-    "work-out",
-    "world-music"
-]
+import staticCategories from '../utils/categories.js';
+import TrackCard from '../components/TrackCard.jsx';
+import formatDuration from '../utils/formatDuration.js';
 
 const Search = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -149,6 +23,7 @@ const Search = () => {
     const [update, setUpdate] = useState(0)
     const [recentlyViewed, setRecentlyViewed] = useState(null)
     const [awake, setAwake] = useState(false)
+    const [isInputFocused, setInputFocused] = useState(false);
 
     const [trackData, setTrackData] = useState(null)
     const [artistData, setArtistData] = useState(null)
@@ -190,6 +65,8 @@ const Search = () => {
                     setPlaylistData(data.playlists);
                     setAudiobookData(data.audiobooks);
                 }
+            } else {
+                setCategories(staticCategories)
             }
         }
         searchRequest()
@@ -252,12 +129,14 @@ const Search = () => {
         navigate(`/search/?query=${query}&type=${type}&offset=${offset + 50}`)
         setUpdate(prev => prev + 1)
     }
+
+    const divClassNames = `flex items-center rounded-3xl bg-hoverGray text-grayText py-3 px-2 space-x-2 w-full md:w-1/2 
+    ${isInputFocused ? 'outline outline-2 outline-white outline-offset-2' : ''}`;
+
+    const buttonClassNames = `${isInputFocused ? 'text-white' : 'text-grayText'}`;
     
-    return (
-        
-        <div>
-            {!awake ? 
-            <div>
+    return !awake ? (
+            <div className='bg-primary h-dvh flex justify-center mx-auto pt-3 w-full'>
                 <Oval
                 visible={true}
                 height="80"
@@ -267,39 +146,50 @@ const Search = () => {
                 wrapperStyle={{}}
                 wrapperClass=""
                 />
-            </div>
-            :
-            <div>
+            </div>)
+            : (
+            <div className='bg-primary h-fit flex flex-col px-4 space-y-3 pt-3 md:pt-0 pb-16 md:pb-2'>
                 {/* search bar */}
                 <form onSubmit={handleSearch}>
-                    <input
-                        type="text"
-                        placeholder="Search..."
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                    />
-                    <button type="submit"><FaSearch /></button>
+                    <div tabIndex={0} className={divClassNames}>
+                        <button type="submit" className={buttonClassNames}><FaSearch /></button>
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            className='bg-transparent w-full h-full focus:outline-none'
+                            onFocus={() => setInputFocused(true)}
+                            onBlur={() => setInputFocused(false)}
+                        />
+                    </div>
                 </form>
 
                 {/* recently viewed section */}
-                {!recentlyViewed && localStorage.getItem('userInfo') && <div className="text-xl">Recent searches</div>}
-                {recentlyViewed && recentlyViewed.length > 5 && localStorage.getItem('userInfo') && <Link to='/recent_searches' className='underline text-xl'>Recent searches</Link>}
-                {recentlyViewed && recentlyViewed.length <= 5 && recentlyViewed.length > 0 && localStorage.getItem('userInfo') && <div className="text-xl">Recent searches</div>}
+                
+                {recentlyViewed && recentlyViewed.length >= 5 && localStorage.getItem('userInfo') && categories && 
+                    <div className='flex justify-between items-baseline mb-2'>
+                        <Link to='/recent_searches' className='text-2xl text-white font-bold underline md:hover:underline'>Recent searches</Link>
+                        <Link to='/recent_searches' className='text-grayText underline md:no-underline md:hover:underline font-semibold'>Show all</Link>
+                    </div>
+                }
+                {recentlyViewed && recentlyViewed.length < 5 && recentlyViewed.length > 0 && localStorage.getItem('userInfo') && categories && 
+                    <div className='text-2xl text-white font-bold'>Recent searches</div>
+                }
                 {recentlyViewed && categories &&
-                    <div className='flex flex-col'>
+                    <div className='flex overflow-y-auto custom-scrollbar'>
                         
                         {recentlyViewed.map((item, index) => {
-                            // console.log(item)
-                            if(item.type === 'Artist'){
+                            if(item.type === 'Artist' && index < 5){
                                 return <ArtistCard key={index} name={item.name} id={item.id} image={item.image}/>
-                            } else if(item.type === 'Album'){
+                            } else if(item.type === 'Album' && index < 5){
                                 return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
-                            } else if(item.type === 'Playlist'){
-                                return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.owner}/>
-                            } else if(item.type === 'Audiobook'){
+                            } else if(item.type === 'Playlist' && index < 5){
+                                return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
+                            } else if(item.type === 'Audiobook' && index < 5){
                                 return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
-                            } else if(item.type === 'Track'){
-                                return <Link to={`/track/${item.id}`} key={index}>{item.name}</Link>
+                            } else if(item.type === 'Track' && index < 5){
+                                return <TrackCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
                             }
                         })}
                     </div>
@@ -307,35 +197,50 @@ const Search = () => {
 
                 {/* category section */}
                 {categories && 
-                    <div>
-                        <div className='text-xl'>Browse all</div>
-                        {categories.map((category, index) => {
-                            return <CategoryCard key={index} name={category}/>
-                        })}
+                    <div className='space-y-3'>
+                        <div className='text-2xl text-white font-bold'>Browse all</div>
+                        <div className='flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-4'>
+                            {categories.map((category, index) => {
+                                return <CategoryCard key={index} name={category[0]} color={category[1]}/>
+                            })}
+                        </div>
                     </div>
                 }
 
                 {/* results section */}
-                <div>
+                <div className='space-y-4'>
                     {!categories && 
-                        <div className='flex space-x-2'>
-                            <button onClick={() => handleTypeClick('all')} className={`${!type ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>All</button>
-                            <button onClick={() => handleTypeClick('artist')} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Artists</button>
-                            <button onClick={() => handleTypeClick('album')} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Albums</button>
-                            <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Songs</button>
-                            <button onClick={() => handleTypeClick('playlist')} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Playlists</button>
-                            <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-gray-500'} rounded-lg px-3 py-2`}>Audiobooks</button>
+                        <div className='flex flex-wrap justify-center md:justify-start gap-y-2 gap-x-2 md:gap-x-0 md:space-x-2'>
+                            <button onClick={() => handleTypeClick('all')} className={`${!type ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>All</button>
+                            <button onClick={() => handleTypeClick('artist')} className={`${type === 'artist' ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>Artists</button>
+                            <button onClick={() => handleTypeClick('album')} className={`${type === 'album' ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>Albums</button>
+                            <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>Songs</button>
+                            <button onClick={() => handleTypeClick('playlist')} className={`${type === 'playlist' ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>Playlists</button>
+                            <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>Audiobooks</button>
                         </div>
                     }
                     
                     {trackData && !categories && (type === 'track' || !type ) &&
                         <div>
-                            <div className="text-xl">Tracks</div>
-                            {trackData.items.map((track, index) => {
-                                if(track){
-                                    return <Link to={`/track/${track.id}`} key={index}>{track.name}</Link>
-                                }
-                            })}
+                            <div className='text-2xl text-white font-bold'>Tracks</div>
+                            <div className="flex-flex-col"> 
+                                {trackData.items.map((track, index) => {
+                                    if(track){
+                                        return <Link to={`/track/${track.id}`} key={index}>
+                                                    <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
+                                                        <img src={track.album.images[0].url} alt={track.name} className='h-[45px] w-[45px]'/>
+                                                        <div className='flex w-full justify-between ml-2 items-center'>
+                                                            <div className='flex flex-col'>
+                                                                <div className='text-white'>{track.name}</div>
+                                                                <div className='text-grayText text-sm'>{track.artists[0].name}</div>
+                                                            </div>
+                                                            <div className='text-grayText'>{formatDuration(track.duration_ms)}</div>
+                                                        </div>
+                                                    </div>
+                                               </Link>
+                                    }
+                                })}
+                            </div>
 
                             {!categories && type === 'track' && trackData.total > (offset + 50) &&
                                 <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
@@ -345,69 +250,82 @@ const Search = () => {
                     
                     {artistData && !categories && (type === 'artist' || !type ) &&
                         <div>
-                            <div className="text-xl">Artists</div>
-                            {artistData.items.map((artist, index) => {
-                                if(artist){
-                                    return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
-                                }
-                            })}
+                            <div className='text-2xl text-white font-bold'>Artists</div>
+                            <div className='flex flex-wrap justify-center md:justify-start'>
+                                {artistData.items.map((artist, index) => {
+                                    if(artist){
+                                        return <ArtistCard key={index} name={artist.name} image={artist.images.length > 0 ? artist.images[0].url : 'default'} id={artist.id}/>
+                                    }
+                                })}
+                            </div>
 
                             {!categories && type === 'artist' && artistData.total > (offset + 50) &&
-                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                                <div className='flex justify-center md:justify-start pb-4'>
+                                    <button onClick={handleShowMore} className='bg-spotifyGreen py-2 px-3 text-white rounded-lg mt-2'>Show more</button>
+                                </div>
                             }
                         </div>
                     }
                     
                     {albumData && !categories && (type === 'album' || !type ) &&
                         <div>
-                            <div className="text-xl">Albums</div>
-                            {albumData.items.map((album, index) => {
-                                if(album){
-                                    return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id}/>
-                                }
-                            })}
+                            <div className='text-2xl text-white font-bold'>Albums</div>
+                            <div className='flex flex-wrap justify-center md:justify-start'>
+                                {albumData.items.map((album, index) => {
+                                    if(album){
+                                        return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id}/>
+                                    }
+                                })}
+                            </div>
 
                             {!categories && type === 'album' && albumData.total > (offset + 50) &&
-                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                                <div className='flex justify-center md:justify-start pb-4'>
+                                    <button onClick={handleShowMore} className='bg-spotifyGreen py-2 px-3 text-white rounded-lg mt-2'>Show more</button>
+                                </div>
                             }
                         </div>
                     }
                     
                     {playlistData && !categories && (type === 'playlist' || !type ) &&
                         <div>
-                            <div className="text-xl">Playlists</div>
-                            {playlistData.items.map((playlist, index) => {
-                                if(playlist && playlist.owner) {
-                                    return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
-                                } 
-                            })}
+                            <div className='text-2xl text-white font-bold'>Playlists</div>
+                            <div className='flex flex-wrap justify-center md:justify-start'>
+                                {playlistData.items.map((playlist, index) => {
+                                    if(playlist && playlist.owner) {
+                                        return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id}/>
+                                    } 
+                                })}
+                            </div>
                             
                             {!categories && type === 'playlist' && playlistData.total > (offset + 50) &&
-                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                                <div className='flex justify-center md:justify-start pb-4'>
+                                    <button onClick={handleShowMore} className='bg-spotifyGreen py-2 px-3 text-white rounded-lg mt-2'>Show more</button>
+                                </div>
                             }
                         </div>
                     }
                     
                     {audiobookData && !categories && (type === 'audiobook' || !type ) &&
                         <div>
-                            <div className="text-xl">Audiobooks</div>
-                            {audiobookData.items.map((audiobook, index) => {
-                                if(audiobook && audiobook.name && audiobook.authors.length > 0){
-                                    return <AudiobookCard key={index} name={audiobook.name} author={audiobook.authors[0].name} image={audiobook.images[0].url} id={audiobook.id} />
-                                }
-                            })}
+                            <div className='text-2xl text-white font-bold'>Audiobooks</div>
+                            <div className='flex flex-wrap justify-center md:justify-start'>
+                                {audiobookData.items.map((audiobook, index) => {
+                                    if(audiobook && audiobook.name && audiobook.authors.length > 0){
+                                        return <AudiobookCard key={index} name={audiobook.name} author={audiobook.authors[0].name} image={audiobook.images[0].url} id={audiobook.id} />
+                                    }
+                                })}
+                            </div>
 
                             {!categories && type === 'audiobook' && audiobookData.total > (offset + 50) &&
-                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                                <div className='flex justify-center md:justify-start pb-4'>
+                                    <button onClick={handleShowMore} className='bg-spotifyGreen py-2 px-3 text-white rounded-lg mt-2'>Show more</button>
+                                </div>
                             }
                         </div>
                     }
                 </div>
-            </div>
-            }
-
-             
-        </div>
+            </div> 
+        
     )
 }
 

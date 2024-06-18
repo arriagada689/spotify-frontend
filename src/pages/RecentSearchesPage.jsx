@@ -4,6 +4,7 @@ import ArtistCard from '../components/ArtistCard.jsx';
 import AlbumCard from '../components/AlbumCard.jsx';
 import PlaylistCard from '../components/PlaylistCard.jsx';
 import AudiobookCard from '../components/AudiobookCard.jsx';
+import TrackCard from '../components/TrackCard.jsx';
 
 const RecentSearchesPage = () => {
     const [recentlyViewed, setRecentlyViewed] = useState(null)
@@ -50,11 +51,13 @@ const RecentSearchesPage = () => {
     }
     
     return (
-        <div>
-            <div>Recent Searches</div>
-            <button onClick={handleClearClick} className='bg-red-500'>Clear recent searches</button>
+        <div className={`bg-primary px-5 pb-16 md:pb-2 h-dvh w-full pt-3 md:pt-0 md:rounded-b-md`}>
+            <div className='flex justify-between items-baseline mb-2'>
+                <div className='text-2xl text-white font-bold mb-2'>Recent Searches</div>
+                <button onClick={handleClearClick} className='bg-red-500 text-grayText underline md:no-underline hover:underline font-semibold'>Clear recent searches</button>
+            </div>
             {recentlyViewed && 
-                <div>
+                <div className='flex flex-wrap justify-center md:justify-start gap-y-4'>
                     {recentlyViewed.map((item, index) => {
                         // console.log(item)
                         if(item.type === 'Artist'){
@@ -66,7 +69,7 @@ const RecentSearchesPage = () => {
                         } else if(item.type === 'Audiobook'){
                             return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
                         } else if(item.type === 'Track'){
-                            return <Link to={`/track/${item.id}`} key={index}>{item.name}</Link>
+                            return <TrackCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
                         }
                     })}
                 </div>
