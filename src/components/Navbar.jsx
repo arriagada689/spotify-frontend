@@ -20,7 +20,7 @@ const Navbar = () => {
     const logoutHandler = (e) => {
         e.preventDefault()
         logoutUser()
-        navigate('/')
+        navigate('/logout')
     }
 
     const goBack = () => {

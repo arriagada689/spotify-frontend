@@ -34,17 +34,6 @@ const Search = () => {
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     
     useEffect(() => {
-        // function modifySecondValue(categories) {
-        //     return categories.map(category => {
-        //         // Clone the inner array to avoid mutating the original data
-        //         const modifiedCategory = [...category];
-        //         // Concatenate '2' to the second element of each inner array
-        //         modifiedCategory[1] += '2';
-        //         return modifiedCategory;
-        //     });
-        // }
-        // const modifiedCategories = modifySecondValue(categories)
-        // console.log(modifiedCategories)
 
         const searchRequest = async () => {
             if(query) {

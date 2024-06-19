@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import AudiobookDescription from '../components/AudiobookDescription'
 import { AuthContext } from '../contexts/AuthContext.jsx';
+import { FaCheck } from "react-icons/fa";
 
 const AudiobookPage = () => {
     const { id } = useParams()
@@ -202,41 +203,53 @@ const AudiobookPage = () => {
     }
     
     return (
-        <div>
+        <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
             {audiobook && 
-                <div>
-                    {/* <img src={audiobook.images[0].url} alt={audiobook.name} /> */}
-                    <div>Audiobook</div>
-                    <div>{audiobook.name}</div>
-                    <div>{audiobook.authors[0].name}</div>
+                <div className='flex flex-col md:flex-row items-center'>
+                    <img src={audiobook.images[0].url} alt={audiobook.name} className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/>
+                    <div className="flex flex-col text-white space-y-4 md:ml-4 mt-2 md:mt-0 w-full">
+                        <div>Audiobook</div>
+                        <div className='text-4xl md:text-7xl font-bold name-width truncate pb-2 md:pb-4'>{audiobook.name}</div>
+                        <div className='text-grayText'>{audiobook.authors[0].name}</div>
+                    </div>
                 </div>
             }
 
             {/* Conditional for CRUD */}
-            {!localStorage.getItem('userInfo') && <div className='bg-blue-500'>Not logged in</div>}
-            {localStorage.getItem('userInfo') && following && <button onClick={() => handleFollowButton('unfollow')} className='bg-blue-500 w-fit'>Unfollow</button>}
-            {localStorage.getItem('userInfo') && !following && <button onClick={() => handleFollowButton('follow')} className='bg-blue-500 w-fit'>Follow</button>}
-            
-            {localStorage.getItem('userInfo') && userList &&
-                <div className='border flex flex-col'>
-                    <div className='text-xl'>Add to playlist</div>
-                    {userList.map((user_playlist, index) => {
-                        return <button 
-                                onClick={() => handlePlaylistFunctionality(user_playlist[0], user_playlist[2] ? 'remove' : 'add')} 
-                                className='border w-fit' 
-                                key={index}>
-                                    {user_playlist[1]} {user_playlist[2] ? 'is in' : 'not in'}
-                                </button>
-                    })}
-                </div>
-            }
+            <div className="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-5">
+                {!localStorage.getItem('userInfo') && <div className='text-xl text-grayText font-semibold'><Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the song to your playlists.</div>}
+                
+                {localStorage.getItem('userInfo') && userList &&
+                    <div className='flex flex-col'>
+                        <div className='text-xl text-white font-semibold'>Add to playlist</div>
+                        <div className='flex flex-col bg-miniHover w-fit rounded-md p-1'>
+                            <Link to={'/create_playlist'} className='w-full hover:bg-lighterGray text-left text-white p-2 border-b border-white'>Create new playlist</Link>
+                            {userList.map((user_playlist, index) => {
+                                return <button 
+                                        onClick={() => handlePlaylistFunctionality(user_playlist[0], user_playlist[2] ? 'remove' : 'add')} 
+                                        className='w-full hover:bg-lighterGray text-left text-white p-2' 
+                                        key={index}>
+                                        <div className='flex items-center justify-between'>
+                                            <div>{user_playlist[1]}</div>
+                                            <div>{user_playlist[2] ? <FaCheck /> : ''}</div>
+                                        </div>
+                                        </button>
+                            })}
+                        </div>
+                    </div>
+                }
+
+                {/*Follow/unfollow button */}
+                {localStorage.getItem('userInfo') && following && <button onClick={() => handleFollowButton('unfollow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Unfollow</button>}
+                {localStorage.getItem('userInfo') && !following && <button onClick={() => handleFollowButton('follow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Follow</button>}
+            </div>
 
             {audiobook && 
-                <div>
-                    <div>
+                <div className='text-grayText'>
+                    <div >
                         Narrated by 
                         {audiobook.narrators.map((narrator, index) => {
-                            return <div key={index}>{narrator.name}</div>
+                            return <div key={index} className='text-white'>{narrator.name}</div>
                         })}
                     </div>
 

@@ -49,7 +49,7 @@ const UserPlaylistPage = () => {
             }
         }
         getUserPlaylistData()
-    }, [id, searchParams])
+    }, [id, searchParams, update])
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('userInfo')).token
@@ -278,7 +278,6 @@ const UserPlaylistPage = () => {
                     </div>
 
                     {playlistItems.map((item, index) => {
-                        // console.log(item)
                         return <Link to={item.type === 'Track' ? `/track/${item.id}` : `/audiobook/${item.id}`} className='grid-row' key={index}>
                                     {/* Counter */}
                                     <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>   

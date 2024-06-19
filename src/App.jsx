@@ -34,6 +34,7 @@ import FollowedArtists from './pages/FollowedArtists.jsx'
 import FollowedAlbums from './pages/FollowedAlbums.jsx'
 import FollowedAudiobooks from './pages/FollowedAudiobooks.jsx'
 import About from './pages/About.jsx'
+import Logout from './pages/Logout.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +53,7 @@ const router = createBrowserRouter(
       <Route path='/playlist/:id' element={<PlaylistPage />}/>
       <Route path='/audiobook/:id' element={<AudiobookPage />}/>
       <Route path='/user/:id' element={<UserPage />}/>
+      <Route path='/logout' element={<Logout />}/>
       <Route path='/create_playlist' element={<RequireAuth> <CreatePlaylist /> </RequireAuth>}/>
       <Route path='/update_playlist/:id' element={<RequireAuth> <UpdatePlaylist /> </RequireAuth>}/>
       <Route path='/user_playlist/:id' element={<RequireAuth> <UserPlaylistPage /> </RequireAuth>}/>

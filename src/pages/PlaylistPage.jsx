@@ -195,9 +195,12 @@ const PlaylistPage = () => {
                                     <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1 + offset}</div>
 
                                     {/* Title and Artist */}
-                                    <div className=' grid-cell text-left'>
-                                        <div className='text-white'>{track.track.name}</div>
-                                        <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
+                                    <div className='grid-cell flex items-center text-left'>
+                                        <img src={track.track.album.images[0].url} alt={track.track.name} className='h-[45px] w-[45px] rounded-md'/>
+                                        <div className="flex flex-col ml-2">
+                                            <div className='text-white'>{track.track.name}</div>
+                                            <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
+                                        </div>
                                     </div>
 
                                     {/* Duration */}
@@ -227,9 +230,12 @@ const PlaylistPage = () => {
                                     <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1 + offset}</div>
 
                                     {/* Title and Artist */}
-                                    <div className='grid-cell text-left'>
-                                        <div className='text-white'>{track.track.name}</div>
-                                        <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
+                                    <div className='grid-cell flex items-center text-left'>
+                                        <img src={track.track.album.images[0].url} alt={track.track.name} className='h-[45px] w-[45px] rounded-md'/>
+                                        <div className="flex flex-col ml-2">
+                                            <div className='text-white'>{track.track.name}</div>
+                                            <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
+                                        </div>
                                     </div>
 
                                     {/*Album */}
@@ -262,9 +268,12 @@ const PlaylistPage = () => {
                                     <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1 + offset}</div>
 
                                     {/* Title and Artist */}
-                                    <div className='grid-cell text-left'>
-                                        <div className='text-white'>{track.track.name}</div>
-                                        <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
+                                    <div className='grid-cell flex items-center text-left'>
+                                        <img src={track.track.album.images[0].url} alt={track.track.name} className='h-[45px] w-[45px] rounded-md'/>
+                                        <div className="flex flex-col ml-2">
+                                            <div className='text-white'>{track.track.name}</div>
+                                            <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
+                                        </div>
                                     </div>
 
                                     {/*Album */}
@@ -283,9 +292,9 @@ const PlaylistPage = () => {
             }
 
             {playlist && playlist.tracks.total > offset + 100 ? 
-                
-                    <button onClick={() => handleShowMore()} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Show more</button> 
-                
+                    <div className='flex items-center justify-center'>
+                        <button onClick={() => handleShowMore()} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Show more</button> 
+                    </div>
                 : null}
 
         </div>

@@ -156,12 +156,12 @@ const AlbumPage = () => {
                     <div className='grid-row text-grayText font-semibold'>
                         <div className="text-center  border-b-2 border-hoverGray">#</div>
                         <div className="text-left border-b-2 border-hoverGray">Title</div>
-                        <div className="mx-auto border-b-2 border-hoverGray w-full">Duration</div>
+                        <div className="mx-auto border-b-2 border-hoverGray w-full text-center">Duration</div>
                     </div>
 
                     {album.tracks.items.map((track, index) => {
                         return (
-                            <Link key={index} className='grid-row'>
+                            <Link to={`/track/${track.id}`} key={index} className='grid-row'>
                                 {/* Counter */}
                                 <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>
 

@@ -58,7 +58,7 @@ const SideBar = () => {
     }
     
     return (
-        <div className='flex flex-row md:flex-col fixed h-[60px] w-full bottom-0 md:top-0 md:left-0 md:h-screen md:w-[375px] md:m-1 md:space-y-1'>
+        <div className='flex flex-row md:flex-col fixed h-[60px] w-full bottom-0 md:top-0 md:left-0 md:h-full md:w-[375px] md:pt-2 md:pl-2 md:pb-2 md:space-y-2'>
             
                 <div className='flex flex-row justify-between md:justify-start md:flex-col w-full bg-black md:bg-primary text-grayText md:rounded-lg px-6 py-4 md:space-y-4'>
                     <Link to='/' onClick={() => setSelected('Home')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'Home' ? 'text-white' : ''}`}>
@@ -72,7 +72,7 @@ const SideBar = () => {
                     </Link>
                 </div>
 
-                <div className='hidden  md:flex flex-col bg-primary text-grayText rounded-lg h-full'>
+                <div className='hidden md:flex flex-col bg-primary text-grayText rounded-lg h-full'>
                     <div className='flex justify-between p-3'>
                         <div className='flex items-center space-x-2 font-semibold'>
                             <BiLibrary size={22}/>

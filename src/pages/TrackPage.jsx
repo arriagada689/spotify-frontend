@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import formatDuration from '../utils/formatDuration'
+import { FaCheck } from "react-icons/fa";
 
 const TrackPage = () => {
     const { id } = useParams()
@@ -133,55 +135,104 @@ const TrackPage = () => {
     }
 
     return (
-        <div>
+        <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
             {track && 
-                <div>
-                    {/* <img src={track.album.images[0].url} alt={track.name} /> */}
-                    <div>Song</div>
-                    <div>{track.name}</div>
-                    <div>{track.artists[0].name}</div>
-                    <div>{track.album.name}</div>
-                    <div>{track.album.release_date.substring(0,4)}</div>
+                <div className='flex flex-col md:flex-row items-center'>
+                    <img src={track.album.images[0].url} alt={track.name} className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/>
+                    <div className="flex flex-col text-white space-y-4 md:ml-4 mt-2 md:mt-0 w-full">
+                        <div>Song</div>
+                        <div className='text-4xl md:text-7xl font-bold name-width truncate pb-2 md:pb-4'>{track.name}</div>
+                        <div className='flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-5'>
+                            <Link to={`/artist/${track.artists[0].id}`} className='underline md:no-underline md:hover:underline'>{track.artists[0].name}</Link>
+                            <Link to={`/album/${track.album.id}`} className='underline md:no-underline md:hover:underline'>{track.album.name}</Link>
+                            <div>{track.album.release_date.substring(0,4)}</div>
+                            <div>{formatDuration(track.duration_ms)}</div>
+                        </div>
+                    </div>
                 </div>
             }
 
             {/* conditional to check if user is logged in */}
-            {!localStorage.getItem('userInfo') && <div className='bg-blue-500'>Not logged in</div>}
-            {localStorage.getItem('userInfo') && userList &&
-                <div className='border flex flex-col'>
-                    <div className='text-xl'>Add to playlist</div>
-                    {userList.map((user_playlist, index) => {
-                        return <button 
-                                onClick={() => handlePlaylistFunctionality(user_playlist[0], user_playlist[2] ? 'remove' : 'add')} 
-                                className='border w-fit' 
-                                key={index}>
-                                    {user_playlist[1]} {user_playlist[2] ? 'is in' : 'not in'}
-                                </button>
-                    })}
+            <div className="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-5">
+                {!localStorage.getItem('userInfo') && <div className='text-xl text-grayText font-semibold'><Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the song to your playlists.</div>}
+                {localStorage.getItem('userInfo') && userList &&
+                    <div className='flex flex-col'>
+                        <div className='text-xl text-white font-semibold'>Add to playlist</div>
+                        <div className='flex flex-col bg-miniHover w-fit rounded-md p-1'>
+                            <Link to={'/create_playlist'} className='w-full hover:bg-lighterGray text-left text-white p-2 border-b border-white'>Create new playlist</Link>
+                            {userList.map((user_playlist, index) => {
+                                return <button 
+                                        onClick={() => handlePlaylistFunctionality(user_playlist[0], user_playlist[2] ? 'remove' : 'add')} 
+                                        className='w-full hover:bg-lighterGray text-left text-white p-2' 
+                                        key={index}>
+                                        <div className='flex items-center justify-between'>
+                                            <div>{user_playlist[1]}</div>
+                                            <div>{user_playlist[2] ? <FaCheck /> : ''}</div>
+                                        </div>
+                                        </button>
+                            })}
+                        </div>
+                    </div>
+                }
+
+                {/* Preview song button */}
+                {track && <a className='bg-spotifyGreen h-fit w-fit font-semibold py-2 px-3 text-xl rounded-2xl' href={track.preview_url} target='_blank'>Preview Song</a>}
+            </div>
+
+            {popularTracks && popularTracks.length > 0 &&
+                <div>
+                    <div className='text-2xl text-white font-bold mb-2'>Popular tracks by <Link to={`/artist/${track.artists[0].id}`} className='text-green-500 underline md:no-underline md:hover:underline'>{track ? track.artists[0].name : ''}</Link></div>
+                    <div className="flex-flex-col">
+                        {popularTracks.map((popular_track, index) => {
+                            if(popular_track){
+                                return <Link to={`/track/${popular_track.id}`} key={index}>
+                                            <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
+                                                <img src={popular_track.album.images[0].url} alt={popular_track.name} className='h-[45px] w-[45px] rounded-md'/>
+                                                <div className='flex w-full justify-between ml-2 items-center'>
+                                                    <div className='flex flex-col'>
+                                                        <div className='text-white'>{popular_track.name}</div>
+                                                        <div className='text-grayText text-sm'>{popular_track.artists[0].name}</div>
+                                                    </div>
+                                                    <div className='text-grayText'>{formatDuration(popular_track.duration_ms)}</div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                            }
+                            
+                        })}
+                    </div>
                 </div>
             }
 
-            {/* Preview song button */}
-            {track && <a className='bg-green-400' href={track.preview_url} target='_blank'>Preview Song</a>}
+            {albumData && albumData.length > 0 && 
+                    
+                <div className='album-grid'>
+                    <div className='grid-row text-grayText font-semibold'>
+                        <div className="text-center  border-b-2 border-hoverGray">#</div>
+                        <div className="text-left border-b-2 border-hoverGray">Title</div>
+                        <div className="mx-auto border-b-2 border-hoverGray w-full text-center">Duration</div>
+                    </div>
 
-            {popularTracks && 
-                <div>
-                    <div className="text-xl">Popular tracks by <span className='text-green-500'>{track ? track.artists[0].name : ''}</span></div>
-                    {popularTracks.map((popular_track, index) => {
-                        return <Link to={`/track/${popular_track.id}`} key={index}>{popular_track.name}</Link>
-                    })}
-                </div>
-            }
-
-            {albumData && 
-                <div>
-                    <div className="text-xl">More from the album <span className='text-green-500'>{track ? track.album.name : ''}</span></div>
                     {albumData.map((album_track, index) => {
-                        return <div key={index}>{album_track.name}</div>
+                        if(album_track){
+                            return <Link to={`/track/${album_track.id}`} key={index} className='grid-row'>
+                                        {/* Counter */}
+                                        <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>
+
+                                        {/* Title and Artist */}
+                                        <div className='grid-cell text-left'>
+                                            <div className='text-white'>{album_track.name}</div>
+                                            <div className='text-sm text-grayText'>{album_track.artists[0].name}</div>
+                                        </div>
+
+                                        {/* Duration */}
+                                        <div className='flex items-center justify-center text-grayText grid-cell'>{formatDuration(album_track.duration_ms)}</div>
+                                    </Link>
+                        }
                     })}
                 </div>
+                
             }
-
         </div>
     )
 }

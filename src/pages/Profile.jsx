@@ -30,85 +30,94 @@ const Profile = () => {
     }, [])
     
     return profileData ? (
-        <div>
-            <img src={spotifyImage} alt='default image' />
-            <div>Profile</div>
-            {profileData && <div>{profileData.username}</div>}
-            {profileData && <div>{ `${profileData.artist_count} artist(s), ${profileData.album_count} album(s), ${profileData.playlist_count} playlist(s), ${profileData.audiobook_count} audiobook(s)` }</div>}
+        <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
+            <div className='flex flex-col md:flex-row items-center'>
+                <img src={spotifyImage} alt='default image' className='h-[270px] w-[270px] rounded-full mx-auto md:mx-0'/>
+                <div className="flex flex-col text-white space-y-4 md:ml-4 mt-2 md:mt-0 w-full">
+                    <div>Profile</div>
+                    <div className='text-4xl md:text-7xl font-bold name-width truncate pb-2 md:pb-4'>{profileData.username}</div>
+                    <div className='text-grayText'>{ `${profileData.artist_count} artist(s), ${profileData.album_count} album(s), ${profileData.playlist_count} playlist(s), ${profileData.audiobook_count} audiobook(s)` }</div>
+                </div>
+            </div>
 
             {/* update profile and delete profile links */}
-            <Link to='/update_profile' className='bg-green-400'>Update profile</Link>
-            <Link to='/confirm_delete_profile' className='bg-red-400'>Delete profile</Link>
+            <div className="flex items-center space-x-3">
+                <Link to='/update_profile' className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Update profile</Link>
+                <Link to='/confirm_delete_profile' className='bg-red-500 w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Delete profile</Link>
+            </div>
 
-            {/* Saved Playlists section */}
-            {profileData && profileData.saved_playlists.length > 0 &&
-                <div>
-                    {profileData.saved_playlists.length >= 4 ? 
-                        <Link to='/saved_playlists' className='text-xl hover:underline'>Saved playlists</Link> :
-                        <div className='text-xl'>Saved playlists</div>
-                    }
+            <div className='space-y-4'>
+                {/* Saved Playlists section */}
+                {profileData && profileData.saved_playlists.length > 0 &&
+                    <div>
+                        <div className='text-2xl text-white font-bold'>Saved playlists</div>
 
-                    {profileData.saved_playlists.map((item, index) => {
-                        if(item.type === 'Playlist'){
-                            return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
-                        } else if(item.type === 'UserPlaylist'){
-                            return <PlaylistCard key={index} name={item.name} id={item.id} image={'default'} owner={item.creator}/>
-                        }
-                    })}
-                </div>
-            }
+                        <div className="flex overflow-y-auto custom-scrollbar">
+                            {profileData.saved_playlists.map((item, index) => {
+                                if(item.type === 'Playlist'){
+                                    return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
+                                } else if(item.type === 'UserPlaylist'){
+                                    return <PlaylistCard key={index} name={item.name} id={item.id} image={'default'} owner={item.creator}/>
+                                }
+                            })} 
+                        </div>
+                    </div>
+                }
 
-            {/* Followed artists section */}
-            {profileData && profileData.followed_artists.length > 0 &&
-                <div>
-                    {profileData.followed_artists.length >= 4 ? 
-                        <Link to='/followed_artists' className='text-xl hover:underline'>Followed artists</Link> :
-                        <div className='text-xl'>Followed artists</div>
-                    }
-                    {profileData.followed_artists.map((item, index) => {
-                        return <ArtistCard key={index} name={item.name} id={item.id} image={item.image}/>
-                    })}
-                </div>
-            }
+                {/* Followed artists section */}
+                {profileData && profileData.followed_artists.length > 0 &&
+                    <div>
+                        <div className='text-2xl text-white font-bold'>Followed artists</div>
+                        
+                        <div className="flex overflow-y-auto custom-scrollbar">
+                            {profileData.followed_artists.map((item, index) => {
+                                return <ArtistCard key={index} name={item.name} id={item.id} image={item.image}/>
+                            })}
+                        </div>
+                    </div>
+                }
 
-            {/* Followed albums section */}
-            {profileData && profileData.followed_albums.length > 0 &&
-                <div>
-                    {profileData.followed_albums.length >= 4 ? 
-                        <Link to='/followed_albums' className='text-xl hover:underline'>Followed albums</Link> :
-                        <div className='text-xl'>Followed albums</div>
-                    }
-                    {profileData.followed_albums.map((item, index) => {
-                        return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
-                    })}
-                </div>
-            }
+                {/* Followed albums section */}
+                {profileData && profileData.followed_albums.length > 0 &&
+                    <div>
+                        <div className='text-2xl text-white font-bold'>Followed albums</div>
 
-            {/* Followed audiobooks section */}
-            {profileData && profileData.followed_audiobooks.length > 0 &&
-                <div>
-                    {profileData.followed_audiobooks.length >= 4 ? 
-                        <Link to='/followed_audiobooks' className='text-xl hover:underline'>Followed audiobooks</Link> :
-                        <div className='text-xl'>Followed audiobooks</div>
-                    }
-                    {profileData.followed_audiobooks.map((item, index) => {
-                        return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
-                    })}
-                </div>
-            }
+                        <div className="flex overflow-y-auto custom-scrollbar">
+                            {profileData.followed_albums.map((item, index) => {
+                                return <AlbumCard key={index} name={item.name} id={item.id} image={item.image} artist={item.artist}/>
+                            })}
+                        </div>
+                    </div>
+                }
+
+                {/* Followed audiobooks section */}
+                {profileData && profileData.followed_audiobooks.length > 0 &&
+                    <div>
+                        <div className='text-2xl text-white font-bold'>Followed albums</div>
+
+                        <div className="flex overflow-y-auto custom-scrollbar">
+                            {profileData.followed_audiobooks.map((item, index) => {
+                                return <AudiobookCard key={index} name={item.name} id={item.id} image={item.image} author={item.author}/>
+                            })}
+                        </div>
+                    </div>
+                }
+            </div>
 
         </div>) :
         (
-            <div>
-                <Oval
-                visible={true}
-                height="80"
-                width="80"
-                color="#4fa94d"
-                ariaLabel="oval-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
-                />
+            <div className='bg-primary h-dvh flex justify-center'>
+                <div className='flex justify-center mt-4'>
+                    <Oval
+                    visible={true}
+                    height="80"
+                    width="80"
+                    color="#4fa94d"
+                    ariaLabel="oval-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    />
+                </div>
             </div>
         )
     

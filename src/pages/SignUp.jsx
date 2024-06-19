@@ -62,7 +62,7 @@ const SignUp = () => {
         </div>
     ) : (
         <div className='flex bg-primary w-full h-full pt-4 md:pt-0 md:items-center justify-center'>
-            <div className='flex flex-col text-grayText md:mb-[50px] space-y-5 w-2/3 lg:w-1/2'>
+            <div className='flex flex-col text-grayText md:mb-[50px] space-y-5 w-2/3 lg:w-1/2 xl:w-1/3'>
                 <FaSpotify size={200} className='mx-auto text-white'/>
                 <div className='text-center text-4xl font-bold text-white'>Sign Up</div>
                 {errorMessage && <div className='border-2 border-red-800 bg-red-300 p-1 px-2 w-fit text-red-600'>{errorMessage}</div>}

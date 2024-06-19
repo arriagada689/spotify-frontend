@@ -162,7 +162,7 @@ const ArtistPage = () => {
                                 if(track){
                                     return <Link to={`/track/${track.id}`} key={index}>
                                                 <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
-                                                    <img src={track.album.images[0].url} alt={track.name} className='h-[45px] w-[45px]'/>
+                                                    <img src={track.album.images[0].url} alt={track.name} className='h-[45px] w-[45px] rounded-md'/>
                                                     <div className='flex w-full justify-between ml-2 items-center'>
                                                         <div className='flex flex-col'>
                                                             <div className='text-white'>{track.name}</div>
