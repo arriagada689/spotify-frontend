@@ -17,8 +17,6 @@ const ArtistPage = () => {
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
-    const [bgColor, setBgColor] = useState(null)
-
     useEffect(() => {
         const getArtistData = async () => {
             const response = await fetch(`${apiBaseUrl}/spotify/get_artist/${id}`, {
@@ -32,10 +30,6 @@ const ArtistPage = () => {
                 setArtist(data.artist_data)
                 setPopularTracks(data.popular_tracks)
                 setRelatedArtists(data.related_artists)
-
-                // Select a random color from the colors array
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                setBgColor(randomColor); // Update the bgColor state
             }
         }
         getArtistData()
@@ -138,19 +132,15 @@ const ArtistPage = () => {
             }
         }
     }
-
-    function concatenateStrings(stringsArray) {
-        return stringsArray.join(", ");
-    }
     
     return (
-        <div className='bg-primary px-5 pb-16 md:pb-2 h-fit w-full pt-3 md:pt-0 md:rounded-b-md space-y-4'>
+        <div className='flex flex-col bg-primary px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
             {artist && 
                 <div className='flex flex-col md:flex-row items-center'>
                     {artist.images.length > 0 ? <img src={artist.images[0].url} alt={artist.name} className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/> : <img src={spotifyImage} alt='default image' className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/>}
-                    <div className="flex flex-col text-white space-y-4 md:ml-4  mt-2 md:mt-0">
+                    <div className="flex flex-col text-white space-y-4 md:ml-4 mt-2 md:mt-0 w-full">
                         <div>Artist</div>
-                        <div className='text-4xl md:text-7xl font-bold truncate'>{artist.name}</div>
+                        <div className='text-4xl md:text-7xl font-bold name-width truncate pb-2 md:pb-4'>{artist.name}</div>
                         <a href={artist.external_urls.spotify} target="_blank"><span className='text-spotifyGreen underline md:hover:underline'>Spotify Link</span></a>
 
                         <div className='text-grayText text-wrap'>Genres: {artist.genres.join(', ')}</div>

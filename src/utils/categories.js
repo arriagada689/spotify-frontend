@@ -1,1013 +1,1011 @@
 const staticCategories = [
     [
         "acoustic",
-        "red"
+        "red2"
     ],
     [
         "afrobeat",
-        "blue"
+        "blue2"
     ],
     [
         "alt-rock",
-        "green"
+        "green2"
     ],
     [
         "alternative",
-        "teal"
+        "teal2"
     ],
     [
         "ambient",
-        "purple"
+        "purple2"
     ],
     [
         "anime",
-        "orange"
+        "orange2"
     ],
     [
         "black-metal",
-        "pink"
+        "pink2"
     ],
     [
         "bluegrass",
-        "red"
+        "red2"
     ],
     [
         "blues",
-        "blue"
+        "blue2"
     ],
     [
         "bossanova",
-        "green"
+        "green2"
     ],
     [
         "brazil",
-        "teal"
+        "teal2"
     ],
     [
         "breakbeat",
-        "purple"
+        "purple2"
     ],
     [
         "british",
-        "orange"
+        "orange2"
     ],
     [
         "cantopop",
-        "pink"
+        "pink2"
     ],
     [
         "chicago-house",
-        "red"
+        "red2"
     ],
     [
         "children",
-        "blue"
+        "blue2"
     ],
     [
         "chill",
-        "green"
+        "green2"
     ],
     [
         "classical",
-        "teal"
+        "teal2"
     ],
     [
         "club",
-        "purple"
+        "purple2"
     ],
     [
         "comedy",
-        "orange"
+        "orange2"
     ],
     [
         "country",
-        "pink"
+        "pink2"
     ],
     [
         "dance",
-        "red"
+        "red2"
     ],
     [
         "dancehall",
-        "blue"
+        "blue2"
     ],
     [
         "death-metal",
-        "green"
+        "green2"
     ],
     [
         "deep-house",
-        "teal"
+        "teal2"
     ],
     [
         "detroit-techno",
-        "purple"
+        "purple2"
     ],
     [
         "disco",
-        "orange"
+        "orange2"
     ],
     [
         "disney",
-        "pink"
+        "pink2"
     ],
     [
         "drum-and-bass",
-        "red"
+        "red2"
     ],
     [
         "dub",
-        "blue"
+        "blue2"
     ],
     [
         "dubstep",
-        "green"
+        "green2"
     ],
     [
         "edm",
-        "teal"
+        "teal2"
     ],
     [
         "electro",
-        "purple"
+        "purple2"
     ],
     [
         "electronic",
-        "orange"
+        "orange2"
     ],
     [
         "emo",
-        "pink"
+        "pink2"
     ],
     [
         "folk",
-        "red"
+        "red2"
     ],
     [
         "forro",
-        "blue"
+        "blue2"
     ],
     [
         "french",
-        "green"
+        "green2"
     ],
     [
         "funk",
-        "teal"
+        "teal2"
     ],
     [
         "garage",
-        "purple"
+        "purple2"
     ],
     [
         "german",
-        "orange"
+        "orange2"
     ],
     [
         "gospel",
-        "pink"
+        "pink2"
     ],
     [
         "goth",
-        "red"
+        "red2"
     ],
     [
         "grindcore",
-        "blue"
+        "blue2"
     ],
     [
         "groove",
-        "green"
+        "green2"
     ],
     [
         "grunge",
-        "teal"
+        "teal2"
     ],
     [
         "guitar",
-        "purple"
+        "purple2"
     ],
     [
         "happy",
-        "orange"
+        "orange2"
     ],
     [
         "hard-rock",
-        "pink"
+        "pink2"
     ],
     [
         "hardcore",
-        "red"
+        "red2"
     ],
     [
         "hardstyle",
-        "blue"
+        "blue2"
     ],
     [
         "heavy-metal",
-        "green"
+        "green2"
     ],
     [
         "hip-hop",
-        "teal"
+        "teal2"
     ],
     [
         "holidays",
-        "purple"
+        "purple2"
     ],
     [
         "honky-tonk",
-        "orange"
+        "orange2"
     ],
     [
         "house",
-        "pink"
+        "pink2"
     ],
     [
         "idm",
-        "red"
+        "red2"
     ],
     [
         "indian",
-        "blue"
+        "blue2"
     ],
     [
         "indie",
-        "green"
+        "green2"
     ],
     [
         "indie-pop",
-        "teal"
+        "teal2"
     ],
     [
         "industrial",
-        "purple"
+        "purple2"
     ],
     [
         "iranian",
-        "orange"
+        "orange2"
     ],
     [
         "j-dance",
-        "pink"
+        "pink2"
     ],
     [
         "j-idol",
-        "red"
+        "red2"
     ],
     [
         "j-pop",
-        "blue"
+        "blue2"
     ],
     [
         "j-rock",
-        "green"
+        "green2"
     ],
     [
         "jazz",
-        "teal"
+        "teal2"
     ],
     [
         "k-pop",
-        "purple"
+        "purple2"
     ],
     [
         "kids",
-        "orange"
+        "orange2"
     ],
     [
         "latin",
-        "pink"
+        "pink2"
     ],
     [
         "latino",
-        "red"
+        "red2"
     ],
     [
         "malay",
-        "blue"
+        "blue2"
     ],
     [
         "mandopop",
-        "green"
+        "green2"
     ],
     [
         "metal",
-        "teal"
+        "teal2"
     ],
     [
         "metal-misc",
-        "purple"
+        "purple2"
     ],
     [
         "metalcore",
-        "orange"
+        "orange2"
     ],
     [
         "minimal-techno",
-        "pink"
+        "pink2"
     ],
     [
         "movies",
-        "red"
+        "red2"
     ],
     [
         "mpb",
-        "blue"
+        "blue2"
     ],
     [
         "new-age",
-        "green"
+        "green2"
     ],
     [
         "new-release",
-        "teal"
+        "teal2"
     ],
     [
         "opera",
-        "purple"
+        "purple2"
     ],
     [
         "pagode",
-        "orange"
+        "orange2"
     ],
     [
         "party",
-        "pink"
+        "pink2"
     ],
     [
         "philippines-opm",
-        "red"
+        "red2"
     ],
     [
         "piano",
-        "blue"
+        "blue2"
     ],
     [
         "pop",
-        "green"
+        "green2"
     ],
     [
         "pop-film",
-        "teal"
+        "teal2"
     ],
     [
         "post-dubstep",
-        "purple"
+        "purple2"
     ],
     [
         "power-pop",
-        "orange"
+        "orange2"
     ],
     [
         "progressive-house",
-        "pink"
+        "pink2"
     ],
     [
         "psych-rock",
-        "red"
+        "red2"
     ],
     [
         "punk",
-        "blue"
+        "blue2"
     ],
     [
         "punk-rock",
-        "green"
+        "green2"
     ],
     [
         "r-n-b",
-        "teal"
+        "teal2"
     ],
     [
         "rainy-day",
-        "purple"
+        "purple2"
     ],
     [
         "reggae",
-        "orange"
+        "orange2"
     ],
     [
         "reggaeton",
-        "pink"
+        "pink2"
     ],
     [
         "road-trip",
-        "red"
+        "red2"
     ],
     [
         "rock",
-        "blue"
+        "blue2"
     ],
     [
         "rock-n-roll",
-        "green"
+        "green2"
     ],
     [
         "rockabilly",
-        "teal"
+        "teal2"
     ],
     [
         "romance",
-        "purple"
+        "purple2"
     ],
     [
         "sad",
-        "orange"
+        "orange2"
     ],
     [
         "salsa",
-        "pink"
+        "pink2"
     ],
     [
         "samba",
-        "red"
+        "red2"
     ],
     [
         "sertanejo",
-        "blue"
+        "blue2"
     ],
     [
         "show-tunes",
-        "green"
+        "green2"
     ],
     [
         "singer-songwriter",
-        "teal"
+        "teal2"
     ],
     [
         "ska",
-        "purple"
+        "purple2"
     ],
     [
         "sleep",
-        "orange"
+        "orange2"
     ],
     [
         "songwriter",
-        "pink"
+        "pink2"
     ],
     [
         "soul",
-        "red"
+        "red2"
     ],
     [
         "soundtracks",
-        "blue"
+        "blue2"
     ],
     [
         "spanish",
-        "green"
+        "green2"
     ],
     [
         "study",
-        "teal"
+        "teal2"
     ],
     [
         "summer",
-        "purple"
+        "purple2"
     ],
     [
         "swedish",
-        "orange"
+        "orange2"
     ],
     [
         "synth-pop",
-        "pink"
+        "pink2"
     ],
     [
         "tango",
-        "red"
+        "red2"
     ],
     [
         "techno",
-        "blue"
+        "blue2"
     ],
     [
         "trance",
-        "green"
+        "green2"
     ],
     [
         "trip-hop",
-        "teal"
+        "teal2"
     ],
     [
         "turkish",
-        "purple"
+        "purple2"
     ],
     [
         "work-out",
-        "orange"
+        "orange2"
     ],
     [
         "world-music",
-        "pink"
+        "pink2"
     ],
-    
     [
         "acoustic",
-        "red"
+        "red2"
     ],
     [
         "afrobeat",
-        "blue"
+        "blue2"
     ],
     [
         "alt-rock",
-        "green"
+        "green2"
     ],
     [
         "alternative",
-        "teal"
+        "teal2"
     ],
     [
         "ambient",
-        "purple"
+        "purple2"
     ],
     [
         "anime",
-        "orange"
+        "orange2"
     ],
     [
         "black-metal",
-        "pink"
+        "pink2"
     ],
     [
         "bluegrass",
-        "red"
+        "red2"
     ],
     [
         "blues",
-        "blue"
+        "blue2"
     ],
     [
         "bossanova",
-        "green"
+        "green2"
     ],
     [
         "brazil",
-        "teal"
+        "teal2"
     ],
     [
         "breakbeat",
-        "purple"
+        "purple2"
     ],
     [
         "british",
-        "orange"
+        "orange2"
     ],
     [
         "cantopop",
-        "pink"
+        "pink2"
     ],
     [
         "chicago-house",
-        "red"
+        "red2"
     ],
     [
         "children",
-        "blue"
+        "blue2"
     ],
     [
         "chill",
-        "green"
+        "green2"
     ],
     [
         "classical",
-        "teal"
+        "teal2"
     ],
     [
         "club",
-        "purple"
+        "purple2"
     ],
     [
         "comedy",
-        "orange"
+        "orange2"
     ],
     [
         "country",
-        "pink"
+        "pink2"
     ],
     [
         "dance",
-        "red"
+        "red2"
     ],
     [
         "dancehall",
-        "blue"
+        "blue2"
     ],
     [
         "death-metal",
-        "green"
+        "green2"
     ],
     [
         "deep-house",
-        "teal"
+        "teal2"
     ],
     [
         "detroit-techno",
-        "purple"
+        "purple2"
     ],
     [
         "disco",
-        "orange"
+        "orange2"
     ],
     [
         "disney",
-        "pink"
+        "pink2"
     ],
     [
         "drum-and-bass",
-        "red"
+        "red2"
     ],
     [
         "dub",
-        "blue"
+        "blue2"
     ],
     [
         "dubstep",
-        "green"
+        "green2"
     ],
     [
         "edm",
-        "teal"
+        "teal2"
     ],
     [
         "electro",
-        "purple"
+        "purple2"
     ],
     [
         "electronic",
-        "orange"
+        "orange2"
     ],
     [
         "emo",
-        "pink"
+        "pink2"
     ],
     [
         "folk",
-        "red"
+        "red2"
     ],
     [
         "forro",
-        "blue"
+        "blue2"
     ],
     [
         "french",
-        "green"
+        "green2"
     ],
     [
         "funk",
-        "teal"
+        "teal2"
     ],
     [
         "garage",
-        "purple"
+        "purple2"
     ],
     [
         "german",
-        "orange"
+        "orange2"
     ],
     [
         "gospel",
-        "pink"
+        "pink2"
     ],
     [
         "goth",
-        "red"
+        "red2"
     ],
     [
         "grindcore",
-        "blue"
+        "blue2"
     ],
     [
         "groove",
-        "green"
+        "green2"
     ],
     [
         "grunge",
-        "teal"
+        "teal2"
     ],
     [
         "guitar",
-        "purple"
+        "purple2"
     ],
     [
         "happy",
-        "orange"
+        "orange2"
     ],
     [
         "hard-rock",
-        "pink"
+        "pink2"
     ],
     [
         "hardcore",
-        "red"
+        "red2"
     ],
     [
         "hardstyle",
-        "blue"
+        "blue2"
     ],
     [
         "heavy-metal",
-        "green"
+        "green2"
     ],
     [
         "hip-hop",
-        "teal"
+        "teal2"
     ],
     [
         "holidays",
-        "purple"
+        "purple2"
     ],
     [
         "honky-tonk",
-        "orange"
+        "orange2"
     ],
     [
         "house",
-        "pink"
+        "pink2"
     ],
     [
         "idm",
-        "red"
+        "red2"
     ],
     [
         "indian",
-        "blue"
+        "blue2"
     ],
     [
         "indie",
-        "green"
+        "green2"
     ],
     [
         "indie-pop",
-        "teal"
+        "teal2"
     ],
     [
         "industrial",
-        "purple"
+        "purple2"
     ],
     [
         "iranian",
-        "orange"
+        "orange2"
     ],
     [
         "j-dance",
-        "pink"
+        "pink2"
     ],
     [
         "j-idol",
-        "red"
+        "red2"
     ],
     [
         "j-pop",
-        "blue"
+        "blue2"
     ],
     [
         "j-rock",
-        "green"
+        "green2"
     ],
     [
         "jazz",
-        "teal"
+        "teal2"
     ],
     [
         "k-pop",
-        "purple"
+        "purple2"
     ],
     [
         "kids",
-        "orange"
+        "orange2"
     ],
     [
         "latin",
-        "pink"
+        "pink2"
     ],
     [
         "latino",
-        "red"
+        "red2"
     ],
     [
         "malay",
-        "blue"
+        "blue2"
     ],
     [
         "mandopop",
-        "green"
+        "green2"
     ],
     [
         "metal",
-        "teal"
+        "teal2"
     ],
     [
         "metal-misc",
-        "purple"
+        "purple2"
     ],
     [
         "metalcore",
-        "orange"
+        "orange2"
     ],
     [
         "minimal-techno",
-        "pink"
+        "pink2"
     ],
     [
         "movies",
-        "red"
+        "red2"
     ],
     [
         "mpb",
-        "blue"
+        "blue2"
     ],
     [
         "new-age",
-        "green"
+        "green2"
     ],
     [
         "new-release",
-        "teal"
+        "teal2"
     ],
     [
         "opera",
-        "purple"
+        "purple2"
     ],
     [
         "pagode",
-        "orange"
+        "orange2"
     ],
     [
         "party",
-        "pink"
+        "pink2"
     ],
     [
         "philippines-opm",
-        "red"
+        "red2"
     ],
     [
         "piano",
-        "blue"
+        "blue2"
     ],
     [
         "pop",
-        "green"
+        "green2"
     ],
     [
         "pop-film",
-        "teal"
+        "teal2"
     ],
     [
         "post-dubstep",
-        "purple"
+        "purple2"
     ],
     [
         "power-pop",
-        "orange"
+        "orange2"
     ],
     [
         "progressive-house",
-        "pink"
+        "pink2"
     ],
     [
         "psych-rock",
-        "red"
+        "red2"
     ],
     [
         "punk",
-        "blue"
+        "blue2"
     ],
     [
         "punk-rock",
-        "green"
+        "green2"
     ],
     [
         "r-n-b",
-        "teal"
+        "teal2"
     ],
     [
         "rainy-day",
-        "purple"
+        "purple2"
     ],
     [
         "reggae",
-        "orange"
+        "orange2"
     ],
     [
         "reggaeton",
-        "pink"
+        "pink2"
     ],
     [
         "road-trip",
-        "red"
+        "red2"
     ],
     [
         "rock",
-        "blue"
+        "blue2"
     ],
     [
         "rock-n-roll",
-        "green"
+        "green2"
     ],
     [
         "rockabilly",
-        "teal"
+        "teal2"
     ],
     [
         "romance",
-        "purple"
+        "purple2"
     ],
     [
         "sad",
-        "orange"
+        "orange2"
     ],
     [
         "salsa",
-        "pink"
+        "pink2"
     ],
     [
         "samba",
-        "red"
+        "red2"
     ],
     [
         "sertanejo",
-        "blue"
+        "blue2"
     ],
     [
         "show-tunes",
-        "green"
+        "green2"
     ],
     [
         "singer-songwriter",
-        "teal"
+        "teal2"
     ],
     [
         "ska",
-        "purple"
+        "purple2"
     ],
     [
         "sleep",
-        "orange"
+        "orange2"
     ],
     [
         "songwriter",
-        "pink"
+        "pink2"
     ],
     [
         "soul",
-        "red"
+        "red2"
     ],
     [
         "soundtracks",
-        "blue"
+        "blue2"
     ],
     [
         "spanish",
-        "green"
+        "green2"
     ],
     [
         "study",
-        "teal"
+        "teal2"
     ],
     [
         "summer",
-        "purple"
+        "purple2"
     ],
     [
         "swedish",
-        "orange"
+        "orange2"
     ],
     [
         "synth-pop",
-        "pink"
+        "pink2"
     ],
     [
         "tango",
-        "red"
+        "red2"
     ],
     [
         "techno",
-        "blue"
+        "blue2"
     ],
     [
         "trance",
-        "green"
+        "green2"
     ],
     [
         "trip-hop",
-        "teal"
+        "teal2"
     ],
     [
         "turkish",
-        "purple"
+        "purple2"
     ],
     [
         "work-out",
-        "orange"
+        "orange2"
     ],
     [
         "world-music",
-        "pink"
+        "pink2"
     ]
 ]
-
 export default staticCategories

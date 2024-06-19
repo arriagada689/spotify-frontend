@@ -1,9 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import ArtistCard from './ArtistCard'
-import AlbumCard from './AlbumCard'
-import PlaylistCard from './PlaylistCard'
-import AudiobookCard from './AudiobookCard'
 import SidebarCard from './SidebarCard.jsx'
 import SidebarArtist from './SidebarArtist.jsx'
 import { AuthContext } from '../contexts/AuthContext.jsx';
@@ -26,13 +22,13 @@ const SideBar = () => {
     useEffect(() => {
         const path = location.pathname;
         if (path === '/') {
-          setSelected('Home');
+            setSelected('Home');
         } else if (path.includes('/search')) {
-          setSelected('Search');
+            setSelected('Search');
         } else if (path.includes('/about')) {
-          setSelected('About');
+            setSelected('About');
         }
-      }, [location.pathname]);
+    }, [location.pathname]);
     
     useEffect(() => {
         if(localStorage.getItem('userInfo')){
@@ -65,15 +61,15 @@ const SideBar = () => {
         <div className='flex flex-row md:flex-col fixed h-[60px] w-full bottom-0 md:top-0 md:left-0 md:h-screen md:w-[375px] md:m-1 md:space-y-1'>
             
                 <div className='flex flex-row justify-between md:justify-start md:flex-col w-full bg-black md:bg-primary text-grayText md:rounded-lg px-6 py-4 md:space-y-4'>
-                    <div onClick={() => setSelected('Home')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'Home' ? 'text-white' : ''}`}>
-                        <FaHouse size={22}/><Link className='text-lg' to='/'>Home</Link>
-                    </div>
-                    <div onClick={() => setSelected('Search')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'Search' ? 'text-white' : ''}`}>
-                        <FaSearch size={22}/><Link className='text-lg' to='/search'>Search</Link>
-                    </div>
-                    <div onClick={() => setSelected('About')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'About' ? 'text-white' : ''}`}>
-                        <FaCode size={22}/><Link className='text-lg' to='/about'>About</Link>
-                    </div>
+                    <Link to='/' onClick={() => setSelected('Home')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'Home' ? 'text-white' : ''}`}>
+                        <FaHouse size={22}/><div className='text-lg'>Home</div>
+                    </Link>
+                    <Link to='/search' onClick={() => setSelected('Search')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'Search' ? 'text-white' : ''}`}>
+                        <FaSearch size={22}/><div className="text-lg">Search</div>
+                    </Link>
+                    <Link to='/about' onClick={() => setSelected('About')} className={`flex items-center space-x-2 md:space-x-4 font-semibold ${selected === 'About' ? 'text-white' : ''}`}>
+                        <FaCode size={22}/><div className="text-lg">About</div>
+                    </Link>
                 </div>
 
                 <div className='hidden  md:flex flex-col bg-primary text-grayText rounded-lg h-full'>

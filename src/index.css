@@ -20,40 +20,92 @@
     background: #555; 
 }
 
-.red {
+.red2 {
     background-image: linear-gradient(to right, #ED213A, #93291E);
 }
-.blue {
+.blue2 {
     background-image: linear-gradient(to right, #373B44, #4286f4);
 }
-.green{
+.green2 {
     background-image: linear-gradient(to right, #000000, #0f9b0f);
 }
-.teal {
+.teal2 {
     background-image: linear-gradient(to right, #1D976C, #93F9B9);
 }
-.purple {
+.purple2 {
     background-image: linear-gradient(to right, #8E2DE2, #4A00E0);
 }
-.orange {
+.orange2 {
     background-image: linear-gradient(to right, #f12711, #f5af19);
 }
-.pink{
+.pink2{
     background-image: linear-gradient(to right, #f953c6, #b91d73);
 }
 
-.red2 {
-    background: linear-gradient(to bottom, #dd1818, #121212);
+.name-width {
+    width: calc(100vw - 10vw); 
 }
-.blue2 {
-    background: linear-gradient(to bottom, #2c3e50, #121212);
+
+@media (min-width: 1024px) {
+    .name-width {
+        width: calc(100vw - (379px + 320px));
+    }
 }
-.green2 {
-    background: linear-gradient(to bottom, #3CA55C, #121212);
+
+.album-grid {
+    display: grid;
+    grid-template-columns: 40px 12fr 1fr;
+    align-items: center;
+    margin-top: 20px;
 }
-.teal2 {
-    background: linear-gradient(to bottom, #434343, #121212);
+
+.playlist-grid {
+    display: grid;
+    grid-template-columns: 40px 10fr 5fr 1fr;
+    align-items: center;
+    margin-top: 20px;
 }
-.purple2 {
-    background: linear-gradient(to bottom, #3c1053, #121212);
+
+.playlist2-grid {
+    display: grid;
+    grid-template-columns: 45px 9fr 5fr 4fr 1fr;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.sub-grid {
+    grid-template-columns: 40px 12fr 1fr;
+    align-items: center;
+    margin-top: 20px;
+}
+@media (min-width: 1280px){
+    .sub-grid {
+        grid-template-columns: 40px 10fr 5fr 1fr;
+    }
+}
+@media (min-width: 1536px) {
+    .sub-grid {
+        grid-template-columns: 45px 9fr 5fr 4fr 1fr;
+    }
+}
+
+.grid-row {
+    display: contents;
+}
+
+.grid-row:hover .grid-cell {
+    background-color: #292828;
+}
+
+.grid-cell {
+    background-color: #121212;
+    color: #535353;
+    height: 100%;
+    
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 5px;
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
 }

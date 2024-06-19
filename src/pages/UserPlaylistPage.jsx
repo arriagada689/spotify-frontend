@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { FaSearch } from "react-icons/fa";
 import { Oval } from 'react-loader-spinner'
+import spotifyImage from '../assets/spotify_default2.jpg';
 
 const UserPlaylistPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -16,9 +17,12 @@ const UserPlaylistPage = () => {
     const [update, setUpdate] = useState(0)
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate();
+    const [isInputFocused, setInputFocused] = useState(false);
 
     const { id } = useParams()
     const [userPlaylist, setUserPlaylist] = useState(null)
+    const [playlistItems, setPlaylistItems] = useState(null)
+    const [addedOn, setAddedOn] = useState(null)
     const [trackCount, setTrackCount] = useState(null)
     const [audiobookCount, setAudiobookCount] = useState(null)
 
@@ -40,10 +44,12 @@ const UserPlaylistPage = () => {
                 setTrackCount(data.track_count)
                 setAudiobookCount(data.audiobook_count)
                 setUserPlaylist(data.user_playlist)
+                setPlaylistItems(data.playlist_items)
+                setAddedOn(data.added_on)
             }
         }
         getUserPlaylistData()
-    }, [id])
+    }, [id, searchParams])
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('userInfo')).token
@@ -92,8 +98,7 @@ const UserPlaylistPage = () => {
     };
 
     const addToPlaylist = async (data, duration) => {
-        //handle update state variable
-        //two scenarios: add track or add audiobook
+        
         if(data.type === 'track'){
             const response = await fetch(`${apiBaseUrl}/profile/add_item`, {
                 method: 'POST',
@@ -138,7 +143,6 @@ const UserPlaylistPage = () => {
         }
     }
     const removeFromPlaylist = async (data) => {
-        //handle update state variable
         const response = await fetch(`${apiBaseUrl}/profile/remove_item`, {
             method: 'DELETE',
             headers: {
@@ -173,32 +177,148 @@ const UserPlaylistPage = () => {
         navigate(`/user_playlist/${id}?query=${query}&type=${type}&offset=${offset + 10}`)
         setUpdate(prev => prev + 1)
     }
+
+    const divClassNames = `flex items-center rounded-3xl bg-hoverGray text-grayText py-3 px-2 space-x-2 w-full md:w-1/2 
+    ${isInputFocused ? 'outline outline-2 outline-white outline-offset-2' : ''}`;
+
+    const buttonClassNames = `${isInputFocused ? 'text-white' : 'text-grayText'}`;
   
     return (
-        <div>
-            {userPlaylist &&
-                <div>
-                    <div>Playlist</div>
-                    <div>{userPlaylist.name}</div>
-                    <div>{userPlaylist.description}</div>
-                    {trackCount && audiobookCount && 
-                        <div>{trackCount} song(s) {audiobookCount} audiobook(s)</div>
-                    }
-                    <Link to={`/profile`}>{userPlaylist.creator}</Link>
+        <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
+            {userPlaylist && 
+                <div className='flex flex-col md:flex-row items-center'>
+                    <img src={spotifyImage} alt='default image' className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/>
+                    <div className="flex flex-col text-white space-y-4 md:ml-4 mt-2 md:mt-0 w-full">
+                        <div>Playlist</div>
+                        <div className='text-4xl md:text-7xl font-bold name-width truncate pb-2 md:pb-4'>{userPlaylist.name}</div>
+                        {userPlaylist.description.length > 0 && <div className='text-wrap text-sm'>{userPlaylist.description}</div>}
+                        <div className='flex space-x-3'>
+                            <Link to={`/profile`} className='underline md:no-underline md:hover:underline'>{userPlaylist.creator}</Link>
+                            <div className='text-white'>{trackCount} song(s) {audiobookCount} audiobook(s)</div>
+                        </div>
+                    </div>
                 </div>
             }
-            <Link to={`/update_playlist/${id}`}>Update Playlist</Link>
-            <Link to={`/confirm_playlist_delete/${id}`} className='bg-red-400'>Remove Playlist</Link>
+            <div className="flex items-center space-x-3">
+                <Link to={`/update_playlist/${id}`} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Update Playlist</Link>
+                <Link to={`/confirm_playlist_delete/${id}`} className='bg-red-500 w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Remove Playlist</Link>
+            </div>
+
+            {/* grid section */}
+            {playlistItems && 
+                <div className='grid sub-grid xl:hidden 2xl:hidden'>
+                    <div className='grid-row text-grayText font-semibold'>
+                        <div className="text-center  border-b-2 border-hoverGray">#</div>
+                        <div className="text-left border-b-2 border-hoverGray">Title</div>
+                        <div className="mx-auto border-b-2 border-hoverGray w-full">Duration</div>
+                    </div>
+
+                    {playlistItems.map((item, index) => {
+                        return <Link to={item.type === 'Track' ? `/track/${item.id}` : `/audiobook/${item.id}`} className='grid-row' key={index}>
+                                    {/* Counter */}
+                                    <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>   
+
+                                    {/* Title and Artist */}
+                                    <div className='grid-cell flex items-center text-left'>
+                                        <img src={item.image} alt={item.name} className='h-[45px] w-[45px] rounded-md' />
+                                        <div className="flex flex-col ml-2">
+                                            <div className='text-white'>{item.name}</div>
+                                            <div className='text-sm text-grayText'>{item.type === 'Track' ? item.artist : item.author}</div>
+                                        </div>
+                                    </div>
+
+                                    {/* Duration */}
+                                    <div className='flex items-center justify-center text-grayText grid-cell '>{item.duration}</div>
+                                </Link>
+                    })}
+                </div>
+            }
+
+            {playlistItems &&
+                <div className='hidden xl:grid sub-grid 2xl:hidden'>
+                    <div className='grid-row text-grayText font-semibold'>
+                        <div className="text-center  border-b-2 border-hoverGray">#</div>
+                        <div className="text-left border-b-2 border-hoverGray">Title</div>
+                        <div className="text-left border-b-2 border-hoverGray">Album</div>
+                        <div className="mx-auto border-b-2 border-hoverGray w-full">Duration</div>
+                    </div>
+
+                    {playlistItems.map((item, index) => {
+                        return <Link to={item.type === 'Track' ? `/track/${item.id}` : `/audiobook/${item.id}`} className='grid-row' key={index}>
+                                    {/* Counter */}
+                                    <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>   
+
+                                    {/* Title and Artist */}
+                                    <div className='grid-cell flex items-center text-left'>
+                                        <img src={item.image} alt={item.name} className='h-[45px] w-[45px] rounded-md' />
+                                        <div className="flex flex-col ml-2">
+                                            <div className='text-white'>{item.name}</div>
+                                            <div className='text-sm text-grayText'>{item.type === 'Track' ? item.artist : item.author}</div>
+                                        </div>
+                                    </div>
+
+                                    {/*Album */}
+                                    <div className='flex items-center text-left text-grayText grid-cell'>{item.type === 'Track' ? item.album : ''}</div>
+
+                                    {/* Duration */}
+                                    <div className='flex items-center justify-center text-grayText grid-cell '>{item.duration}</div>
+                                </Link>
+                    })}
+                </div>
+            }
+
+            {playlistItems && addedOn &&
+                <div className='hidden 2xl:grid sub-grid'>
+                    <div className='grid-row text-grayText font-semibold'>
+                        <div className="text-center  border-b-2 border-hoverGray">#</div>
+                        <div className="text-left border-b-2 border-hoverGray">Title</div>
+                        <div className="text-left border-b-2 border-hoverGray">Album</div>
+                        <div className="text-left border-b-2 border-hoverGray">Date added</div>
+                        <div className="mx-auto border-b-2 border-hoverGray w-full">Duration</div>
+                    </div>
+
+                    {playlistItems.map((item, index) => {
+                        // console.log(item)
+                        return <Link to={item.type === 'Track' ? `/track/${item.id}` : `/audiobook/${item.id}`} className='grid-row' key={index}>
+                                    {/* Counter */}
+                                    <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>   
+
+                                    {/* Title and Artist */}
+                                    <div className='grid-cell flex items-center text-left'>
+                                        <img src={item.image} alt={item.name} className='h-[45px] w-[45px] rounded-md' />
+                                        <div className="flex flex-col ml-2">
+                                            <div className='text-white'>{item.name}</div>
+                                            <div className='text-sm text-grayText'>{item.type === 'Track' ? item.artist : item.author}</div>
+                                        </div>
+                                    </div>
+
+                                    {/*Album */}
+                                    <div className='flex items-center text-left text-grayText grid-cell'>{item.type === 'Track' ? item.album : ''}</div>
+
+                                    {/* Date added */}
+                                    <div className='flex items-center text-left text-grayText grid-cell'>{addedOn[index]}</div>
+
+                                    {/* Duration */}
+                                    <div className='flex items-center justify-center text-grayText grid-cell '>{item.duration}</div>
+                                </Link>
+                    })}
+                </div>
+            }
 
             {/* search bar */}
             <form onSubmit={handleSearch}>
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                />
-                <button type="submit"><FaSearch /></button>
+                <div tabIndex={0} className={divClassNames}>
+                    <button type="submit" className={buttonClassNames}><FaSearch /></button>
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        className='bg-transparent w-full h-full focus:outline-none'
+                        onFocus={() => setInputFocused(true)}
+                        onBlur={() => setInputFocused(false)}
+                    />
+                </div>
             </form>
 
             {loading ? 
@@ -214,24 +334,40 @@ const UserPlaylistPage = () => {
                     />
                 </div>
                 :
-                <div>
+                <div className='space-y-5'>
                     {/* filter buttons */}
                     {results &&
-                    <div className='space-x-3'>
-                        <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Songs</button>
-                        <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'bg-white text-black' : 'bg-gray-400 text-white'}`}>Audiobooks</button>
+                    <div className='flex space-x-3'>
+                        <button onClick={() => handleTypeClick('track')} className={`${type === 'track' ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>Songs</button>
+                        <button onClick={() => handleTypeClick('audiobook')} className={`${type === 'audiobook' ? 'text-black bg-white' : 'text-white bg-filterButton'} text-sm md:text-base rounded-2xl px-3 py-2`}>Audiobooks</button>
                     </div>}
 
                     {trackData && trackData.length > 0 &&
                         <div className='flex flex-col'>
                             {trackData.map((item, index) => {
-                                return <div className='space-x-3' key={index}>
-                                        <Link to={`/track/${item[1].id}`} >{item[1].name}</Link>
-                                        {item[0] ? 
-                                            <button onClick={() => removeFromPlaylist(item[1])}>Remove</button> :
-                                            <button onClick={() => addToPlaylist(item[1], null)}>Add</button>
-                                        }
-                                        </div> 
+                                return <Link to={`/track/${item[1].id}`} key={index}>
+                                            <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
+                                                <img src={item[1].album.images[0].url} alt={item[1].name} className='h-[45px] w-[45px]'/>
+                                                <div className='flex w-full justify-between ml-2 items-center'>
+                                                    <div className='flex flex-col'>
+                                                        <div className='text-white'>{item[1].name}</div>
+                                                        <div className='text-grayText text-sm'>{item[1].artists[0].name}</div>
+                                                    </div>
+                                                    {item[0] ? 
+                                                        <button onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation(); 
+                                                            removeFromPlaylist(item[1]);
+                                                        }} className='text-white bg-filterButton text-sm rounded-2xl px-3 py-2'>Remove</button> :
+                                                        <button onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation(); 
+                                                            addToPlaylist(item[1], null);
+                                                        }} className='text-white bg-filterButton text-sm rounded-2xl px-3 py-2'>Add</button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </Link> 
                             })}
                         </div>
                     }
@@ -239,19 +375,35 @@ const UserPlaylistPage = () => {
                     {audiobookData && audiobookData.length > 0 &&
                         <div className='flex flex-col'>
                             {audiobookData.map((item, index) => {
-                                return <div className='space-x-3' key={index}>
-                                            <Link to={`/audiobook/${item[1].id}`}>{item[1].name}</Link>
-                                            {item[0] ? 
-                                                <button onClick={() => removeFromPlaylist(item[1])}>Remove</button> : 
-                                                <button onClick={() => addToPlaylist(item[1], item[2])}>Add</button>
-                                            }
-                                        </div>
+                                return <Link to={`/audiobook/${item[1].id}`} className='space-x-3' key={index}>
+                                            <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
+                                                <img src={item[1].images[0].url} alt={item[1].name} className='h-[45px] w-[45px]'/>
+                                                <div className='flex w-full justify-between ml-2 items-center'>
+                                                    <div className='flex flex-col'>
+                                                        <div className='text-white'>{item[1].name}</div>
+                                                        <div className='text-grayText text-sm'>{item[1].authors[0].name}</div>
+                                                    </div>
+                                                    {item[0] ? 
+                                                        <button onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            removeFromPlaylist(item[1])
+                                                        }} className='text-white bg-filterButton text-sm rounded-2xl px-3 py-2'>Remove</button> : 
+                                                        <button onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            addToPlaylist(item[1], item[2])
+                                                        }} className='text-white bg-filterButton text-sm rounded-2xl px-3 py-2'>Add</button>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </Link>
                             })}
                         </div>
                     }
 
                     {results && (total > (offset ? offset : 0) + 10) &&
-                        <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                        <button onClick={handleShowMore} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 rounded-2xl'>Show more</button>
                     }
                 </div>
             }
