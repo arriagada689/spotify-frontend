@@ -138,7 +138,7 @@ const SideBar = () => {
                                             } else if(item.type === 'Audiobook'){
                                                 return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.author} image={item.image}/>
                                             } else if(item.type === 'UserPlaylist'){
-                                                return <SidebarCard key={index} name={item.name} type={item.type} id={item._id} subname={item.creator} image={'default'}/>
+                                                return <SidebarCard key={index} name={item.name} type={'Playlist'} id={item._id} subname={item.creator} image={'default'}/>
                                             }
                                         }
                                     }) 

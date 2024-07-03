@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Form, useNavigate } from 'react-router-dom'
 import { FaSpotify } from "react-icons/fa";
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const UpdateProfile = () => {
     const [username, setUsername] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const { updateSidebar } = useContext(AuthContext)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     const navigate = useNavigate();
@@ -41,6 +43,7 @@ const UpdateProfile = () => {
                 })
             })
             if(response.ok) {
+                updateSidebar()
                 navigate(`/profile`)
             } else {
                 const error = await response.json()
