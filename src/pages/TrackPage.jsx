@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import formatDuration from '../utils/formatDuration'
+import { AuthContext } from '../contexts/AuthContext.jsx';
 import { FaCheck } from "react-icons/fa";
+import { FiPlusCircle } from "react-icons/fi";
+import { FaCheckCircle } from "react-icons/fa";
 
 const TrackPage = () => {
     const { id } = useParams()
@@ -10,6 +13,8 @@ const TrackPage = () => {
     const [albumData, setAlbumData] = useState(null)
     const [update, setUpdate] = useState(0)
     const [userList, setUserList] = useState(null)
+    const [liked, setLiked] = useState(false)
+    const { updateSidebar } = useContext(AuthContext);
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -28,11 +33,29 @@ const TrackPage = () => {
             }
         }
         getTrackData()
+
+        if(localStorage.getItem('userInfo')) {
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const checkLikeStatus = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/like_status/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok){
+                    const data = await response.json()
+                    setLiked(data.liked_status)
+                }
+            }
+            checkLikeStatus()
+        }
+        
     }, [id])
 
+    {/*Grabs user's list of playlists */}
     useEffect(() => {
         //if logged in, grab all the user's playlists for adding to playlist functionality
-        
         if(localStorage.getItem('userInfo')){
             const token = JSON.parse(localStorage.getItem('userInfo')).token
             const getUserList = async () => {
@@ -49,11 +72,10 @@ const TrackPage = () => {
             }
             getUserList()
         }
-        
     }, [update])
 
+    {/*Handles recently viewed */}
     useEffect(() => {
-        
         if(localStorage.getItem('userInfo') && track){
             const token = JSON.parse(localStorage.getItem('userInfo')).token
             const addToRecentlyViewed = async () => {
@@ -134,8 +156,46 @@ const TrackPage = () => {
         }
     }
 
+    const likeSong = async () => {
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        const response = await fetch(`${apiBaseUrl}/profile/like_song/${track.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if(response.ok){
+            const data = await response.json()
+            setLiked(true)
+            updateSidebar()
+        } else {
+            const error = await response.json()
+            console.error(error)
+        }
+    }
+
+    const unlikeSong = async () => {
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        const response = await fetch(`${apiBaseUrl}/profile/unlike_song/${track.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if(response.ok){
+            const data = await response.json()
+            setLiked(false)
+            updateSidebar()
+        } else {
+            const error = await response.json()
+            console.error(error)
+        }
+    }
+
     return (
-        <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
+        <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-6'>
             {track && 
                 <div className='flex flex-col md:flex-row items-center'>
                     <img src={track.album.images[0].url} alt={track.name} className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/>
@@ -153,8 +213,8 @@ const TrackPage = () => {
             }
 
             {/* conditional to check if user is logged in */}
-            <div className="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-5">
-                {!localStorage.getItem('userInfo') && <div className='text-xl text-grayText font-semibold'><Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the song to your playlists.</div>}
+            <div className="flex md:flex-row items-center space-y-3 md:space-y-0 space-x-5 lg:space-x-8">
+                {!localStorage.getItem('userInfo') && <div className='text-xl text-grayText font-semibold'><Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save this song to your playlists.</div>}
                 {localStorage.getItem('userInfo') && userList &&
                     <div className='flex flex-col'>
                         <div className='text-xl text-white font-semibold'>Add to playlist</div>
@@ -175,8 +235,30 @@ const TrackPage = () => {
                     </div>
                 }
 
+                {/*Like Song Button */}
+                {track && !liked && localStorage.getItem('userInfo') &&
+                    <div className="relative flex items-center justify-center group">
+                        <button onClick={likeSong} className="text-grayText hover:text-white">
+                            <FiPlusCircle size={40} />
+                        </button>
+                        <span className="absolute bottom-full mb-2 hidden group-hover:block w-max bg-grayBox text-white text-sm p-1 px-2 rounded">
+                            Save to Your Library
+                        </span>
+                    </div>
+                }
+                {track && liked && localStorage.getItem('userInfo') &&
+                    <div className="relative flex items-center justify-center group">
+                        <button onClick={unlikeSong} className='text-spotifyGreen hover:text-lightGreen'>
+                            <FaCheckCircle size={40}/>
+                        </button>
+                        <span className="absolute bottom-full mb-2 hidden group-hover:block w-max bg-grayBox text-white text-sm p-1 px-2 rounded">
+                            Remove from Your Library
+                        </span>
+                    </div>
+                }
+
                 {/* Preview song button */}
-                {track && <a className='bg-spotifyGreen h-fit w-fit font-semibold py-2 px-3 text-xl rounded-2xl' href={track.preview_url} target='_blank'>Preview Song</a>}
+                {track && <a className='bg-spotifyGreen h-fit w-fit text-center font-semibold py-2 px-3 text-xl rounded-2xl' href={track.preview_url} target='_blank'>Preview Song</a>}
             </div>
 
             {popularTracks && popularTracks.length > 0 &&

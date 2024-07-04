@@ -10,12 +10,15 @@ import { FaSearch } from "react-icons/fa";
 import { FaCode } from "react-icons/fa6";
 import { BiLibrary } from "react-icons/bi";
 import { FaPlus } from "react-icons/fa6";
+import likedSongsImage from '../assets/liked-songs.png';
+import { TiPin } from "react-icons/ti";
 
 const SideBar = () => {
     const location = useLocation();
     const [arr, setArr] = useState(null)
     const [type, setType] = useState('All')
     const [selected, setSelected] = useState('Home')
+    const [likedSongs, setLikedSongs] = useState(null)
     const { sidebarUpdate } = useContext(AuthContext);
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
@@ -47,11 +50,33 @@ const SideBar = () => {
                 }
             }
             getSidebarData()
+
         } else {
             setArr(null)
         }
         
     }, [type, sidebarUpdate, localStorage.getItem('userInfo')])
+
+    {/*Handles liked songs initial data and updates */}
+    useEffect(() => {
+        if(localStorage.getItem('userInfo')){
+            const getLikedSongsData = async () => {
+                const token = JSON.parse(localStorage.getItem('userInfo')).token
+                const response = await fetch(`${apiBaseUrl}/profile/liked_songs`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok){
+                    const data = await response.json()
+                    setLikedSongs(data.liked_songs)
+                    // console.log(data)
+                }
+            }
+            getLikedSongsData()
+        }
+    }, [sidebarUpdate, localStorage.getItem('userInfo')])
 
     const handleTypeClick = (type) => {
         setType(type)
@@ -125,6 +150,15 @@ const SideBar = () => {
                             <SidebarFilterButtons arr={arr} handleTypeClick={handleTypeClick} type={type}/>
 
                             <div className='mt-3 max-h-[72vh] w-full overflow-y-auto overflow-x-hidden custom-scrollbar'>
+                                {likedSongs && likedSongs.length > 0 && (type === 'All' || type === 'Playlist' || type === 'UserPlaylist') &&
+                                    <Link to={'/liked_songs'} className='flex p-2 hover:bg-hoverGray space-x-2 rounded-sm w-full'>
+                                        <img src={likedSongsImage} alt={'Liked Songs'} className='h-[50px] w-[50px] rounded-md'/>
+                                        <div className='flex flex-col my-auto'>
+                                            <div className='text-white line-clamp-1'>Liked Songs</div>
+                                            <div className='text-sm line-clamp-1 flex items-center space-x-2'><TiPin className='text-spotifyGreen' size={20}/> <span>Playlist</span> <span>{likedSongs.length} songs</span></div>
+                                        </div>
+                                    </Link>
+                                }
                                 {arr && 
                                     arr.map((item, index) => {
                                         // console.log(item)

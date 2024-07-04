@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import spotifyImage from '../assets/spotify_default2.jpg';
+import likedSongsImage from '../assets/liked-songs.png';
 import PlaylistCard from '../components/PlaylistCard';
 import ArtistCard from '../components/ArtistCard';
 import AlbumCard from '../components/AlbumCard';
@@ -9,6 +10,7 @@ import { Oval } from 'react-loader-spinner'
 
 const Profile = () => {
     const [profileData, setProfileData] = useState(null)
+    const [likedSongs, setLikedSongs] = useState(null)
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
     useEffect(() => {
@@ -27,6 +29,21 @@ const Profile = () => {
             }
         }
         getProfileData()
+
+        //get liked songs data
+        const getLikedSongsData = async () => {
+            const response = await fetch(`${apiBaseUrl}/profile/liked_songs`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            if(response.ok){
+                const data = await response.json()
+                setLikedSongs(data.liked_songs)
+            }
+        }
+        getLikedSongsData()
     }, [])
     
     return profileData ? (
@@ -47,17 +64,29 @@ const Profile = () => {
             </div>
 
             <div className='space-y-4'>
+
                 {/* Saved Playlists section */}
-                {profileData && profileData.saved_playlists.length > 0 &&
+                {(profileData && profileData.saved_playlists.length > 0) || likedSongs && likedSongs.length > 0 &&
                     <div>
                         <div className='text-2xl text-white font-bold'>Saved playlists</div>
 
                         <div className="flex overflow-y-auto custom-scrollbar">
+                            {likedSongs && likedSongs.length > 0 && 
+                                <Link to={'/liked_songs'}>
+                                    <div className='flex flex-col w-[180px] md:w-[200px] bg-primary hover:bg-hoverGray rounded-lg pt-2'>
+                                        <img src={likedSongsImage} alt={'Liked Songs'} className='rounded-md w-[160px] md:w-[180px] h-[160px] md:h-[180px] self-center'/>
+                                        <div className="flex flex-col p-2">
+                                            <div className='text-white truncate'>Liked Songs</div>
+                                            <div className='text-grayText text-sm truncate'>{JSON.parse(localStorage.getItem('userInfo')).username}</div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            }
                             {profileData.saved_playlists.map((item, index) => {
                                 if(item.type === 'Playlist'){
-                                    return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator}/>
+                                    return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator} type={item.type}/>
                                 } else if(item.type === 'UserPlaylist'){
-                                    return <PlaylistCard key={index} name={item.name} id={item.id} image={'default'} owner={item.creator}/>
+                                    return <PlaylistCard key={index} name={item.name} id={item._id} image={'default'} owner={item.creator} type={item.type}/>
                                 }
                             })} 
                         </div>

@@ -51,6 +51,7 @@ const UserPlaylistPage = () => {
         getUserPlaylistData()
     }, [id, searchParams, update])
 
+    {/*Handles sub search query functionality */}
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('userInfo')).token
         if(query){

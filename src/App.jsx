@@ -32,6 +32,7 @@ import NotFound from './pages/NotFound.jsx'
 import SavedPlaylistsPage from './pages/SavedPlaylistsPage.jsx'
 import About from './pages/About.jsx'
 import Logout from './pages/Logout.jsx'
+import LikedSongs from './pages/LikedSongs.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -60,6 +61,7 @@ const router = createBrowserRouter(
       <Route path='/update_profile' element={<RequireAuth> <UpdateProfile /> </RequireAuth>}/>
       <Route path='/confirm_delete_profile' element={<RequireAuth> <ConfirmProfileDelete /> </RequireAuth>}/>
       <Route path='/saved_playlists' element={<RequireAuth> <SavedPlaylistsPage /> </RequireAuth>}/>
+      <Route path='/liked_songs' element={<RequireAuth> <LikedSongs /> </RequireAuth>}/>
       <Route path='*' element={<NotFound />}/>
     </Route>
   )

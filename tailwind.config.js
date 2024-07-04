@@ -16,7 +16,8 @@ export default {
         spotifyGreen: '#1db954',
         blackTint: 'rgba(0, 0, 0, 0.5)',
         miniHover: '#535353',
-        lighterGray: '#8a8888'
+        lighterGray: '#8a8888',
+        lightGreen: '#37c769'
       }
     },
     screens: {
