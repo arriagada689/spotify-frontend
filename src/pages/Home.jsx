@@ -58,7 +58,7 @@ const Home = () => {
     }, [])
 
     return (
-      <div className='flex flex-col bg-primary px-5 space-y-5 pb-16 md:pb-0'>
+      <div className='flex flex-col bg-primary px-3 space-y-5 pb-16 md:pb-0'>
 
         {/* Saved playlists section */}
         <div className='mt-3 md:mt-0'>
@@ -69,7 +69,7 @@ const Home = () => {
             </div>
             
           }
-          {savedPlaylists && savedPlaylists.length < 4 &&
+          {savedPlaylists && savedPlaylists.length < 4 && savedPlaylists.length > 0 &&
             <div className='flex justify-between items-baseline mb-2'>
               <div className='text-2xl text-white font-bold'>Saved playlists</div>
             </div>

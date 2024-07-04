@@ -10,7 +10,7 @@ const SidebarCard = ({name, id, type, subname, image}) => {
             <img src={image !== 'default' ? image : spotifyImage} alt={name} className='h-[50px] w-[50px] rounded-md'/>
             <div className='flex flex-col my-auto'>
                 <div className='text-white line-clamp-1'>{name}</div>
-                <div className='text-sm line-clamp-1'>{type} - {subname}</div>
+                <div className='text-sm line-clamp-1'>{type === 'UserPlaylist' ? 'Playlist' : type} - {subname}</div>
             </div>
         </Link>
     )
