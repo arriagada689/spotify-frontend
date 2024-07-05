@@ -260,7 +260,8 @@ const TrackPage = () => {
                 {/* Preview song button */}
                 {track && <a className='bg-spotifyGreen h-fit w-fit text-center font-semibold py-2 px-3 text-xl rounded-2xl' href={track.preview_url} target='_blank'>Preview Song</a>}
             </div>
-
+            
+            {/*Popular tracks section */}
             {popularTracks && popularTracks.length > 0 &&
                 <div>
                     <div className='text-2xl text-white font-bold mb-2'>Popular tracks by <Link to={`/artist/${track.artists[0].id}`} className='text-green-500 underline md:no-underline md:hover:underline'>{track ? track.artists[0].name : ''}</Link></div>
@@ -285,33 +286,37 @@ const TrackPage = () => {
                     </div>
                 </div>
             }
-
+            
+            {/*More from the album section */}
             {albumData && albumData.length > 0 && 
-                    
-                <div className='album-grid'>
-                    <div className='grid-row text-grayText font-semibold'>
-                        <div className="text-center  border-b-2 border-hoverGray">#</div>
-                        <div className="text-left border-b-2 border-hoverGray">Title</div>
-                        <div className="mx-auto border-b-2 border-hoverGray w-full text-center">Duration</div>
+                
+                <div>
+                    <div className='text-2xl text-white font-bold mb-2'>More from the album <Link to={`/album/${track.album.id}`} className='text-green-500 underline md:no-underline md:hover:underline'>{track.album.name}</Link></div>
+                    <div className='album-grid'>
+                        <div className='grid-row text-grayText font-semibold'>
+                            <div className="text-center  border-b-2 border-hoverGray">#</div>
+                            <div className="text-left border-b-2 border-hoverGray">Title</div>
+                            <div className="mx-auto border-b-2 border-hoverGray w-full text-center">Duration</div>
+                        </div>
+
+                        {albumData.map((album_track, index) => {
+                            if(album_track){
+                                return <Link to={`/track/${album_track.id}`} key={index} className='grid-row'>
+                                            {/* Counter */}
+                                            <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>
+
+                                            {/* Title and Artist */}
+                                            <div className='grid-cell text-left'>
+                                                <div className='text-white'>{album_track.name}</div>
+                                                <div className='text-sm text-grayText'>{album_track.artists[0].name}</div>
+                                            </div>
+
+                                            {/* Duration */}
+                                            <div className='flex items-center justify-center text-grayText grid-cell'>{formatDuration(album_track.duration_ms)}</div>
+                                        </Link>
+                            }
+                        })}
                     </div>
-
-                    {albumData.map((album_track, index) => {
-                        if(album_track){
-                            return <Link to={`/track/${album_track.id}`} key={index} className='grid-row'>
-                                        {/* Counter */}
-                                        <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>
-
-                                        {/* Title and Artist */}
-                                        <div className='grid-cell text-left'>
-                                            <div className='text-white'>{album_track.name}</div>
-                                            <div className='text-sm text-grayText'>{album_track.artists[0].name}</div>
-                                        </div>
-
-                                        {/* Duration */}
-                                        <div className='flex items-center justify-center text-grayText grid-cell'>{formatDuration(album_track.duration_ms)}</div>
-                                    </Link>
-                        }
-                    })}
                 </div>
                 
             }
