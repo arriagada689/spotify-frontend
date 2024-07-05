@@ -5,6 +5,7 @@ import { AuthContext } from '../contexts/AuthContext.jsx';
 import { FaCheck } from "react-icons/fa";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaCheckCircle } from "react-icons/fa";
+import TrackFlexCard from '../components/TrackFlexCard.jsx';
 
 const TrackPage = () => {
     const { id } = useParams()
@@ -268,18 +269,7 @@ const TrackPage = () => {
                     <div className="flex-flex-col">
                         {popularTracks.map((popular_track, index) => {
                             if(popular_track){
-                                return <Link to={`/track/${popular_track.id}`} key={index}>
-                                            <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
-                                                <img src={popular_track.album.images[0].url} alt={popular_track.name} className='h-[45px] w-[45px] rounded-md'/>
-                                                <div className='flex w-full justify-between ml-2 items-center'>
-                                                    <div className='flex flex-col'>
-                                                        <div className='text-white'>{popular_track.name}</div>
-                                                        <div className='text-grayText text-sm'>{popular_track.artists[0].name}</div>
-                                                    </div>
-                                                    <div className='text-grayText'>{formatDuration(popular_track.duration_ms)}</div>
-                                                </div>
-                                            </div>
-                                        </Link>
+                                return <TrackFlexCard popular_track={popular_track} index={index}/>
                             }
                             
                         })}

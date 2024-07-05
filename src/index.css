@@ -109,3 +109,10 @@
     overflow: hidden; 
     text-overflow: ellipsis;
 }
+
+.hover-show {
+    display: none;
+}
+.parent:hover .hover-show {
+    display: block;
+}

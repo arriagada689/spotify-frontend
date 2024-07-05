@@ -15,8 +15,7 @@
 ## Future features
 - Images for profile pictures and playlist images.
 - Change endpoint for the mini box display section
-- Liked Songs functionality
 - Pop ups for adding to playlist
-- Add functionality to track cards in search results and album grid 
+- Add functionality to track cards in search results, album grid, popular tracks in track page 
 - Default playlist profile pic (quad collage)
 - Sidebar collapse

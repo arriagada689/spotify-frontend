@@ -244,7 +244,7 @@ const Search = () => {
                             </div>
 
                             {!categories && type === 'track' && trackData.total > (offset + 50) &&
-                                <button onClick={handleShowMore} className='bg-green-400'>Show more</button>
+                                <button onClick={handleShowMore} className='bg-spotifyGreen py-2 px-3 text-white rounded-lg mt-2'>Show more</button>
                             }
                         </div>
                     }
