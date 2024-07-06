@@ -4,6 +4,7 @@ import ArtistCard from '../components/ArtistCard.jsx'
 import spotifyImage from '../assets/spotify_default2.jpg';
 import { AuthContext } from '../contexts/AuthContext.jsx';
 import formatDuration from '../utils/formatDuration.js';
+import TrackFlexCard from '../components/TrackFlexCard.jsx';
 
 const colors = ['red2', 'blue2', 'green2', 'teal2', 'purple2']
 
@@ -13,6 +14,7 @@ const ArtistPage = () => {
     const [popularTracks, setPopularTracks] = useState(null)
     const [relatedArtists, setRelatedArtists] = useState(null)
     const [following, setFollowing] = useState(null)
+    const [likedList, setLikedList] = useState(null)
     const { updateSidebar } = useContext(AuthContext)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -85,6 +87,33 @@ const ArtistPage = () => {
         }
     }, [artist])
 
+    {/*Gets list of liked songs status for each popular track */}
+    useEffect(() => {
+        if(localStorage.getItem('userInfo') && popularTracks && popularTracks.length > 0){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getLikeList = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/like_list`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        track_list: popularTracks
+                    })
+                })
+                if(response.ok){
+                    const data = await response.json()
+                    setLikedList(data)
+                } else {
+                    const error = await response.json()
+                    console.error(error)
+                }
+            }
+            getLikeList()
+        }
+    }, [popularTracks])
+
     const handleFollowButton = async (command) => {
         if(command === 'follow'){
             //set up fetch to follow item endpoint
@@ -153,28 +182,31 @@ const ArtistPage = () => {
             {localStorage.getItem('userInfo') && following && <button onClick={() => handleFollowButton('unfollow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Unfollow</button>}
             {localStorage.getItem('userInfo') && !following && <button onClick={() => handleFollowButton('follow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Follow</button>}
 
-            {popularTracks && popularTracks.length > 0 &&
+            {/*Popular tracks section when logged in*/}
+            {popularTracks && popularTracks.length > 0 && likedList && likedList.length > 0 && 
                 <div>
                     <div className='text-2xl text-white font-bold mb-2'><span className='text-spotifyGreen'>{artist ? artist.name : ''}</span>'s top tracks</div>
                     <div className="flex-flex-col">
-                        {popularTracks && 
-                            popularTracks.map((track, index) => {
-                                if(track){
-                                    return <Link to={`/track/${track.id}`} key={index}>
-                                                <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
-                                                    <img src={track.album.images[0].url} alt={track.name} className='h-[45px] w-[45px] rounded-md'/>
-                                                    <div className='flex w-full justify-between ml-2 items-center'>
-                                                        <div className='flex flex-col'>
-                                                            <div className='text-white'>{track.name}</div>
-                                                            <div className='text-grayText text-sm'>{track.artists[0].name}</div>
-                                                        </div>
-                                                        <div className='text-grayText'>{formatDuration(track.duration_ms)}</div>
-                                                    </div>
-                                                </div>
-                                           </Link>
-                                }
-                            })
+                        {popularTracks.map((track, index) => {
+                            if(track){
+                                return <TrackFlexCard key={index} popular_track={track} flag={likedList[index]} index={index}/>
+                            }})
                         }
+                    </div>
+                </div>
+            }
+
+            {/*Popular tracks section when not logged in*/}
+            {popularTracks && popularTracks.length > 0 && !likedList &&
+                <div>
+                    <div className='text-2xl text-white font-bold mb-2'>Popular tracks by <Link to={`/artist/${artist.id}`} className='text-green-500 underline md:no-underline md:hover:underline'>{artist ? artist.name : ''}</Link></div>
+                    
+                    <div className="flex-flex-col">
+                        {popularTracks.map((track, index) => {
+                            if(track){
+                                return <TrackFlexCard key={index} popular_track={track} index={index}/>
+                            } 
+                        })}
                     </div>
                 </div>
             }

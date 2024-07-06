@@ -15,6 +15,7 @@ const TrackPage = () => {
     const [update, setUpdate] = useState(0)
     const [userList, setUserList] = useState(null)
     const [liked, setLiked] = useState(false)
+    const [likedList, setLikedList] = useState(null)
     const { updateSidebar } = useContext(AuthContext);
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -53,6 +54,33 @@ const TrackPage = () => {
         }
         
     }, [id])
+
+    {/*Gets list of liked songs status for each popular track */}
+    useEffect(() => {
+        if(localStorage.getItem('userInfo') && popularTracks && popularTracks.length > 0){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getLikeList = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/like_list`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        track_list: popularTracks
+                    })
+                })
+                if(response.ok){
+                    const data = await response.json()
+                    setLikedList(data)
+                } else {
+                    const error = await response.json()
+                    console.error(error)
+                }
+            }
+            getLikeList()
+        }
+    }, [popularTracks])
 
     {/*Grabs user's list of playlists */}
     useEffect(() => {
@@ -262,16 +290,31 @@ const TrackPage = () => {
                 {track && <a className='bg-spotifyGreen h-fit w-fit text-center font-semibold py-2 px-3 text-xl rounded-2xl' href={track.preview_url} target='_blank'>Preview Song</a>}
             </div>
             
-            {/*Popular tracks section */}
-            {popularTracks && popularTracks.length > 0 &&
+            {/*Popular tracks section when logged in*/}
+            {popularTracks && popularTracks.length > 0 && likedList && likedList.length > 0 && 
                 <div>
                     <div className='text-2xl text-white font-bold mb-2'>Popular tracks by <Link to={`/artist/${track.artists[0].id}`} className='text-green-500 underline md:no-underline md:hover:underline'>{track ? track.artists[0].name : ''}</Link></div>
+                    
+                    <div className="flex-flex-col">
+                        {popularTracks.map((popular_track, index) => {
+                            if(popular_track && likedList && likedList.length > 0){
+                                return <TrackFlexCard key={index} popular_track={popular_track} flag={likedList[index]} index={index}/>
+                            } 
+                        })}
+                    </div>
+                </div>
+            }
+
+            {/*Popular tracks section when not logged in*/}
+            {popularTracks && popularTracks.length > 0 && !likedList &&
+                <div>
+                    <div className='text-2xl text-white font-bold mb-2'>Popular tracks by <Link to={`/artist/${track.artists[0].id}`} className='text-green-500 underline md:no-underline md:hover:underline'>{track ? track.artists[0].name : ''}</Link></div>
+                    
                     <div className="flex-flex-col">
                         {popularTracks.map((popular_track, index) => {
                             if(popular_track){
-                                return <TrackFlexCard popular_track={popular_track} index={index}/>
-                            }
-                            
+                                return <TrackFlexCard key={index} popular_track={popular_track} index={index}/>
+                            } 
                         })}
                     </div>
                 </div>

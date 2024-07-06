@@ -1,10 +1,55 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import formatDuration from '../utils/formatDuration'
 import { Link } from 'react-router-dom'
 import { FiPlusCircle } from "react-icons/fi";
 import { FaCheckCircle } from "react-icons/fa";
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
-const TrackFlexCard = ({popular_track, index}) => {
+const TrackFlexCard = ({popular_track, flag, index}) => {
+    const [liked, setLiked] = useState(flag !== undefined ? flag : null)
+    const { updateSidebar } = useContext(AuthContext);
+
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
+    const likeSong = async (e) => {
+        e.preventDefault()
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        const response = await fetch(`${apiBaseUrl}/profile/like_song/${popular_track.id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if(response.ok){
+            const data = await response.json()
+            setLiked(true)
+            updateSidebar()
+        } else {
+            const error = await response.json()
+            console.error(error)
+        }
+    }
+
+    const unlikeSong = async (e) => {
+        e.preventDefault()
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        const response = await fetch(`${apiBaseUrl}/profile/unlike_song/${popular_track.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        if(response.ok){
+            const data = await response.json()
+            setLiked(false)
+            updateSidebar()
+        } else {
+            const error = await response.json()
+            console.error(error)
+        }
+    }
 
     return (
         <Link to={`/track/${popular_track.id}`} key={index}>
@@ -16,10 +61,21 @@ const TrackFlexCard = ({popular_track, index}) => {
                         <div className='text-grayText text-sm'>{popular_track.artists[0].name}</div>
                     </div>
 
-                    <div className='flex items-center text-grayText space-x-3'>
-                        <FiPlusCircle className='hover-show' />
-                        <div className=''>{formatDuration(popular_track.duration_ms)}</div>
-                    </div>
+                    {liked !== null ? 
+                        <div className='flex items-center text-grayText space-x-3'>
+                            {liked && localStorage.getItem('userInfo') ? 
+                                <FaCheckCircle onClick={(e) => unlikeSong(e)} className='hover-show text-spotifyGreen' size={18}/>
+                            : 
+                                <FiPlusCircle onClick={(e) => likeSong(e)} className='hover-show' size={18}/>
+                            }
+                            <div className=''>{formatDuration(popular_track.duration_ms)}</div>
+                        </div>
+                    :
+                        <div className='flex items-center text-grayText space-x-3'>
+                            <div className=''>{formatDuration(popular_track.duration_ms)}</div>
+                        </div>
+                    }
+                    
                 </div>
             </div>
         </Link>

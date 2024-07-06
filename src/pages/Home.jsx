@@ -10,7 +10,7 @@ const Home = () => {
     const [popularArtists, setPopularArtists] = useState(null)  
     const [popularAlbums, setPopularAlbums] = useState(null)  
     const [featuredPlaylists, setFeaturedPlaylists] = useState(null)
-    const [savedPlaylists, setSavedPlaylists] = useState(null)
+    const [miniBoxData, setMiniBoxData] = useState(null)
 
     useEffect(() => {
       const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -50,7 +50,8 @@ const Home = () => {
           })
           if(response.ok) {
               const data = await response.json()
-              setSavedPlaylists(data.saved_playlists)
+              // console.log(data)
+              setMiniBoxData(data)
           }
         }
         getData()
@@ -62,26 +63,23 @@ const Home = () => {
 
         {/* Saved playlists section */}
         <div className='mt-3 md:mt-0'>
-          {savedPlaylists && savedPlaylists.length >= 4 &&
-            <div className='flex justify-between items-baseline mb-2'>
-              <Link to='/saved_playlists' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Saved playlists</Link>
-              <Link to='/saved_playlists' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
-            </div>
-            
-          }
-          {savedPlaylists && savedPlaylists.length < 4 && savedPlaylists.length > 0 &&
-            <div className='flex justify-between items-baseline mb-2'>
-              <div className='text-2xl text-white font-bold'>Saved playlists</div>
-            </div>
-          }
-          {savedPlaylists &&  
+          
+          {miniBoxData && miniBoxData.arr.length > 2 &&  
             <div className='grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4'>
-              {savedPlaylists.map((item, index) => {
-                if(item){
-                  if(item.type === 'Playlist' && index < 8){
-                    return <MiniCard key={index} name={item.name} id={item.id} image={item.image} type={item.type}/>
-                  } else if(item.type === 'UserPlaylist' && index < 8){
-                    return <MiniCard key={index} name={item.name} id={item._id} image={'default'} type={item.type}/>
+              {miniBoxData.arr.map((item, index) => {
+                if(item && index < 8){
+                  if(item.type === 'Playlist'){
+                    return <MiniCard key={index} name={item.name} image={item.image} url={`/playlist/${item.id}`}/>
+                  } else if(item.type === 'UserPlaylist'){
+                    return <MiniCard key={index} name={item.name} image={'default'} url={`/user_playlist/${item._id}`}/>
+                  } else if(item.type === 'Artist'){
+                    return <MiniCard key={index} name={item.name} image={item.image} url={`/artist/${item.id}`}/>
+                  } else if(item.type === 'Album') {
+                    return <MiniCard key={index} name={item.name} image={item.image} url={`/album/${item.id}`}/>
+                  } else if(item.type === 'Audiobook') {
+                    return <MiniCard key={index} name={item.name} image={item.image} url={`/audiobook/${item.id}`}/>
+                  } else if(item.type === 'Track'){
+                    return <MiniCard key={index} name={item.name} image={item.image} url={`/track/${item.id}`}/>
                   }
                 }
               })}

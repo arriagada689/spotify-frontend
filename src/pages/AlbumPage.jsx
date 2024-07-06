@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext.jsx';
 import formatDuration from '../utils/formatDuration.js';
+import { FiPlusCircle } from "react-icons/fi";
+import { FaCheckCircle } from "react-icons/fa";
 
 const AlbumPage = () => {
     const { id } = useParams()
@@ -161,7 +163,7 @@ const AlbumPage = () => {
 
                     {album.tracks.items.map((track, index) => {
                         return (
-                            <Link to={`/track/${track.id}`} key={index} className='grid-row'>
+                            <Link to={`/track/${track.id}`} key={index} className='grid-row parent'>
                                 {/* Counter */}
                                 <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>
 

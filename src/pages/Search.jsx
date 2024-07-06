@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState } from 'react'
 import CategoryCard from '../components/CategoryCard.jsx'
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import ArtistCard from '../components/ArtistCard.jsx';
@@ -9,7 +9,7 @@ import AudiobookCard from '../components/AudiobookCard.jsx';
 import { Oval } from 'react-loader-spinner'
 import staticCategories from '../utils/categories.js';
 import TrackCard from '../components/TrackCard.jsx';
-import formatDuration from '../utils/formatDuration.js';
+import TrackFlexCard from '../components/TrackFlexCard.jsx';
 
 const Search = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -30,6 +30,8 @@ const Search = () => {
     const [albumData, setAlbumData] = useState(null)
     const [playlistData, setPlaylistData] = useState(null)
     const [audiobookData, setAudiobookData] = useState(null)
+
+    const [likedList, setLikedList] = useState(null)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     
@@ -57,7 +59,7 @@ const Search = () => {
                 })
                 if(response.ok) {
                     const data = await response.json();
-                    // console.log(data)
+                    // console.log(data.tracks)
                     
                     setCategories(null);
                     setArtistData(data.artists);
@@ -110,6 +112,42 @@ const Search = () => {
             getRecentlyViewed()
         }
     }, [])
+
+    {/*Handles likedList when trackData changes */}
+    useEffect(() => {
+        // console.log(trackData)
+        if(localStorage.getItem('userInfo') && trackData && trackData.items && trackData.items.length > 0){
+            
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            
+            const getLikeList = async () => {
+                try {
+                    const response = await fetch(`${apiBaseUrl}/profile/like_list`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            track_list: trackData.items
+                        })
+                    });
+            
+                    if (response.ok) {
+                        const data = await response.json();
+                        // console.log(data);
+                        setLikedList(data);
+                    } else {
+                        const error = await response.json();
+                        console.error('Error:', error);
+                    }
+                } catch (error) {
+                    console.error('Fetch failed:', error);
+                }
+            }
+            getLikeList()
+        }
+    }, [trackData])
 
     const handleSearch = (event) => {
         event.preventDefault(); 
@@ -221,24 +259,32 @@ const Search = () => {
                         </div>
                     }
                     
-                    {trackData && !categories && (type === 'track' || !type ) &&
+                    {/*Track data display for when logged in */}
+                    {trackData && !categories && (type === 'track' || !type ) && likedList && likedList.length > 0 &&
                         <div>
-                            <div className='text-2xl text-white font-bold'>Tracks</div>
+                            <div className='text-2xl text-white font-bold'>Songs</div>
                             <div className="flex-flex-col"> 
                                 {trackData.items.map((track, index) => {
                                     if(track){
-                                        return <Link to={`/track/${track.id}`} key={index}>
-                                                    <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md'>
-                                                        <img src={track.album.images[0].url} alt={track.name} className='h-[45px] w-[45px]'/>
-                                                        <div className='flex w-full justify-between ml-2 items-center'>
-                                                            <div className='flex flex-col'>
-                                                                <div className='text-white'>{track.name}</div>
-                                                                <div className='text-grayText text-sm'>{track.artists[0].name}</div>
-                                                            </div>
-                                                            <div className='text-grayText'>{formatDuration(track.duration_ms)}</div>
-                                                        </div>
-                                                    </div>
-                                               </Link>
+                                        return <TrackFlexCard key={index} popular_track={track} flag={likedList[index]} index={index}/>
+                                    }
+                                })}
+                            </div>
+
+                            {!categories && type === 'track' && trackData.total > (offset + 50) &&
+                                <button onClick={handleShowMore} className='bg-spotifyGreen py-2 px-3 text-white rounded-lg mt-2'>Show more</button>
+                            }
+                        </div>
+                    }
+
+                    {/*Track data display for when not logged in */}
+                    {trackData && !categories && (type === 'track' || !type ) && !likedList &&
+                        <div>
+                            <div className='text-2xl text-white font-bold'>Songs</div>
+                            <div className="flex-flex-col"> 
+                                {trackData.items.map((track, index) => {
+                                    if(track){
+                                        return <TrackFlexCard key={index} popular_track={track} index={index}/>
                                     }
                                 })}
                             </div>
