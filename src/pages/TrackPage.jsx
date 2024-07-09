@@ -48,6 +48,9 @@ const TrackPage = () => {
                 if(response.ok){
                     const data = await response.json()
                     setLiked(data.liked_status)
+                } else {
+                    const error = await response.json()
+                    console.error(error)
                 }
             }
             checkLikeStatus()

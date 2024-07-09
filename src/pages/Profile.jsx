@@ -66,7 +66,7 @@ const Profile = () => {
             <div className='space-y-4'>
 
                 {/* Saved Playlists section */}
-                {(profileData && profileData.saved_playlists.length > 0) || likedSongs && likedSongs.length > 0 &&
+                {profileData && profileData.saved_playlists.length > 0 &&
                     <div>
                         <div className='text-2xl text-white font-bold'>Saved playlists</div>
 
