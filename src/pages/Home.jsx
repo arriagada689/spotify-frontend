@@ -144,32 +144,33 @@ const Home = () => {
         </div>
 
         {/* Featured artists section */}
-        <div className='w-full '>
-          <div className='flex justify-between items-baseline mb-2'>
-            <Link to='/featured_playlists' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Featured playlists</Link>
-            <Link to='/featured_playlists' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
-          </div>
-          <div className='flex w-full overflow-x-auto md:overflow-hidden'>
-            {featuredPlaylists && 
-              featuredPlaylists.map((playlist, index) => {
-                return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id} type={'Playlist'}/>
-              })
-            }
-            {!featuredPlaylists && 
-            <div className='flex mx-auto'>
-              <Oval
-              visible={true}
-              height="220"
-              width="180"
-              color="#4fa94d"
-              ariaLabel="oval-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-              />
+        {featuredPlaylists && featuredPlaylists.length > 0 && 
+          <div className='w-full '>
+            <div className='flex justify-between items-baseline mb-2'>
+              <Link to='/featured_playlists' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Featured playlists</Link>
+              <Link to='/featured_playlists' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
             </div>
-            }
-          </div>
-        </div>
+            <div className='flex w-full overflow-x-auto md:overflow-hidden'>
+              
+              {featuredPlaylists.map((playlist, index) => {
+                return <PlaylistCard key={index} name={playlist.name} owner={playlist.owner.display_name} image={playlist.images[0].url} id={playlist.id} type={'Playlist'}/>
+              })}
+              
+              {!featuredPlaylists && 
+              <div className='flex mx-auto'>
+                <Oval
+                visible={true}
+                height="220"
+                width="180"
+                color="#4fa94d"
+                ariaLabel="oval-loading"
+                wrapperStyle={{}}
+                wrapperClass=""
+                />
+              </div>
+              }
+            </div>
+          </div>}
       </div>
     )
 }
