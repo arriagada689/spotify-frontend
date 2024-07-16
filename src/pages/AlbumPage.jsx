@@ -2,14 +2,17 @@ import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext.jsx';
 import formatDuration from '../utils/formatDuration.js';
-import { FiPlusCircle } from "react-icons/fi";
-import { FaCheckCircle } from "react-icons/fa";
+import GridDropdownButton from '../components/GridDropdownButton.jsx';
+import AlbumListGrid from '../components/AlbumListGrid.jsx';
+import AlbumCompactGrid from '../components/AlbumCompactGrid.jsx';
 
 const AlbumPage = () => {
     const { id } = useParams()
     const [album, setAlbum] = useState(null)
     const [totalTime, setTotalTime] = useState(null)
     const [following, setFollowing] = useState(null)
+    const [gridView, setGridView] = useState('List')
+    const [gridDropdown, setGridDropdown] = useState(false)
     const { updateSidebar } = useContext(AuthContext)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -149,36 +152,31 @@ const AlbumPage = () => {
             }
 
             {/* conditional to check if user is logged in */}
-            {!localStorage.getItem('userInfo') && <div className='text-xl text-grayText font-semibold'><Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the album to your library.</div>}
-            {localStorage.getItem('userInfo') && following && <button onClick={() => handleFollowButton('unfollow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Unfollow</button>}
-            {localStorage.getItem('userInfo') && !following && <button onClick={() => handleFollowButton('follow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Follow</button>}
-
-            {album && 
-                <div className="album-grid">
-                    <div className='grid-row text-grayText font-semibold'>
-                        <div className="text-center  border-b-2 border-hoverGray">#</div>
-                        <div className="text-left border-b-2 border-hoverGray">Title</div>
-                        <div className="mx-auto border-b-2 border-hoverGray w-full text-center">Duration</div>
+            <div className='flex justify-between items-center'>
+                {!localStorage.getItem('userInfo') && 
+                    <div className='text-xl text-grayText font-semibold'>
+                        <Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the album to your library.
                     </div>
+                }
+                {localStorage.getItem('userInfo') && following && 
+                    <button onClick={() => handleFollowButton('unfollow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Unfollow</button>
+                }
+                {localStorage.getItem('userInfo') && !following && 
+                    <button onClick={() => handleFollowButton('follow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Follow</button>
+                }
 
-                    {album.tracks.items.map((track, index) => {
-                        return (
-                            <Link to={`/track/${track.id}`} key={index} className='grid-row parent'>
-                                {/* Counter */}
-                                <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1}</div>
+                {/*Grid view button with dropdown */}
+                <GridDropdownButton gridDropdown={gridDropdown} gridView={gridView} setGridDropdown={setGridDropdown} setGridView={setGridView}/>
+            </div>
+            
+            {/* List Grid */}
+            {album && gridView === 'List' &&
+                <AlbumListGrid album={album}/>
+            }
 
-                                {/* Title and Artist */}
-                                <div className=' grid-cell text-left'>
-                                    <div className='text-white'>{track.name}</div>
-                                    <div className='text-sm text-grayText'>{track.artists[0].name}</div>
-                                </div>
-
-                                {/* Duration */}
-                                <div className='flex items-center justify-center text-grayText grid-cell'>{formatDuration(track.duration_ms)}</div>
-                            </Link>
-                        )
-                    })}
-                </div>
+            {/* Compact Grid */}
+            {album && gridView === 'Compact' &&
+                <AlbumCompactGrid album={album}/>
             }
         </div>
     )

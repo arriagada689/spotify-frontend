@@ -324,16 +324,18 @@ const TrackPage = () => {
             }
             
             {/*More from the album section */}
-            {albumData && albumData.length > 0 && 
+            {albumData && albumData.length > 0 && track &&
                 
                 <div>
-                    <div className='text-2xl text-white font-bold mb-2'>More from the album <Link to={`/album/${track.album.id}`} className='text-green-500 underline md:no-underline md:hover:underline'>{track.album.name}</Link></div>
-                    <div className='album-grid'>
-                        <div className='grid-row text-grayText font-semibold'>
-                            <div className="text-center  border-b-2 border-hoverGray">#</div>
-                            <div className="text-left border-b-2 border-hoverGray">Title</div>
-                            <div className="mx-auto border-b-2 border-hoverGray w-full text-center">Duration</div>
+                    <Link to={`/album/${track.album.id}`} className='flex items-center rounded-t-lg bg-hoverGray hover:bg-miniHover'>
+                        <img src={track.album.images[0].url} alt={track.name} className='h-[68px] w-[68px] rounded-t-lg'/>
+                        <div className='flex flex-col ml-2 text-white'>
+                            <div>From the album</div>
+                            <Link to={`/album/${track.album.id}`} className='text-lg font-semibold hover:underline'>{track.album.name}</Link>
                         </div>
+                    </Link>
+                    
+                    <div className='album-grid'>
 
                         {albumData.map((album_track, index) => {
                             if(album_track){

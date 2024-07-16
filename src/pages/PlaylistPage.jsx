@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link, useSearchParams } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext.jsx';
-import formatDuration from '../utils/formatDuration.js';
-import formatDate from '../utils/formatDate.js';
+import GridDropdownButton from '../components/GridDropdownButton.jsx';
+import ListGrid from '../components/ListGrid.jsx';
+import CompactGrid from '../components/CompactGrid.jsx';
 
 const PlaylistPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -10,10 +11,13 @@ const PlaylistPage = () => {
     const [playlist, setPlaylist] = useState(null)
     const [playlistTracks, setPlaylistTracks] = useState(null)
     const [following, setFollowing] = useState(null)
+    const [gridView, setGridView] = useState('List')
+    const [gridDropdown, setGridDropdown] = useState(false)
     const { updateSidebar } = useContext(AuthContext)
     
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     const offset = Number(searchParams.get('offset')) ? Number(searchParams.get('offset')) : 0
+    const stringOffset = searchParams.get('offset') ? searchParams.get('offset') : '0'
 
     useEffect(() => {
         if(offset) {
@@ -174,121 +178,31 @@ const PlaylistPage = () => {
             }
 
             {/* conditional to check if user is logged in */}
-            {!localStorage.getItem('userInfo') && <div className='text-xl text-grayText font-semibold'><Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the playlist to your library.</div>}
-            {localStorage.getItem('userInfo') && following && <button onClick={() => handleFollowButton('unfollow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Unfollow</button>}
-            {localStorage.getItem('userInfo') && !following && <button onClick={() => handleFollowButton('follow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Follow</button>}
+            <div className='flex justify-between items-center'>
+                {!localStorage.getItem('userInfo') && 
+                    <div className='text-xl text-grayText font-semibold'>
+                        <Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the playlist to your library.
+                    </div>
+                }
+                {localStorage.getItem('userInfo') && following && 
+                    <button onClick={() => handleFollowButton('unfollow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Unfollow</button>
+                }
+                {localStorage.getItem('userInfo') && !following && 
+                    <button onClick={() => handleFollowButton('follow')} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 text-xl rounded-2xl'>Follow</button>
+                }
+
+                {/*Grid view button with dropdown */}
+                <GridDropdownButton gridDropdown={gridDropdown} gridView={gridView} setGridDropdown={setGridDropdown} setGridView={setGridView}/>
+            </div>
             
-            {/* grid section */}
-            {playlistTracks && 
-                <div className='grid sub-grid xl:hidden 2xl:hidden'>
-                    <div className='grid-row text-grayText font-semibold'>
-                        <div className="text-center  border-b-2 border-hoverGray">#</div>
-                        <div className="text-left border-b-2 border-hoverGray">Title</div>
-                        <div className="mx-auto border-b-2 border-hoverGray w-full">Duration</div>
-                    </div>
-
-                    {playlistTracks.map((track, index) => {
-                        if(track.track.id && track.track.type){
-                            return (
-                                <Link to={`/track/${track.track.id}`} className='grid-row' key={index}>
-                                    {/* Counter */}
-                                    <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1 + offset}</div>
-
-                                    {/* Title and Artist */}
-                                    <div className='grid-cell flex items-center text-left'>
-                                        <img src={track.track.album.images[0].url} alt={track.track.name} className='h-[45px] w-[45px] rounded-md'/>
-                                        <div className="flex flex-col ml-2">
-                                            <div className='text-white'>{track.track.name}</div>
-                                            <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Duration */}
-                                    <div className='flex items-center justify-center text-grayText grid-cell '>{formatDuration(track.track.duration_ms)}</div>
-                                </Link>
-                            )
-                        }
-                    })}
-                    
-                </div>
+            {/* List Grid */}
+            {playlistTracks && gridView === 'List' && stringOffset &&
+                <ListGrid playlistTracks={playlistTracks} offset={offset}/>
             }
 
-            {playlistTracks &&
-                <div className='hidden xl:grid sub-grid 2xl:hidden'>
-                    <div className='grid-row text-grayText font-semibold'>
-                        <div className="text-center border-b-2 border-hoverGray">#</div>
-                        <div className="text-left border-b-2 border-hoverGray">Title</div>
-                        <div className="text-left border-b-2 border-hoverGray">Album</div>
-                        <div className="mx-auto border-b-2 border-hoverGray w-full">Duration</div>
-                    </div>
-
-                    {playlistTracks.map((track, index) => {
-                        if(track.track.id && track.track.type){
-                            return (
-                                <Link to={`/track/${track.track.id}`} className='grid-row' key={index}>
-                                    {/* Counter */}
-                                    <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1 + offset}</div>
-
-                                    {/* Title and Artist */}
-                                    <div className='grid-cell flex items-center text-left'>
-                                        <img src={track.track.album.images[0].url} alt={track.track.name} className='h-[45px] w-[45px] rounded-md'/>
-                                        <div className="flex flex-col ml-2">
-                                            <div className='text-white'>{track.track.name}</div>
-                                            <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
-                                        </div>
-                                    </div>
-
-                                    {/*Album */}
-                                    <div className='flex items-center text-left text-grayText grid-cell'>{track.track.album.name}</div>
-
-                                    {/* Duration */}
-                                    <div className='flex items-center justify-center text-grayText grid-cell '>{formatDuration(track.track.duration_ms)}</div>
-                                </Link>
-                            )
-                        }
-                    })}
-                </div>
-            }
-
-            {playlistTracks && 
-                <div className='hidden 2xl:grid sub-grid'>
-                    <div className='grid-row text-grayText font-semibold'>
-                        <div className="text-center border-b-2 border-hoverGray">#</div>
-                        <div className="text-left border-b-2 border-hoverGray">Title</div>
-                        <div className="text-left border-b-2 border-hoverGray">Album</div>
-                        <div className="text-left border-b-2 border-hoverGray">Date added</div>
-                        <div className="mx-auto border-b-2 border-hoverGray w-full">Duration</div>
-                    </div>
-
-                    {playlistTracks.map((track, index) => {
-                        if(track.track.id && track.track.type){
-                            return (
-                                <Link to={`/track/${track.track.id}`} className='grid-row' key={index}>
-                                    {/* Counter */}
-                                    <div className='flex items-center justify-center text-grayText grid-cell'>{index + 1 + offset}</div>
-
-                                    {/* Title and Artist */}
-                                    <div className='grid-cell flex items-center text-left'>
-                                        <img src={track.track.album.images[0].url} alt={track.track.name} className='h-[45px] w-[45px] rounded-md'/>
-                                        <div className="flex flex-col ml-2">
-                                            <div className='text-white'>{track.track.name}</div>
-                                            <div className='text-sm text-grayText'>{track.track.artists[0].name}</div>
-                                        </div>
-                                    </div>
-
-                                    {/*Album */}
-                                    <div className='flex items-center text-left text-grayText grid-cell'>{track.track.album.name}</div>
-
-                                    {/* Date added */}
-                                    <div className='flex items-center text-left text-grayText grid-cell'>{formatDate(track.added_at)}</div>
-
-                                    {/* Duration */}
-                                    <div className='flex items-center justify-center text-grayText grid-cell '>{formatDuration(track.track.duration_ms)}</div>
-                                </Link>
-                            )
-                        }
-                    })}
-                </div>
+            {/*Compact Grid */}
+            {playlistTracks && gridView === 'Compact' && stringOffset &&
+                <CompactGrid playlistTracks={playlistTracks} offset={offset}/>
             }
 
             {playlist && playlist.tracks.total > offset + 100 ? 
