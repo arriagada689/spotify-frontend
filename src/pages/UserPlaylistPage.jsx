@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { useParams, Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { FaSearch } from "react-icons/fa";
 import { Oval } from 'react-loader-spinner'
@@ -6,8 +6,10 @@ import spotifyImage from '../assets/spotify_default2.jpg';
 import GridDropdownButton from '../components/GridDropdownButton.jsx';
 import ListGrid2 from '../components/ListGrid2.jsx';
 import CompactGrid2 from '../components/CompactGrid2.jsx';
+import RecommendedTrackCard from '../components/RecommendedTrackCard.jsx';
 
 const UserPlaylistPage = () => {
+    const isMounted = useRef(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const query = searchParams.get('query')
     const type = searchParams.get('type') || 'track'
@@ -23,6 +25,7 @@ const UserPlaylistPage = () => {
     const [isInputFocused, setInputFocused] = useState(false);
     const [gridView, setGridView] = useState('List')
     const [gridDropdown, setGridDropdown] = useState(false)
+    const [recommendedTracks, setRecommendedTracks] = useState(null)
 
     const { id } = useParams()
     const [userPlaylist, setUserPlaylist] = useState(null)
@@ -55,6 +58,50 @@ const UserPlaylistPage = () => {
         }
         getUserPlaylistData()
     }, [id, searchParams, update])
+
+    {/*Handles recommended tracks */}
+    useEffect(() => {
+        //check if any tracks in playlist
+        if(playlistItems && playlistItems.length > 0 && !isMounted.current){
+            const trackIds = []
+
+            //iterate through playlist items to see if any tracks
+            for(const item of playlistItems){
+                if(item.type === 'Track'){
+                    trackIds.push(item.id)
+                }
+                if(trackIds.length === 5){
+                    break
+                }
+            }
+            
+            if(trackIds.length > 0){
+                //create the comma separated string
+                const str = trackIds.splice(0, 5).join(',')
+                
+                const getRecommendedTracks = async () => {
+                    const response = await fetch(`${apiBaseUrl}/spotify/recommended/${id}?track_ids=${str}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                    if(response.ok){
+                        const data = await response.json()
+                        if(data.tracks && data.tracks.length > 0){
+                            setRecommendedTracks(data.tracks)
+                            // console.log(data.tracks);
+                        }
+                    } else {
+                        const error = await response.json()
+                        console.error(error)
+                    }
+                }
+                getRecommendedTracks()
+            }
+            isMounted.current = true;
+        }
+    }, [id, playlistItems])
 
     {/*Handles sub search query functionality */}
     useEffect(() => {
@@ -326,6 +373,34 @@ const UserPlaylistPage = () => {
                         <button onClick={handleShowMore} className='bg-spotifyGreen w-fit font-semibold py-2 px-3 rounded-2xl'>Show more</button>
                     }
                 </div>
+            }
+
+            {/*Recommended tracks section */}
+            {recommendedTracks && recommendedTracks.length > 0 &&
+                <>
+                    <div className='space-y-1'> 
+                        <div className='text-2xl text-white font-bold'>Recommended</div>
+                        <div className="text-grayText font-semibold">Based on what's in this playlist</div>
+                    </div>
+
+                    <div className='flex flex-col'>
+                        {recommendedTracks.map((track) => {
+                            if(track[1].id && track[1].album.images && track[1].album.images.length > 0){
+                                return (
+                                    <RecommendedTrackCard 
+                                        key={track[1].id} 
+                                        track={track[1]} 
+                                        flag={track[0]} 
+                                        addToPlaylist={addToPlaylist} 
+                                        removeFromPlaylist={removeFromPlaylist}
+                                        recommendedTracks={recommendedTracks}
+                                        setRecommendedTracks={setRecommendedTracks}
+                                    />
+                                )  
+                            }
+                        })}
+                    </div>
+                </>
             }
             
         </div>

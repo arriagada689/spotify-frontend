@@ -14,12 +14,12 @@ const GridDropdownButton = ({ gridDropdown, gridView, setGridDropdown, setGridVi
         <div className='text-grayText relative'>
             {/*Grid view button*/}
             {gridView === 'List' ? (
-                <button onClick={(e) => setGridDropdown(prev => !prev)} className='flex items-center'>
+                <button onClick={(e) => setGridDropdown(prev => !prev)} className='flex items-center hover:text-white'>
                     <div className='mr-2'>List</div>
                     <FaListUl size={17}/>
                 </button>
             ) : (
-                <button onClick={(e) => setGridDropdown(prev => !prev)} className='flex items-center'>
+                <button onClick={(e) => setGridDropdown(prev => !prev)} className='flex items-center hover:text-white'>
                     <div className='mr-2'>Compact</div>
                     <GiHamburgerMenu size={17}/>
                 </button>
