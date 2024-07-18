@@ -11,6 +11,7 @@ const AudiobookPage = () => {
     const [following, setFollowing] = useState(null)
     const [update, setUpdate] = useState(0)
     const [userList, setUserList] = useState(null)
+    const [dropdown, setDropdown] = useState(false)
     const { updateSidebar } = useContext(AuthContext)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -216,26 +217,31 @@ const AudiobookPage = () => {
             }
 
             {/* Conditional for CRUD */}
-            <div className="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-5">
+            <div className="flex items-center space-x-3 md:space-x-5">
                 {!localStorage.getItem('userInfo') && <div className='text-xl text-grayText font-semibold'><Link to={'/login'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Log in</Link> or <Link to={'/signup'} className='text-spotifyGreen underline md:no-underline md:hover:underline'>Sign up</Link> to save the song to your playlists.</div>}
                 
+                {/*Add to playlist section */}
                 {localStorage.getItem('userInfo') && userList &&
-                    <div className='flex flex-col'>
-                        <div className='text-xl text-white font-semibold'>Add to playlist</div>
-                        <div className='flex flex-col bg-miniHover w-fit rounded-md p-1'>
-                            <Link to={'/create_playlist'} className='w-full hover:bg-lighterGray text-left text-white p-2 border-b border-white'>Create new playlist</Link>
-                            {userList.map((user_playlist, index) => {
-                                return <button 
-                                        onClick={() => handlePlaylistFunctionality(user_playlist[0], user_playlist[2] ? 'remove' : 'add')} 
-                                        className='w-full hover:bg-lighterGray text-left text-white p-2' 
-                                        key={index}>
-                                        <div className='flex items-center justify-between'>
-                                            <div>{user_playlist[1]}</div>
-                                            <div>{user_playlist[2] ? <FaCheck /> : ''}</div>
-                                        </div>
-                                        </button>
-                            })}
-                        </div>
+                    <div className='relative'>
+                        <button onClick={() => setDropdown(prev => !prev)} className='bg-miniHover py-2 px-3 text-xl rounded-2xl text-white hover:bg-lighterGray'>Add to playlist</button>
+                        
+                        {/*Dropdown */}
+                        {dropdown && 
+                            <div className='absolute left-0 mt-1 flex flex-col bg-miniHover w-fit rounded-md p-1'>
+                                <Link to={'/create_playlist'} className='w-full hover:bg-lighterGray text-left text-white p-2 border-b border-white text-nowrap'>Create new playlist</Link>
+                                {userList.map((user_playlist, index) => {
+                                    return <button 
+                                            onClick={() => handlePlaylistFunctionality(user_playlist[0], user_playlist[2] ? 'remove' : 'add')} 
+                                            className='w-full hover:bg-lighterGray text-left text-white p-2' 
+                                            key={index}>
+                                            <div className='flex items-center justify-between'>
+                                                <div>{user_playlist[1]}</div>
+                                                <div>{user_playlist[2] ? <FaCheck /> : ''}</div>
+                                            </div>
+                                            </button>
+                                })}
+                            </div>
+                        }
                     </div>
                 }
 

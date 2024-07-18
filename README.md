@@ -14,6 +14,5 @@
 
 ## Future features
 - Images for profile pictures and playlist images.
-- Pop ups for adding to playlist
 - Default playlist profile pic (quad collage)
 - Sidebar collapse

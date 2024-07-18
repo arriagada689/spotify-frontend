@@ -46,7 +46,7 @@ const Navbar = () => {
 
             {isLoggedIn ? 
                 <div className='space-x-2 md:space-x-5 flex items-center'>
-                    <Link className='text-grayText py-3 font-semibold' onClick={(e) => logoutHandler(e)}>Log Out</Link>
+                    <Link className='text-grayText py-3 font-semibold hover:text-white' onClick={(e) => logoutHandler(e)}>Log Out</Link>
                     <Link to='/profile'>
                         <div className='bg-black h-[40px] w-[40px] rounded-full flex items-center justify-center'>
                             <img src={spotifyImage} alt='Profile Pic' className='h-[30px] w-[30px] rounded-full'/>
