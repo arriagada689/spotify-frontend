@@ -23,6 +23,7 @@ const About = () => {
                             <li>Save tracks and audiobooks to your playlists</li>
                             <li>Save artists, albums, playlists, and audiobooks to your library</li>
                             <li>Customizable profile</li>
+                            <li>Image uploading and hosting</li>
                         </ul>
                     </div>
                 </div>
@@ -49,6 +50,7 @@ const About = () => {
                             <li>Database implemented using MongoDB</li>
                             <li>Server hosted on Render (free tier causes slow loading times)</li>
                             <li>Frontend hosted on Vercel</li>
+                            <li>Images hosted on Firebase</li>
                         </ul>
                     </div>
                 </div>

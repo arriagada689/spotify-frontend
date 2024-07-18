@@ -7,10 +7,16 @@ import ArtistCard from '../components/ArtistCard';
 import AlbumCard from '../components/AlbumCard';
 import AudiobookCard from '../components/AudiobookCard';
 import { Oval } from 'react-loader-spinner'
+import { LuPen } from "react-icons/lu";
+import firebase from 'firebase/compat/app'
+import "firebase/compat/storage"
+import getFirebaseConfig from '../utils/firebaseConfig';
+import storeImage from '../utils/storeImage';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState(null)
     const [likedSongs, setLikedSongs] = useState(null)
+    const [update, setUpdate] = useState(0)
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
 
     useEffect(() => {
@@ -25,7 +31,6 @@ const Profile = () => {
             if(response.ok) {
                 const data = await response.json()
                 setProfileData(data)
-                // console.log(data)
             }
         }
         getProfileData()
@@ -44,12 +49,62 @@ const Profile = () => {
             }
         }
         getLikedSongsData()
-    }, [])
+    }, [update])
+
+    {/*Function to upload image file to firebase */}
+    const handleFileUpload = async (e) => {
+        //grab file and get firebase config data
+        const selectedFile = e.target.files[0]
+        const token = JSON.parse(localStorage.getItem('userInfo')).token
+        const firebaseConfig = await getFirebaseConfig(token)
+        firebase.initializeApp(firebaseConfig)
+
+        if(selectedFile){
+            const storageRef = firebase.storage().ref()
+            const folderName = 'spotify-clone-app';
+            const fileRef = storageRef.child(`${folderName}/${selectedFile.name}`)
+            fileRef.put(selectedFile)
+                .then((snapshot) => {
+                    snapshot.ref.getDownloadURL()
+                    .then(async (downloadUrl) => {
+                        
+                        //store firebase image link in db
+                        const status = await storeImage(downloadUrl, token)
+                        setUpdate(prev => prev + 1)
+                    })
+                })
+        } else {
+            console.log('no file selected');
+        }
+    }
+
+    const triggerFileInput = () => {
+        document.getElementById('fileInput').click();
+      };
     
     return profileData ? (
         <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
             <div className='flex flex-col md:flex-row items-center'>
-                <img src={spotifyImage} alt='default image' className='h-[270px] w-[270px] rounded-full mx-auto md:mx-0'/>
+                <div className='relative image-parent h-[270px] w-[270px] flex-shrink-0 hover:cursor-pointer'>
+                    <img src={profileData.profile_image ? profileData.profile_image : spotifyImage} alt='default image' className='w-full h-full rounded-full mx-auto md:mx-0'/>
+
+                    <input 
+                        type='file' 
+                        id='fileInput' 
+                        style={{ display: 'none' }} 
+                        accept='.png, .jpg, .jpeg'
+                        onChange={handleFileUpload} 
+                    />
+
+                    {/*Hover div */}
+                    <div onClick={triggerFileInput} className='hover-show absolute inset-0 h-full w-full flex-col items-center justify-center rounded-full'>
+                        <LuPen size={50} className='text-white z-20'/>
+                        <div className='font-semibold text-white z-20'>Choose photo</div>
+                    </div>
+
+                    {/*Dark overlay */}
+                    <div className='hover-show absolute inset-0 h-full w-full flex-col items-center justify-center rounded-full z-10 bg-black opacity-50'></div>
+                </div>
                 <div className="flex flex-col text-white space-y-4 md:ml-4 mt-2 md:mt-0 w-full">
                     <div>Profile</div>
                     <div className='text-4xl md:text-7xl font-bold name-width truncate pb-2 md:pb-4'>{profileData.username}</div>

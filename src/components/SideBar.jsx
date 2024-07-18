@@ -123,6 +123,7 @@ const SideBar = () => {
                                 <li>Creating your own customizable playlists</li>
                                 <li>Saving artists, albums, and audiobooks to your library</li>
                                 <li>Keep track of your recently viewed tracks, artists, albums, playlists, and audiobooks</li>
+                                <li>Customizing your profile</li>
                             </ul>
                             <div className='flex items-center space-x-4 justify-center'>
                                 <Link className='text-white bg-dark w-fit font-medium rounded-2xl py-2 px-3'>Log in</Link>

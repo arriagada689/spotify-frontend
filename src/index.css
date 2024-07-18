@@ -143,6 +143,10 @@
     display: block;
 }
 
+.image-parent:hover .hover-show {
+    display: flex;
+}
+
 .font-white {
     color: white !important;
 }
