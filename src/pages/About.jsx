@@ -48,7 +48,7 @@ const About = () => {
                             <li>Backend server implemented using Node.js and Express</li>
                             <li>Styling implemented using Tailwind CSS</li>
                             <li>Database implemented using MongoDB</li>
-                            <li>Server hosted on Render (free tier causes slow loading times)</li>
+                            <li>Server hosted on Render</li>
                             <li>Frontend hosted on Vercel</li>
                             <li>Images hosted on Firebase</li>
                         </ul>
