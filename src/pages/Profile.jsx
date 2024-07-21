@@ -161,7 +161,7 @@ const Profile = () => {
                                 if(item.type === 'Playlist'){
                                     return <PlaylistCard key={index} name={item.name} id={item.id} image={item.image} owner={item.creator} type={item.type}/>
                                 } else if(item.type === 'UserPlaylist'){
-                                    return <PlaylistCard key={index} name={item.name} id={item._id} image={'default'} owner={item.creator} type={item.type}/>
+                                    return <PlaylistCard key={index} name={item.name} id={item._id} image={item.image ? item.image : 'default'} owner={item.creator} type={item.type}/>
                                 }
                             })} 
                         </div>

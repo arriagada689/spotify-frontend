@@ -71,7 +71,7 @@ const Home = () => {
                   if(item.type === 'Playlist'){
                     return <MiniCard key={index} name={item.name} image={item.image} url={`/playlist/${item.id}`}/>
                   } else if(item.type === 'UserPlaylist'){
-                    return <MiniCard key={index} name={item.name} image={'default'} url={`/user_playlist/${item._id}`}/>
+                    return <MiniCard key={index} name={item.name} image={item.image ? item.image : 'default'} url={`/user_playlist/${item._id}`}/>
                   } else if(item.type === 'Artist'){
                     return <MiniCard key={index} name={item.name} image={item.image} url={`/artist/${item.id}`}/>
                   } else if(item.type === 'Album') {
