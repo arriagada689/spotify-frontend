@@ -6,6 +6,7 @@ export const AuthProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState({});
     const [sidebarUpdate, setSidebarUpdate] = useState(0);
+    const [navbarUpdate, setNavbarUpdate] = useState(0);
 
     //Check local storage for userInfo and set isLoggedIn
     useEffect(() => {
@@ -19,6 +20,10 @@ export const AuthProvider = ({ children }) => {
 
     const updateSidebar = () => {
         setSidebarUpdate(prev => prev + 1)
+    }
+
+    const updateNavbar = () => {
+        setNavbarUpdate(prev => prev + 1)
     }
 
     const loginUser = (data) => {
@@ -46,7 +51,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isLoggedIn, userData, loginUser, logoutUser, registerUser, deleteProfile, updateSidebar, sidebarUpdate }}>
+        <AuthContext.Provider value={{ isLoggedIn, userData, loginUser, logoutUser, registerUser, deleteProfile, updateSidebar, sidebarUpdate, updateNavbar, navbarUpdate}}>
             {children}
         </AuthContext.Provider>
     );

@@ -12,6 +12,7 @@ import firebase from 'firebase/compat/app'
 import "firebase/compat/storage"
 import getFirebaseConfig from '../utils/firebaseConfig';
 import storeUserPlaylistImage from '../utils/storeUserPlaylistImage.js';
+import { titleDescending, titleAscending, durationDescending, durationAscending } from '../utils/sortingPlaylists.js';
 
 const UserPlaylistPage = () => {
     const isMounted = useRef(false);
@@ -33,6 +34,7 @@ const UserPlaylistPage = () => {
     const [recommendedTracks, setRecommendedTracks] = useState(null)
     const [imageUpdate, setImageUpdate] = useState(0)
     const [imageLoading, setImageLoading] = useState(0)
+    const [sortingMetric, setSortingMetric] = useState(3)
 
     const { id } = useParams()
     const [userPlaylist, setUserPlaylist] = useState(null)
@@ -65,6 +67,22 @@ const UserPlaylistPage = () => {
         }
         getUserPlaylistData()
     }, [id, searchParams, update, imageUpdate])
+
+    /*Handles sorting changes */
+    useEffect(() => {
+        if(playlistItems){
+            if(sortingMetric === 1){
+                titleAscending(playlistItems, setPlaylistItems)
+            } else if(sortingMetric === 2){
+                titleDescending(playlistItems, setPlaylistItems)
+            } else if(sortingMetric === 5){
+                durationAscending(playlistItems, setPlaylistItems)
+            } else if(sortingMetric === 6){
+                durationDescending(playlistItems, setPlaylistItems) 
+            }
+        }
+        
+    }, [sortingMetric])
 
     {/*Function to upload image file to firebase */}
     const handleFileUpload = async (e) => {
@@ -330,7 +348,7 @@ const UserPlaylistPage = () => {
                 </div>
 
                 {/*Grid view button with dropdown */}
-                <GridDropdownButton gridDropdown={gridDropdown} gridView={gridView} setGridDropdown={setGridDropdown} setGridView={setGridView}/>
+                <GridDropdownButton gridDropdown={gridDropdown} gridView={gridView} setGridDropdown={setGridDropdown} setGridView={setGridView} sortingMetric={sortingMetric} setSortingMetric={setSortingMetric}/>
             </div>
 
             {/* List grid */}

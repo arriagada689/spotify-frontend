@@ -17,6 +17,7 @@ const TrackPage = () => {
     const [liked, setLiked] = useState(false)
     const [likedList, setLikedList] = useState(null)
     const [dropdown, setDropdown] = useState(false)
+    const [flag, setFlag] = useState(false)
     const { updateSidebar } = useContext(AuthContext);
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -86,27 +87,6 @@ const TrackPage = () => {
         }
     }, [popularTracks])
 
-    {/*Grabs user's list of playlists */}
-    useEffect(() => {
-        //if logged in, grab all the user's playlists for adding to playlist functionality
-        if(localStorage.getItem('userInfo')){
-            const token = JSON.parse(localStorage.getItem('userInfo')).token
-            const getUserList = async () => {
-                const response = await fetch(`${apiBaseUrl}/profile/user_list/track/${id}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                if(response.ok) {
-                    const data = await response.json()
-                    setUserList(data.user_list)
-                }
-            }
-            getUserList()
-        }
-    }, [update])
-
     {/*Handles recently viewed */}
     useEffect(() => {
         if(localStorage.getItem('userInfo') && track){
@@ -130,6 +110,7 @@ const TrackPage = () => {
                 })
                 if(response.ok) {
                     const data = await response.json()
+                    setFlag(true)
                     // console.log(data)
                 } else {
                     const error = await response.json()
@@ -139,6 +120,31 @@ const TrackPage = () => {
             addToRecentlyViewed()
         }
     }, [track])
+
+    {/*Grabs user's list of playlists */}
+    useEffect(() => {
+        //if logged in, grab all the user's playlists for adding to playlist functionality
+        if(localStorage.getItem('userInfo') && track && flag){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getUserList = async () => {
+                const response = await fetch(`${apiBaseUrl}/profile/user_list/track/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok) {
+                    const data = await response.json()
+                    setUserList(data.user_list)
+                } else {
+                    const error = await response.json()
+                    console.log(error);
+                }
+            }
+            getUserList()
+        }
+    }, [update, id, flag])
+    
 
     const handlePlaylistFunctionality = async (user_playlist_id, command) => {
         //handle update state variable

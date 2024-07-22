@@ -9,13 +9,35 @@ import { FaPlus } from "react-icons/fa6";
 const Navbar = () => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'))
     const [isLoggedIn, setIsLoggedIn] = useState(userInfo ? true : false)
-    const { logoutUser } = useContext(AuthContext)
+    const [profileImage, setProfileImage] = useState('')
+    const { logoutUser, navbarUpdate } = useContext(AuthContext)
+    const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
     
     const navigate = useNavigate();
 
     useEffect(() => {
         setIsLoggedIn(userInfo ? true : false)
     }, [localStorage.getItem('userInfo')])
+
+    {/*Handles profile picture */}
+    useEffect(() => {
+        if(localStorage.getItem('userInfo')){
+            const token = JSON.parse(localStorage.getItem('userInfo')).token
+            const getProfileImage = async () => {
+                const response = await fetch(`${apiBaseUrl}/users/profile_image`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                if(response.ok){
+                    const data = await response.json()
+                    setProfileImage(data)
+                }
+            }
+            getProfileImage()
+        }
+    }, [localStorage.getItem('userInfo'), navbarUpdate])
 
     const logoutHandler = (e) => {
         e.preventDefault()
@@ -49,7 +71,7 @@ const Navbar = () => {
                     <Link className='text-grayText py-3 font-semibold hover:text-white' onClick={(e) => logoutHandler(e)}>Log Out</Link>
                     <Link to='/profile'>
                         <div className='bg-black h-[40px] w-[40px] rounded-full flex items-center justify-center'>
-                            <img src={spotifyImage} alt='Profile Pic' className='h-[30px] w-[30px] rounded-full'/>
+                            <img src={profileImage ? profileImage : spotifyImage} alt='Profile Pic' className='h-[30px] w-[30px] rounded-full'/>
                         </div>
                     </Link>
                 </div> :

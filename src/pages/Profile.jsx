@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Link } from 'react-router-dom';
 import spotifyImage from '../assets/spotify_default2.jpg';
 import likedSongsImage from '../assets/liked-songs.png';
@@ -12,6 +12,7 @@ import firebase from 'firebase/compat/app'
 import "firebase/compat/storage"
 import getFirebaseConfig from '../utils/firebaseConfig';
 import storeImage from '../utils/storeImage';
+import { AuthContext } from '../contexts/AuthContext.jsx';
 
 const Profile = () => {
     const [profileData, setProfileData] = useState(null)
@@ -19,6 +20,8 @@ const Profile = () => {
     const [update, setUpdate] = useState(0)
     const [imageLoading, setImageLoading] = useState(false)
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
+    const { updateNavbar } = useContext(AuthContext)
 
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem('userInfo')).token
@@ -75,6 +78,7 @@ const Profile = () => {
                         //store firebase image link in db
                         const status = await storeImage(downloadUrl, token)
                         setUpdate(prev => prev + 1)
+                        updateNavbar()
                     })
                 })
         } else {
