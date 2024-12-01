@@ -5,6 +5,8 @@ import { AuthContext } from '../contexts/AuthContext.jsx';
 import { useContext } from 'react';
 import { Oval } from 'react-loader-spinner'
 import { FaSpotify } from "react-icons/fa";
+import { IoMdEye } from "react-icons/io";
+import { IoMdEyeOff } from "react-icons/io";
 
 const SignUp = () => {
     const [username, setUsername] = useState('')
@@ -13,6 +15,7 @@ const SignUp = () => {
     const [errorMessage, setErrorMessage] = useState('')
     const [loading, setLoading] = useState(false)
     const { registerUser } = useContext(AuthContext)
+    const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
 
@@ -83,29 +86,45 @@ const SignUp = () => {
                     </div>
                     <div className='flex flex-col space-y-1 mb-2'>
                         <label htmlFor="password">Password:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Enter your password"
-                            required
-                            className='border border-gray-400 bg-primary rounded-md p-2 w-full'
-                        />
+                        <div className='relative'>
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Enter your password"
+                                required
+                                className='border border-gray-400 bg-primary rounded-md p-2 w-full'
+                            />
+                            <button 
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-2 flex items-center">
+                                {showPassword ? <IoMdEye size={20}/> : <IoMdEyeOff size={20}/>}
+                            </button>
+                        </div>
                         <div className='text-xs'>Password must be at least 4 characters long.</div>
                     </div>
                     
                     <div className='flex flex-col space-y-1 mb-4'>
                         <label htmlFor="password">Confirm Password:</label>
-                        <input
-                            type="password"
-                            id="confirmPassword"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Confirm your password"
-                            required
-                            className='border border-gray-400 bg-primary rounded-md p-2 w-full'
-                        />
+                        <div className='relative'>
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                id="confirmPassword"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                placeholder="Confirm your password"
+                                required
+                                className='border border-gray-400 bg-primary rounded-md p-2 w-full'
+                            />
+                            <button 
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute inset-y-0 right-2 flex items-center">
+                                {showPassword ? <IoMdEye size={20}/> : <IoMdEyeOff size={20}/>}
+                            </button>
+                        </div>
                     </div>
                     <div className='flex justify-center'>
                         <button type="submit" className='bg-spotifyGreen w-fit text-white py-2 px-3 rounded mb-4'>Sign Up</button>
