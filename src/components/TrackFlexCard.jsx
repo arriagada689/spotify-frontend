@@ -53,29 +53,39 @@ const TrackFlexCard = ({popular_track, flag, index}) => {
 
     return (
         <Link to={`/track/${popular_track.id}`} key={index}>
-            <div className='flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md parent'>
-                <img src={popular_track.album.images[0].url} alt={popular_track.name} className='h-[45px] w-[45px] rounded-md'/>
-                <div className='flex w-full justify-between ml-2 items-center'>
-                    <div className='flex flex-col'>
-                        <div className='text-white'>{popular_track.name}</div>
-                        <div className='text-grayText text-sm'>{popular_track.artists[0].name}</div>
+            <div className="flex w-full bg-primary hover:bg-hoverGray items-center p-2 rounded-md parent">
+                <img
+                    src={popular_track.album.images[0].url}
+                    alt={popular_track.name}
+                    className="h-[45px] w-[45px] rounded-md"
+                />
+                <div className="flex w-full justify-between ml-2 items-center">
+                    <div className="flex flex-col overflow-hidden">
+                        <div className="text-white truncate max-w-[200px] md:max-w-[225px] lg:max-w-[350px] xl:max-w-[550px]">{popular_track.name}</div>
+                        <div className="text-grayText text-sm truncate max-w-[200px] md:max-w-[225px] lg:max-w-[350px] xl:max-w-[550px]">{popular_track.artists[0].name}</div>
                     </div>
-
-                    {liked !== null ? 
-                        <div className='flex items-center text-grayText space-x-3'>
-                            {liked && localStorage.getItem('userInfo') ? 
-                                <FaCheckCircle onClick={(e) => unlikeSong(e)} className='hover-show text-spotifyGreen' size={18}/>
-                            : 
-                                <FiPlusCircle onClick={(e) => likeSong(e)} className='hover-show' size={18}/>
-                            }
-                            <div className=''>{formatDuration(popular_track.duration_ms)}</div>
+                    {liked !== null ? (
+                        <div className="flex items-center text-grayText space-x-3">
+                            {liked && localStorage.getItem('userInfo') ? (
+                                <FaCheckCircle
+                                    onClick={(e) => unlikeSong(e)}
+                                    className="hover-show text-spotifyGreen"
+                                    size={18}
+                                />
+                            ) : (
+                                <FiPlusCircle
+                                    onClick={(e) => likeSong(e)}
+                                    className="hover-show"
+                                    size={18}
+                                />
+                            )}
+                            <div className="">{formatDuration(popular_track.duration_ms)}</div>
                         </div>
-                    :
-                        <div className='flex items-center text-grayText space-x-3'>
-                            <div className=''>{formatDuration(popular_track.duration_ms)}</div>
+                    ) : (
+                        <div className="flex items-center text-grayText space-x-3">
+                            <div className="">{formatDuration(popular_track.duration_ms)}</div>
                         </div>
-                    }
-                    
+                    )}
                 </div>
             </div>
         </Link>

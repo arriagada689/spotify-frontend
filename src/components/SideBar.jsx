@@ -70,8 +70,10 @@ const SideBar = () => {
                 })
                 if(response.ok){
                     const data = await response.json()
-                    setLikedSongs(data.liked_songs)
-                    // console.log(data)
+                    if(data.liked_songs && data.liked_songs.length > 0){
+                        setLikedSongs(data.liked_songs)
+                    }
+                    // console.log(data.liked_songs)
                 }
             }
             getLikedSongsData()
@@ -179,6 +181,16 @@ const SideBar = () => {
                                     }) 
                                 }
                             </div>
+                            {arr && arr.length === 0 && !likedSongs &&
+                                <div className='bg-grayBox p-4 m-2 rounded-md text-white space-y-2'>
+                                    <ul className='list-disc pl-5'>
+                                        <li>Create your own customizable playlists</li>
+                                        <li>Save artists, albums, and audiobooks to your library</li>
+                                        <li>Keep track of your recently viewed tracks, artists, albums, playlists, and audiobooks</li>
+                                        <li>Customize your profile</li>
+                                    </ul>
+                                </div>
+                            }
                         </div>
                     }
                     
