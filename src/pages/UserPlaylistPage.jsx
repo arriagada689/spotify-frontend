@@ -115,48 +115,48 @@ const UserPlaylistPage = () => {
     };
 
     {/*Handles recommended tracks */}
-    useEffect(() => {
-        //check if any tracks in playlist
-        if(playlistItems && playlistItems.length > 0 && !isMounted.current){
-            const trackIds = []
+    // useEffect(() => {
+    //     //check if any tracks in playlist
+    //     if(playlistItems && playlistItems.length > 0 && !isMounted.current){
+    //         const trackIds = []
 
-            //iterate through playlist items to see if any tracks
-            for(const item of playlistItems){
-                if(item.type === 'Track'){
-                    trackIds.push(item.id)
-                }
-                if(trackIds.length === 5){
-                    break
-                }
-            }
+    //         //iterate through playlist items to see if any tracks
+    //         for(const item of playlistItems){
+    //             if(item.type === 'Track'){
+    //                 trackIds.push(item.id)
+    //             }
+    //             if(trackIds.length === 5){
+    //                 break
+    //             }
+    //         }
             
-            if(trackIds.length > 0){
-                //create the comma separated string
-                const str = trackIds.splice(0, 5).join(',')
+    //         if(trackIds.length > 0){
+    //             //create the comma separated string
+    //             const str = trackIds.splice(0, 5).join(',')
                 
-                const getRecommendedTracks = async () => {
-                    const response = await fetch(`${apiBaseUrl}/spotify/recommended/${id}?track_ids=${str}`, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                    if(response.ok){
-                        const data = await response.json()
-                        if(data.tracks && data.tracks.length > 0){
-                            setRecommendedTracks(data.tracks)
-                            // console.log(data.tracks);
-                        }
-                    } else {
-                        const error = await response.json()
-                        console.error(error)
-                    }
-                }
-                getRecommendedTracks()
-            }
-            isMounted.current = true;
-        }
-    }, [id, playlistItems])
+    //             const getRecommendedTracks = async () => {
+    //                 const response = await fetch(`${apiBaseUrl}/spotify/recommended/${id}?track_ids=${str}`, {
+    //                     headers: {
+    //                         'Content-Type': 'application/json',
+    //                         'Authorization': `Bearer ${token}`
+    //                     }
+    //                 })
+    //                 if(response.ok){
+    //                     const data = await response.json()
+    //                     if(data.tracks && data.tracks.length > 0){
+    //                         setRecommendedTracks(data.tracks)
+    //                         // console.log(data.tracks);
+    //                     }
+    //                 } else {
+    //                     const error = await response.json()
+    //                     console.error(error)
+    //                 }
+    //             }
+    //             getRecommendedTracks()
+    //         }
+    //         isMounted.current = true;
+    //     }
+    // }, [id, playlistItems])
 
     {/*Handles sub search query functionality */}
     useEffect(() => {
@@ -465,7 +465,7 @@ const UserPlaylistPage = () => {
             }
 
             {/*Recommended tracks section */}
-            {recommendedTracks && recommendedTracks.length > 0 &&
+            {/* {recommendedTracks && recommendedTracks.length > 0 &&
                 <>
                     <div className='space-y-1'> 
                         <div className='text-2xl text-white font-bold'>Recommended</div>
@@ -490,7 +490,7 @@ const UserPlaylistPage = () => {
                         })}
                     </div>
                 </>
-            }
+            } */}
             
         </div>
     )

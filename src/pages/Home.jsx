@@ -178,8 +178,8 @@ const Home = () => {
           </div>
         }
 
-        {/* Featured artists section */}
-        {featuredPlaylists && featuredPlaylists.length > 0 && 
+        {/* Featured playlists section */}
+        {/* {featuredPlaylists && featuredPlaylists.length > 0 && 
           <div className='w-full '>
             <div className='flex justify-between items-baseline mb-2'>
               <Link to='/featured_playlists' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Featured playlists</Link>
@@ -205,7 +205,7 @@ const Home = () => {
               </div>
               }
             </div>
-          </div>}
+          </div>} */}
       </div>
     )
 }
