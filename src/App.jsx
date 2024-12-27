@@ -33,6 +33,7 @@ import SavedPlaylistsPage from './pages/SavedPlaylistsPage.jsx'
 import About from './pages/About.jsx'
 import Logout from './pages/Logout.jsx'
 import LikedSongs from './pages/LikedSongs.jsx'
+import NewReleasesPage from './pages/NewReleasesPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -43,7 +44,8 @@ const router = createBrowserRouter(
       <Route path='/about' element={<About />}/>
       <Route path='/popular_artists' element={<PopularArtists />}/>
       <Route path='/popular_albums' element={<PopularAlbums />}/>
-      <Route path='/featured_playlists' element={<FeaturedPlaylists />}/>
+      {/* <Route path='/featured_playlists' element={<FeaturedPlaylists />}/> */}
+      <Route path='/new_releases' element={<NewReleasesPage />}/>
       <Route path='/search' element={<Search />}/>
       <Route path='/track/:id' element={<TrackPage />}/>
       <Route path='/artist/:id' element={<ArtistPage />}/>
