@@ -158,7 +158,7 @@ const SideBar = () => {
                                         <img src={likedSongsImage} alt={'Liked Songs'} className='h-[50px] w-[50px] rounded-md'/>
                                         <div className='flex flex-col my-auto'>
                                             <div className='text-white line-clamp-1'>Liked Songs</div>
-                                            <div className='text-sm line-clamp-1 flex items-center space-x-2'><TiPin className='text-spotifyGreen' size={20}/> <span>Playlist</span> <span>{likedSongs.length} songs</span></div>
+                                            <div className='text-sm line-clamp-1 flex items-center space-x-2'><TiPin className='text-spotifyGreen' size={20}/> <span>Playlist</span> <span>{'-'}</span><span>{likedSongs.length} song(s)</span></div>
                                         </div>
                                     </Link>
                                 }
@@ -169,7 +169,7 @@ const SideBar = () => {
                                             if(item.type === 'Artist'){
                                                 return <SidebarArtist key={index} name={item.name} type={item.type} id={item.id} image={item.image}/>
                                             } else if(item.type === 'Album'){
-                                                return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.artist} image={item.image}/>
+                                                return <SidebarCard key={index} name={item.name} type={item.album_type} id={item.id} subname={item.artist} image={item.image}/>
                                             } else if(item.type === 'Playlist'){
                                                 return <SidebarCard key={index} name={item.name} type={item.type} id={item.id} subname={item.creator} image={item.image}/>
                                             } else if(item.type === 'Audiobook'){

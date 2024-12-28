@@ -13,6 +13,7 @@ const AlbumPage = () => {
     const [following, setFollowing] = useState(null)
     const [gridView, setGridView] = useState('List')
     const [gridDropdown, setGridDropdown] = useState(false)
+    const [albumType, setAlbumType] = useState(null)
     const { updateSidebar } = useContext(AuthContext)
 
     const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
@@ -26,8 +27,9 @@ const AlbumPage = () => {
             })
             if(response.ok) {
                 const data = await response.json()
-                // console.log(data)
+                // console.log(data.album_data);
                 setAlbum(data.album_data)
+                determineAlbumType(data.album_data.album_type);
                 setTotalTime(data.total_time)
             }
         }
@@ -72,7 +74,8 @@ const AlbumPage = () => {
                         id: album.id,
                         image: album.images[0].url,
                         artist: album.artists[0].name,
-                        type: 'Album'
+                        type: 'Album',
+                        album_type: album.album_type
                     })
                 })
                 if(response.ok) {
@@ -101,7 +104,8 @@ const AlbumPage = () => {
                     id: album.id,
                     image: album.images[0].url,
                     artist: album.artists[0].name,
-                    type: 'Album'
+                    type: 'Album',
+                    album_type: album.album_type
                 })
             })
             if(response.ok) {
@@ -133,6 +137,14 @@ const AlbumPage = () => {
             }
         }
     }
+
+    const determineAlbumType = (album_type) => {
+        if(album_type === 'single' || album_type === 'compilation'){
+            setAlbumType('Single / EP');
+        } else {
+            setAlbumType('Album');
+        }
+    }
     
     return (
         <div className='bg-primary flex flex-col px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
@@ -140,7 +152,7 @@ const AlbumPage = () => {
                 <div className='flex flex-col md:flex-row items-center'>
                     <img src={album.images[0].url} alt={album.name} className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/>
                     <div className="flex flex-col text-white space-y-4 md:ml-4 mt-2 md:mt-0 w-full">
-                        <div>Album</div>
+                        <div>{albumType}</div>
                         <div className='text-4xl md:text-7xl font-bold name-width truncate pb-2 md:pb-4'>{album.name}</div>
                         <div className="flex space-x-3 ">
                             <Link to={`/artist/${album.artists[0].id}`} className='underline md:no-underline md:hover:underline'>{album.artists[0].name}</Link>
