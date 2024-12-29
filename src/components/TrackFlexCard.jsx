@@ -14,15 +14,23 @@ const TrackFlexCard = ({popular_track, flag, index}) => {
     const likeSong = async (e) => {
         e.preventDefault()
         const token = JSON.parse(localStorage.getItem('userInfo')).token
-        const response = await fetch(`${apiBaseUrl}/profile/like_song/${popular_track.id}`, {
+        const response = await fetch(`${apiBaseUrl}/profile/like_song_full/${popular_track.id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
-            }
+            },
+            body: JSON.stringify({
+                track_name: popular_track.name,
+                track_image: popular_track.album.images[0].url,
+                track_duration: formatDuration(popular_track.duration_ms),
+                track_artist: popular_track.artists[0].name,
+                track_album: popular_track.album.name
+            })
         })
         if(response.ok){
             const data = await response.json()
+            // console.log(data);
             setLiked(true)
             updateSidebar()
         } else {

@@ -9,7 +9,8 @@ import AudiobookCard from '../components/AudiobookCard.jsx';
 import { Oval } from 'react-loader-spinner'
 import staticCategories from '../utils/categories.js';
 import TrackCard from '../components/TrackCard.jsx';
-import TrackFlexCard from '../components/TrackFlexCard.jsx';
+// import TrackFlexCard from '../components/TrackFlexCard.jsx';
+import TrackSearchCard from '../components/TrackSearchCard.jsx';
 
 const Search = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -114,40 +115,36 @@ const Search = () => {
     }, [])
 
     {/*Handles likedList when trackData changes */}
-    useEffect(() => {
-        // console.log(trackData)
-        if(localStorage.getItem('userInfo') && trackData && trackData.items && trackData.items.length > 0){
+    // useEffect(() => {
+    //     // console.log(trackData)
+    //     if(localStorage.getItem('userInfo') && trackData && trackData.items && trackData.items.length > 0){
             
-            const token = JSON.parse(localStorage.getItem('userInfo')).token
+    //         const token = JSON.parse(localStorage.getItem('userInfo')).token
             
-            const getLikeList = async () => {
-                try {
-                    const response = await fetch(`${apiBaseUrl}/profile/like_list`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            track_list: trackData.items
-                        })
-                    });
-            
-                    if (response.ok) {
-                        const data = await response.json();
-                        // console.log(data);
-                        setLikedList(data);
-                    } else {
-                        const error = await response.json();
-                        console.error('Error:', error);
-                    }
-                } catch (error) {
-                    console.error('Fetch failed:', error);
-                }
-            }
-            getLikeList()
-        }
-    }, [trackData])
+    //         const getLikeList = async () => {
+    //             const response = await fetch(`${apiBaseUrl}/profile/like_list`, {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json',
+    //                     'Authorization': `Bearer ${token}`
+    //                 },
+    //                 body: JSON.stringify({
+    //                     track_list: trackData.items
+    //                 })
+    //             });
+        
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 // console.log(data);
+    //                 setLikedList(data);
+    //             } else {
+    //                 const error = await response.json();
+    //                 console.error('Error:', error);
+    //             }
+    //         }
+    //         getLikeList()
+    //     }
+    // }, [trackData])
 
     const handleSearch = (event) => {
         event.preventDefault(); 
@@ -266,7 +263,7 @@ const Search = () => {
                             <div className="flex-flex-col"> 
                                 {trackData.items.map((track, index) => {
                                     if(track){
-                                        return <TrackFlexCard key={index} popular_track={track} flag={likedList[index]} index={index}/>
+                                        return <TrackSearchCard key={index} popular_track={track} flag={likedList[index]} index={index}/>
                                     }
                                 })}
                             </div>
@@ -284,7 +281,7 @@ const Search = () => {
                             <div className="flex-flex-col"> 
                                 {trackData.items.map((track, index) => {
                                     if(track){
-                                        return <TrackFlexCard key={index} popular_track={track} index={index}/>
+                                        return <TrackSearchCard key={index} popular_track={track} index={index}/>
                                     }
                                 })}
                             </div>
