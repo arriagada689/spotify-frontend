@@ -1,16 +1,20 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import ArtistCard from '../components/ArtistCard.jsx'
+import AlbumCard from '../components/AlbumCard.jsx';
 import spotifyImage from '../assets/spotify_default2.jpg';
 import { AuthContext } from '../contexts/AuthContext.jsx';
-import formatDuration from '../utils/formatDuration.js';
 import TrackFlexCard from '../components/TrackFlexCard.jsx';
+// import sampleArtistData from '../sample_data/artistData.js';
+// import sampleArtistDiscography from '../sample_data/artistDiscography.js';
 
 const colors = ['red2', 'blue2', 'green2', 'teal2', 'purple2']
 
 const ArtistPage = () => {
     const { id } = useParams()
     const [artist, setArtist] = useState(null)
+    const [discography, setDiscography] = useState(null)
+    const [fullDiscography, setFullDiscography] = useState(null)
+    const [selectedFilter, setSelectedFilter] = useState('album')
     const [popularTracks, setPopularTracks] = useState(null)
     const [relatedArtists, setRelatedArtists] = useState(null)
     const [following, setFollowing] = useState(null)
@@ -31,11 +35,33 @@ const ArtistPage = () => {
                 // console.log(data)
                 setArtist(data.artist_data)
                 setPopularTracks(data.popular_tracks)
-                setRelatedArtists(data.related_artists)
+                // setRelatedArtists(data.related_artists)
             }
         }
+
+        const getArtistDiscrography = async () => {
+            const response = await fetch(`${apiBaseUrl}/spotify/get_artist_discography/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            if(response.ok) {
+                const data = await response.json()
+                setFullDiscography(data.discography);
+                
+                //initial filtering
+                let arr = []
+                arr = data.discography.filter(album => album.album_type === 'album' && album.album_group === 'album').slice(0, 8);
+                setDiscography(arr);
+            }
+        }
+        getArtistDiscrography()
+
         getArtistData()
-        
+        // setArtist(sampleArtistData.artist_data);
+        // setPopularTracks(sampleArtistData.popular_tracks);
+        // setDiscography(sampleArtistDiscography.discography.slice(0, 8));
+        // setFullDiscography(sampleArtistDiscography.discography);
     }, [id])
 
     useEffect(() => {
@@ -161,6 +187,39 @@ const ArtistPage = () => {
             }
         }
     }
+
+    /*Handles discography filter changes */
+
+    const handleDiscographyFilter = (type) => {
+        let arr = [];
+
+        if(type === 'album'){
+            setSelectedFilter('album');
+            arr = fullDiscography.filter(album => album.album_type === 'album' && album.album_group === 'album').slice(0, 8);
+            setDiscography(arr);
+        } else if(type === 'single-ep'){
+            setSelectedFilter('single-ep');
+            arr = fullDiscography.filter(album => album.album_type === 'single' && album.album_group === 'single').slice(0, 8);
+            setDiscography(arr);
+        } else if(type === 'compilation'){
+            setSelectedFilter('compilation');
+            arr = fullDiscography.filter(album => album.album_type === 'compilation' && album.album_group === 'compilation').slice(0, 8);
+            setDiscography(arr);
+        }
+    }
+
+    const checkButton = (type) => {
+        if(type === 'album'){
+            const flag = fullDiscography.some(album => album.album_type === 'album' && album.album_group === 'album');
+            return flag;
+        } else if(type === 'single-ep'){
+            const flag = fullDiscography.some(album => album.album_type === 'single' && album.album_group === 'single');
+            return flag;
+        } else if(type === 'compilation'){
+            const flag = fullDiscography.some(album => album.album_type === 'compilation' && album.album_group === 'compilation');
+            return flag;
+        }
+    }
     
     return (
         <div className='flex flex-col bg-primary px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
@@ -211,7 +270,31 @@ const ArtistPage = () => {
                 </div>
             }
 
-            {relatedArtists && relatedArtists.length > 0 &&
+            {discography && discography.length > 0 &&
+                <div className='w-full'>
+                    <div className='flex justify-between items-baseline mb-2'>
+                        <Link to='' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Discography</Link>
+                        <Link to='' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
+                    </div>
+
+                    <div className='flex space-x-2 my-4'>
+                        {checkButton('album') && 
+                            <button onClick={() => handleDiscographyFilter('album')} className={`py-2 px-3 text-sm rounded-full hover:bg-lighterGray ${selectedFilter === 'album' ? 'bg-white text-black' : 'bg-grayBox text-white'}`}>Albums</button>}
+                        {checkButton('single-ep') && 
+                            <button onClick={() => handleDiscographyFilter('single-ep')} className={`py-2 px-3 text-sm rounded-full hover:bg-lighterGray ${selectedFilter === 'single-ep' ? 'bg-white text-black' : 'bg-grayBox text-white'}`}>Singles and EPs</button>}
+                        {checkButton('compilation') && 
+                            <button onClick={() => handleDiscographyFilter('compilation')} className={`py-2 px-3 text-sm rounded-full hover:bg-lighterGray ${selectedFilter === 'compilation' ? 'bg-white text-black' : 'bg-grayBox text-white'}`}>Compilations</button>} 
+                    </div>
+
+                    <div className='flex w-full overflow-x-auto md:overflow-hidden'>
+                        {discography.map((album, index) => {
+                            return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id} type={'Album'}/>
+                        })}
+                    </div>
+                </div>
+            }
+
+            {/* {relatedArtists && relatedArtists.length > 0 &&
                 <div>
                     <div className='text-2xl text-white font-bold mb-2'>Related artists</div>
                     <div className='flex flex-wrap justify-center md:justify-start gap-y-4'>
@@ -222,7 +305,7 @@ const ArtistPage = () => {
                         }
                     </div>
                 </div>
-            }
+            } */}
         </div>
     )
 }
