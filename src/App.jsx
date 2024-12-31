@@ -34,6 +34,7 @@ import About from './pages/About.jsx'
 import Logout from './pages/Logout.jsx'
 import LikedSongs from './pages/LikedSongs.jsx'
 import NewReleasesPage from './pages/NewReleasesPage.jsx'
+import DiscographyPage from './pages/DiscographyPage.jsx'
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
       <Route path='/search' element={<Search />}/>
       <Route path='/track/:id' element={<TrackPage />}/>
       <Route path='/artist/:id' element={<ArtistPage />}/>
+      <Route path='/artist/:id/discography' element={<DiscographyPage />}/>
       <Route path='/album/:id' element={<AlbumPage />}/>
       <Route path='/playlist/:id' element={<PlaylistPage />}/>
       <Route path='/audiobook/:id' element={<AudiobookPage />}/>

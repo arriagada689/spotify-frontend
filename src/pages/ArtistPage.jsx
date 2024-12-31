@@ -4,6 +4,7 @@ import DiscographyCard from '../components/DiscographyCard.jsx';
 import spotifyImage from '../assets/spotify_default2.jpg';
 import { AuthContext } from '../contexts/AuthContext.jsx';
 import TrackFlexCard from '../components/TrackFlexCard.jsx';
+import { Oval } from 'react-loader-spinner'
 // import sampleArtistData from '../sample_data/artistData.js';
 // import sampleArtistDiscography from '../sample_data/artistDiscography.js';
 
@@ -36,6 +37,7 @@ const ArtistPage = () => {
                 const data = await response.json()
                 // console.log(data)
                 setArtist(data.artist_data)
+                sessionStorage.setItem('artist_name', JSON.stringify(data.artist_data.name));
                 setPopularTracks(data.popular_tracks.slice(0, 5))
                 setFullPopularTracks(data.popular_tracks);
                 // setRelatedArtists(data.related_artists)
@@ -51,6 +53,7 @@ const ArtistPage = () => {
             if(response.ok) {
                 const data = await response.json()
                 setFullDiscography(data.discography);
+                sessionStorage.setItem('discography_data', JSON.stringify({ 'artist_id': id, 'discography': data.discography }));
                 
                 //initial filtering
                 let arr = []
@@ -288,11 +291,26 @@ const ArtistPage = () => {
                 </div>
             }
 
+            {/*Incase of loading artists */}
+            {discography === null &&
+                <div className='flex mx-auto'>
+                    <Oval
+                    visible={true}
+                    height="220"
+                    width="180"
+                    color="#4fa94d"
+                    ariaLabel="oval-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    />
+                </div>
+            }
+
             {discography && discography.length > 0 &&
                 <div className='w-full'>
                     <div className='flex justify-between items-baseline mb-2'>
-                        <Link to='' className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Discography</Link>
-                        <Link to='' className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
+                        <Link to={`/artist/${id}/discography`} className='text-2xl text-white font-bold underline md:no-underline md:hover:underline'>Discography</Link>
+                        <Link to={`/artist/${id}/discography`} className='text-grayText underline md:no-underline md:hover:underline font-semibold '>Show all</Link>
                     </div>
 
                     <div className='flex space-x-2 my-4'>
