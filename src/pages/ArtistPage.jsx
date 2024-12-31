@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import AlbumCard from '../components/AlbumCard.jsx';
+import DiscographyCard from '../components/DiscographyCard.jsx';
 import spotifyImage from '../assets/spotify_default2.jpg';
 import { AuthContext } from '../contexts/AuthContext.jsx';
 import TrackFlexCard from '../components/TrackFlexCard.jsx';
@@ -16,7 +16,9 @@ const ArtistPage = () => {
     const [fullDiscography, setFullDiscography] = useState(null)
     const [selectedFilter, setSelectedFilter] = useState('album')
     const [popularTracks, setPopularTracks] = useState(null)
-    const [relatedArtists, setRelatedArtists] = useState(null)
+    const [fullPopularTracks, setFullPopularTracks] = useState(null)
+    const [seeMore, setSeeMore] = useState(false)
+    // const [relatedArtists, setRelatedArtists] = useState(null)
     const [following, setFollowing] = useState(null)
     const [likedList, setLikedList] = useState(null)
     const { updateSidebar } = useContext(AuthContext)
@@ -34,7 +36,8 @@ const ArtistPage = () => {
                 const data = await response.json()
                 // console.log(data)
                 setArtist(data.artist_data)
-                setPopularTracks(data.popular_tracks)
+                setPopularTracks(data.popular_tracks.slice(0, 5))
+                setFullPopularTracks(data.popular_tracks);
                 // setRelatedArtists(data.related_artists)
             }
         }
@@ -56,10 +59,11 @@ const ArtistPage = () => {
             }
         }
         getArtistDiscrography()
-
         getArtistData()
+
         // setArtist(sampleArtistData.artist_data);
-        // setPopularTracks(sampleArtistData.popular_tracks);
+        // setPopularTracks(sampleArtistData.popular_tracks.slice(0, 5));
+        // setFullPopularTracks(sampleArtistData.popular_tracks);
         // setDiscography(sampleArtistDiscography.discography.slice(0, 8));
         // setFullDiscography(sampleArtistDiscography.discography);
     }, [id])
@@ -188,8 +192,16 @@ const ArtistPage = () => {
         }
     }
 
-    /*Handles discography filter changes */
+    const toggleSeeMore = () => {
+        if(seeMore){
+            setPopularTracks(fullPopularTracks.slice(0, 5));
+        } else {
+            setPopularTracks(fullPopularTracks);
+        }
+        setSeeMore(prev => !prev);
+    }
 
+    /*Handles discography filter changes */
     const handleDiscographyFilter = (type) => {
         let arr = [];
 
@@ -222,7 +234,7 @@ const ArtistPage = () => {
     }
     
     return (
-        <div className='flex flex-col bg-primary px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-4'>
+        <div className='flex flex-col bg-primary px-5 pb-16 md:pb-2 h-fit pt-3 md:pt-0 space-y-6'>
             {artist && 
                 <div className='flex flex-col md:flex-row items-center'>
                     {artist.images.length > 0 ? <img src={artist.images[0].url} alt={artist.name} className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/> : <img src={spotifyImage} alt='default image' className='h-[270px] w-[270px] rounded-md mx-auto md:mx-0'/>}
@@ -252,6 +264,8 @@ const ArtistPage = () => {
                             }})
                         }
                     </div>
+
+                    <button onClick={() => toggleSeeMore()} className='text-grayText font-semibold mt-2 hover:text-white'>See more</button>
                 </div>
             }
 
@@ -267,6 +281,10 @@ const ArtistPage = () => {
                             } 
                         })}
                     </div>
+                    
+                    {fullPopularTracks.length > 5 && 
+                        <button onClick={() => toggleSeeMore()} className='text-grayText font-semibold mt-2 hover:text-white'>See more</button>
+                    }
                 </div>
             }
 
@@ -288,7 +306,7 @@ const ArtistPage = () => {
 
                     <div className='flex w-full overflow-x-auto md:overflow-hidden'>
                         {discography.map((album, index) => {
-                            return <AlbumCard key={index} name={album.name} artist={album.artists[0].name} image={album.images[0].url} id={album.id} type={'Album'}/>
+                            return <DiscographyCard key={index} name={album.name} image={album.images[0].url} id={album.id} type={album.album_type} year={album.release_date.slice(0, 4)}/>
                         })}
                     </div>
                 </div>
